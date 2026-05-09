@@ -1,4 +1,4 @@
-package com.example.messmaster.auth.model
+package com.example.messmaster.auth.model.registration
 
 data class RegistrationResponse(
     val id: Int? = null,

@@ -4,9 +4,9 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.example.messmaster.BuildConfig
 
 object RetrofitClient {
-    private const val BASE_URL = "http://192.168.68.110:3000"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply{
         level = HttpLoggingInterceptor.Level.BODY
@@ -18,7 +18,7 @@ object RetrofitClient {
 
     val apiService : ApiService by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

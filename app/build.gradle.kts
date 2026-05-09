@@ -1,3 +1,8 @@
+import java.util.Properties
+
+val localProperties = Properties()
+localProperties.load(rootProject.file("local.properties").inputStream())
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -10,6 +15,10 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.example.messmaster"
         minSdk = 24
@@ -18,6 +27,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            "\"${localProperties.getProperty("BASE_URL")}\""
+        )
     }
 
     buildTypes {

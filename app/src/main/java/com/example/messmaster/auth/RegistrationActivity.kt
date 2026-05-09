@@ -6,14 +6,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.messmaster.R
 import com.example.messmaster.auth.model.ErrorResponse
-import com.example.messmaster.auth.model.RegistrationRequest
-import com.example.messmaster.auth.model.RegistrationResponse
+import com.example.messmaster.auth.model.registration.RegistrationRequest
+import com.example.messmaster.auth.model.registration.RegistrationResponse
 import com.example.messmaster.auth.network.RetrofitClient
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -81,7 +81,7 @@ class RegistrationActivity : AppCompatActivity() {
                     btnCreateAccount.isEnabled = true
 
                     if(response.isSuccessful){
-                        Snackbar.make(btnCreateAccount, "Registration Successful", Snackbar.LENGTH_LONG).show()
+                        Toast.makeText(this@RegistrationActivity, "Registration Successful", Toast.LENGTH_LONG).show()
 
                         startActivity(Intent(this@RegistrationActivity, LoginActivity::class.java))
                         finish()
@@ -89,14 +89,15 @@ class RegistrationActivity : AppCompatActivity() {
                     else {
                         val errorMessage = getErrorMessage(response)
 
-                        Snackbar.make(btnCreateAccount, errorMessage, Snackbar.LENGTH_LONG).show()
+                        Toast.makeText(this@RegistrationActivity, errorMessage, Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun onFailure(call: Call<RegistrationResponse>, t: Throwable) {
                     btnCreateAccount.isEnabled = true
 
-                    Snackbar.make(btnCreateAccount, "Failed to connect: ${t.message}", Snackbar.LENGTH_LONG).show()
+                    Toast.makeText(this@RegistrationActivity, "Failed to connect: ${t.message}",
+                        Toast.LENGTH_LONG).show()
                 }
             })
     }
@@ -124,7 +125,7 @@ class RegistrationActivity : AppCompatActivity() {
     private fun validation(name: String, email: String, password: String, nid: String, phone: String) : Boolean{
         val namePattern = Regex("^[A-Za-z ]+$")
         val emailPattern = Regex("^[a-z0-9.]+@gmail\\.com$")
-        val passwordPattern = Regex("^.*(?=[@#$&]).*$")
+        val passwordPattern = Regex(""".*[@#$&].*""")
         val nidPattern = Regex("^\\d{14}$")
         val phonePattern = Regex("^01[0-9]+$")
 
