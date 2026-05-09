@@ -25,7 +25,6 @@ class LoginActivity : AppCompatActivity() {
 
         etEmail = findViewById<EditText>(R.id.etEmail)
         etPassword = findViewById<EditText>(R.id.etPassword)
-
         btnLogin = findViewById<Button>(R.id.btnLogin)
         btnForgotPassword = findViewById<TextView>(R.id.btnForgotPassword)
         btnRegistration = findViewById<TextView>(R.id.btnRegister)
