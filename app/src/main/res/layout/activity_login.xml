@@ -136,6 +136,14 @@
                 android:importantForAutofill="yes"
                 android:autofillHints="password" />
 
+            <ImageView
+                android:id="@+id/eyeTogglePassword"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/eye_close"
+                android:padding="2dp"
+                android:contentDescription="Toggle Password"/>
+
         </LinearLayout>
 
         <TextView
@@ -168,7 +176,56 @@
             android:backgroundTint="#000000"
             android:stateListAnimator="@null"
             style="@style/Widget.MaterialComponents.Button"
-            app:cornerRadius="12dp" />
+            app:cornerRadius="12dp"
+            android:layout_marginBottom="20dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#DDDDDD" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="or"
+                android:textSize="13sp"
+                android:textColor="#AAAAAA"
+                android:paddingHorizontal="12dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#DDDDDD" />
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGoogleLogin"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Login with Google"
+            android:textSize="15sp"
+            android:textColor="#333333"
+            android:backgroundTint="#FFFFFF"
+            android:stateListAnimator="@null"
+            android:layout_marginBottom="24dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:icon="@drawable/google_symbol"
+            app:iconGravity="textStart"
+            app:iconPadding="10dp"
+            app:iconTint="@null"
+            app:cornerRadius="12dp"
+            app:strokeColor="#DDDDDD"
+            app:strokeWidth="1dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"

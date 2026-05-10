@@ -2,8 +2,11 @@ package com.example.messmaster.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -12,7 +15,6 @@ import com.example.messmaster.R
 import com.example.messmaster.auth.model.ErrorResponse
 import com.example.messmaster.auth.model.login.LoginRequest
 import com.example.messmaster.auth.model.login.LoginResponse
-import com.example.messmaster.auth.model.registration.RegistrationResponse
 import com.example.messmaster.auth.network.RetrofitClient
 import com.google.gson.Gson
 import retrofit2.Call
@@ -26,6 +28,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var btnLogin: Button
     private lateinit var btnForgotPassword: TextView
     private lateinit var btnRegistration: TextView
+    private lateinit var btneyeTogglePassword: ImageView
+    private var isPasswordVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +41,22 @@ class LoginActivity : AppCompatActivity() {
         btnLogin = findViewById<Button>(R.id.btnLogin)
         btnForgotPassword = findViewById<TextView>(R.id.btnForgotPassword)
         btnRegistration = findViewById<TextView>(R.id.btnRegister)
+        btneyeTogglePassword = findViewById<ImageView>(R.id.eyeTogglePassword)
+
+        btneyeTogglePassword.setOnClickListener {
+            if(isPasswordVisible) {
+                etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                btneyeTogglePassword.setImageResource(R.drawable.eye_close)
+                isPasswordVisible = false
+            }
+            else{
+                etPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                btneyeTogglePassword.setImageResource(R.drawable.eye_open)
+                isPasswordVisible = true
+            }
+
+            etPassword.setSelection(etPassword.text.length)
+        }
 
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()

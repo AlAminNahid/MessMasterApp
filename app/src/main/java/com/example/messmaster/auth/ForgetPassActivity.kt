@@ -2,9 +2,12 @@ package com.example.messmaster.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +28,10 @@ class ForgetPassActivity : AppCompatActivity() {
     lateinit var etNewPass: EditText
     lateinit var etConfirmPass: EditText
     lateinit var btnRestPass: Button
+    lateinit var btnEyeToggleNewPassword: ImageView
+    lateinit var btnEyeToggleConfirmPassword: ImageView
+    private var isNewPasswordVisible = false
+    private var isConfirmPasswordVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,10 +43,42 @@ class ForgetPassActivity : AppCompatActivity() {
         etNewPass = findViewById<EditText>(R.id.etNewPass)
         etConfirmPass = findViewById<EditText>(R.id.etConfirmPass)
         btnRestPass = findViewById<Button>(R.id.btnResetPass)
+        btnEyeToggleNewPassword = findViewById<ImageView>(R.id.btnEyeToggleNewPassword)
+        btnEyeToggleConfirmPassword = findViewById<ImageView>(R.id.btnEyeToggleConfirmPassword)
 
         btnBack.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+        }
+
+        btnEyeToggleNewPassword.setOnClickListener {
+            if(isNewPasswordVisible) {
+                etNewPass.transformationMethod = PasswordTransformationMethod.getInstance()
+                btnEyeToggleNewPassword.setImageResource(R.drawable.eye_open)
+                isNewPasswordVisible = false
+            }
+            else{
+                etNewPass.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                btnEyeToggleNewPassword.setImageResource(R.drawable.eye_close)
+                isNewPasswordVisible = true
+            }
+
+            etNewPass.setSelection(etNewPass.text.length)
+        }
+
+        btnEyeToggleConfirmPassword.setOnClickListener {
+            if(isConfirmPasswordVisible) {
+                etConfirmPass.transformationMethod = PasswordTransformationMethod.getInstance()
+                btnEyeToggleConfirmPassword.setImageResource(R.drawable.eye_open)
+                isConfirmPasswordVisible = false
+            }
+            else {
+                etConfirmPass.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                btnEyeToggleConfirmPassword.setImageResource(R.drawable.eye_close)
+                isConfirmPasswordVisible = true
+            }
+
+            etConfirmPass.setSelection(etConfirmPass.text.length)
         }
 
         btnRestPass.setOnClickListener {

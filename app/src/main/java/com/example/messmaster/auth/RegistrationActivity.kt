@@ -2,9 +2,12 @@ package com.example.messmaster.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -29,6 +32,8 @@ class RegistrationActivity : AppCompatActivity() {
     lateinit var etPhone: EditText
     lateinit var btnCreateAccount: Button
     lateinit var btnSignIn: TextView
+    lateinit var btnEyeTogglePassword: ImageView
+    private var isPasswordVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +48,24 @@ class RegistrationActivity : AppCompatActivity() {
         etPhone = findViewById<EditText>(R.id.etPhone)
         btnCreateAccount = findViewById<Button>(R.id.btnCreateAccount)
         btnSignIn = findViewById<TextView>(R.id.btnSignIn)
+        btnEyeTogglePassword = findViewById<ImageView>(R.id.btnEyeTogglePassword)
 
         btnBack.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
+        }
+
+        btnEyeTogglePassword.setOnClickListener {
+            if (isPasswordVisible) {
+                etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                btnEyeTogglePassword.setImageResource(R.drawable.eye_close)
+                isPasswordVisible = false
+            } else {
+                etPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                btnEyeTogglePassword.setImageResource(R.drawable.eye_open)
+                isPasswordVisible = true
+            }
+            etPassword.setSelection(etPassword.text.length)
         }
 
         btnSignIn.setOnClickListener {
