@@ -1,5 +1,6 @@
 package com.example.messmaster.auth
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
@@ -16,6 +17,7 @@ import com.example.messmaster.auth.model.ErrorResponse
 import com.example.messmaster.auth.model.login.LoginRequest
 import com.example.messmaster.auth.model.login.LoginResponse
 import com.example.messmaster.auth.network.RetrofitClient
+import com.example.messmaster.commondashboard.CommonDashboardHomeActivity
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -92,19 +94,28 @@ class LoginActivity : AppCompatActivity() {
                     btnLogin.isEnabled = true
 
                     if(response.isSuccessful){
+                        val loginResponse = response.body()
+                        val role = loginResponse?.member?.role ?: "none"
+
+                        val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                        prefs.edit().putString("user_role", role).apply()
+
                         Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT
                         ).show()
 
-                        if(response.body()?.member == null) {
-                            Toast.makeText( this@LoginActivity, response.body()?.message ?: "You are not in any mess", Toast.LENGTH_LONG
-                            ).show()
+                        if(loginResponse?.member == null) {
+                            val intent = Intent(this@LoginActivity, CommonDashboardHomeActivity::class.java)
+                            startActivity(intent)
+                        }
+                        else if(role == "manager"){
+                            Toast.makeText(this@LoginActivity, "Welcome Manager", Toast.LENGTH_LONG).show()
 
-                            // Example:
-                            // startActivity(Intent(this@LoginActivity, JoinOrCreateMessActivity::class.java))
+                            // startActivity(Intent(this@LoginActivity, ManagerDashboardActivity::class.java))
                         }
                         else {
-                            // Example:
-                            // startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
+                            Toast.makeText(this@LoginActivity, "Welcome Member", Toast.LENGTH_LONG).show()
+
+                            // startActivity(Intent(this@LoginActivity, MemberDashboardActivity::class.java))
                         }
                     }
                     else {

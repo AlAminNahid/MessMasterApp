@@ -24,6 +24,20 @@
             android:textSize="21sp"
             android:textStyle="bold"/>
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btnLogout"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_logout"
+            android:contentDescription="Logout"
+            app:tint="#FFFFFF" />
+
     </LinearLayout>
 
     <LinearLayout
