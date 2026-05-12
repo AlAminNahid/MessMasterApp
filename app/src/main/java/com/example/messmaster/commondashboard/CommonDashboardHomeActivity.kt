@@ -53,27 +53,36 @@ class CommonDashboardHomeActivity: AppCompatActivity() {
                     call: Call<LogoutResponse>,
                     response: Response<LogoutResponse>
                 ) {
-                    if(response.isSuccessful) {
-                        RetrofitClient.cookieJar.clear()
-                        val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                        prefs.edit().clear().apply()
+                    RetrofitClient.cookieJar.clear()
+                    val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    prefs.edit().clear().apply()
 
+                    if(response.isSuccessful) {
                         Toast.makeText(this@CommonDashboardHomeActivity, "Logged out successfully",
                             Toast.LENGTH_SHORT).show()
-
-                        val intent = Intent(this@CommonDashboardHomeActivity, LoginActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        finish()
                     }
                     else{
-                        Toast.makeText(this@CommonDashboardHomeActivity, "Logout failed", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@CommonDashboardHomeActivity, "Session cleared locally (Server Error)", Toast.LENGTH_SHORT).show()
                     }
+
+                    val intent = Intent(this@CommonDashboardHomeActivity, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
                 }
 
                 override fun onFailure(call: Call<LogoutResponse>, t: Throwable){
-                    Toast.makeText(this@CommonDashboardHomeActivity, t.message ?: "Network Error",
+                    RetrofitClient.cookieJar.clear()
+                    val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    prefs.edit().clear().apply()
+
+                    Toast.makeText(this@CommonDashboardHomeActivity, "Logged out locally (Network Error)",
                         Toast.LENGTH_SHORT).show()
+
+                    val intent = Intent(this@CommonDashboardHomeActivity, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
                 }
             })
     }
