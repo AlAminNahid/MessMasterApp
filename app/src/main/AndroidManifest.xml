@@ -26,7 +26,8 @@
         <activity android:name=".auth.LoginActivity" />
         <activity android:name=".auth.RegistrationActivity"/>
         <activity android:name=".auth.ForgetPassActivity"/>
-        <activity android:name=".commondashboard.CommonDashboardHomeActivity"/>
+        <activity android:name=".commondashboard.HomeActivity"/>
+        <activity android:name=".commondashboard.CreateMessActivity"/>
     </application>
 
 </manifest>

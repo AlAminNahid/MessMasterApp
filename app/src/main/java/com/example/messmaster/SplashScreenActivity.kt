@@ -9,7 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.messmaster.auth.LoginActivity
 import com.example.messmaster.auth.network.RetrofitClient
-import com.example.messmaster.commondashboard.CommonDashboardHomeActivity
+import com.example.messmaster.commondashboard.HomeActivity
 
 class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,12 +31,12 @@ class SplashScreenActivity : AppCompatActivity() {
 
             val intent = when (role) {
                 "manager" -> {
-                    Intent(this, CommonDashboardHomeActivity::class.java)
+                    Intent(this, HomeActivity::class.java)
                 }
                 "member" -> {
-                    Intent(this, CommonDashboardHomeActivity::class.java)
+                    Intent(this, HomeActivity::class.java)
                 }
-                else -> Intent(this, CommonDashboardHomeActivity::class.java)
+                else -> Intent(this, HomeActivity::class.java)
             }
             startActivity(intent)
         } else {

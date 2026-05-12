@@ -17,7 +17,7 @@ import com.example.messmaster.auth.model.ErrorResponse
 import com.example.messmaster.auth.model.login.LoginRequest
 import com.example.messmaster.auth.model.login.LoginResponse
 import com.example.messmaster.auth.network.RetrofitClient
-import com.example.messmaster.commondashboard.CommonDashboardHomeActivity
+import com.example.messmaster.commondashboard.HomeActivity
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -104,7 +104,7 @@ class LoginActivity : AppCompatActivity() {
                         ).show()
 
                         if(loginResponse?.member == null) {
-                            val intent = Intent(this@LoginActivity, CommonDashboardHomeActivity::class.java)
+                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                             startActivity(intent)
                         }
                         else if(role == "manager"){

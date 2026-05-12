@@ -15,10 +15,12 @@ import com.example.messmaster.auth.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.Button
 
-class CommonDashboardHomeActivity: AppCompatActivity() {
+class HomeActivity: AppCompatActivity() {
 
     lateinit var btnLogout: ImageButton
+    lateinit var btnCreateMess: Button
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -26,6 +28,12 @@ class CommonDashboardHomeActivity: AppCompatActivity() {
         setContentView(R.layout.activity_comm_dashboard_home)
 
         btnLogout = findViewById<ImageButton>(R.id.btnLogout)
+        btnCreateMess = findViewById<Button>(R.id.btnCreateMess)
+
+        btnCreateMess.setOnClickListener {
+            val intent = Intent(this@HomeActivity, CreateMessActivity::class.java)
+            startActivity(intent)
+        }
 
         btnLogout.setOnClickListener {
             showLogoutDialog()
@@ -33,17 +41,28 @@ class CommonDashboardHomeActivity: AppCompatActivity() {
     }
 
     private fun showLogoutDialog(){
-        AlertDialog.Builder(this)
-            .setTitle("Logout")
-            .setMessage("Are you sure you want to logout")
-            .setPositiveButton("Yes") { dialog, _ ->
-                dialog.dismiss()
-                logoutUser()
-            }
-            .setNegativeButton("No") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_logout, null)
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val btnCancelLogout = dialogView.findViewById<Button>(R.id.btnCancelLogout)
+        val btnConfirmLogout = dialogView.findViewById<Button>(R.id.btnConfirmLogout)
+
+        btnCancelLogout.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnConfirmLogout.setOnClickListener {
+            dialog.dismiss()
+            logoutUser()
+        }
+
+        dialog.show()
+
     }
 
     private fun logoutUser(){
@@ -58,14 +77,14 @@ class CommonDashboardHomeActivity: AppCompatActivity() {
                     prefs.edit().clear().apply()
 
                     if(response.isSuccessful) {
-                        Toast.makeText(this@CommonDashboardHomeActivity, "Logged out successfully",
+                        Toast.makeText(this@HomeActivity, "Logged out successfully",
                             Toast.LENGTH_SHORT).show()
                     }
                     else{
-                        Toast.makeText(this@CommonDashboardHomeActivity, "Session cleared locally (Server Error)", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@HomeActivity, "Session cleared locally (Server Error)", Toast.LENGTH_SHORT).show()
                     }
 
-                    val intent = Intent(this@CommonDashboardHomeActivity, LoginActivity::class.java)
+                    val intent = Intent(this@HomeActivity, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     finish()
@@ -76,10 +95,10 @@ class CommonDashboardHomeActivity: AppCompatActivity() {
                     val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                     prefs.edit().clear().apply()
 
-                    Toast.makeText(this@CommonDashboardHomeActivity, "Logged out locally (Network Error)",
+                    Toast.makeText(this@HomeActivity, "Logged out locally (Network Error)",
                         Toast.LENGTH_SHORT).show()
 
-                    val intent = Intent(this@CommonDashboardHomeActivity, LoginActivity::class.java)
+                    val intent = Intent(this@HomeActivity, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     finish()
