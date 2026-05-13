@@ -1,4 +1,4 @@
-package com.example.messmaster.auth.model
+package com.example.messmaster.model
 
 data class ErrorResponse(
     val message: Any? = null,

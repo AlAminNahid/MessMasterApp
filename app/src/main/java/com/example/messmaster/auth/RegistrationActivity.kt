@@ -13,7 +13,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.messmaster.R
-import com.example.messmaster.auth.model.ErrorResponse
+import com.example.messmaster.model.ErrorResponse
 import com.example.messmaster.auth.model.registration.RegistrationRequest
 import com.example.messmaster.auth.model.registration.RegistrationResponse
 import com.example.messmaster.auth.network.RetrofitClient

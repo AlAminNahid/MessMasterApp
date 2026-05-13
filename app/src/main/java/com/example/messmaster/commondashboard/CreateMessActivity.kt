@@ -9,9 +9,11 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.messmaster.R
+import com.example.messmaster.model.ErrorResponse
 import com.example.messmaster.commondashboard.model.CreateMessRequest
 import com.example.messmaster.commondashboard.model.CreateMessResponse
 import com.example.messmaster.commondashboard.network.RetrofitClient
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -74,7 +76,9 @@ class CreateMessActivity : AppCompatActivity() {
 //                        finish()
                     }
                     else{
-                        Toast.makeText(this@CreateMessActivity, "Failed to create mess", Toast.LENGTH_SHORT).show()
+                        val errorMessage = getErrorMessage(response)
+
+                        Toast.makeText(this@CreateMessActivity, errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -84,6 +88,28 @@ class CreateMessActivity : AppCompatActivity() {
                     Toast.makeText(this@CreateMessActivity, t.message ?: "Network error", Toast.LENGTH_SHORT).show()
                 }
             })
+    }
+
+    private fun getErrorMessage(response: Response<CreateMessResponse>) : String {
+        return try{
+            val errorBody = response.errorBody()?.string()
+
+            if(errorBody.isNullOrEmpty()){
+                "Something went wrong"
+            }
+            else{
+                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
+
+                when(val message = errorResponse.message){
+                    is String -> message
+                    is List<*> -> message.joinToString("\n")
+                    else -> errorResponse.error ?: "Something went wrong"
+                }
+            }
+        }
+        catch (e: Exception) {
+            "Something went wrong"
+        }
     }
 
     private fun validation(messName: String, messAddress: String): Boolean{

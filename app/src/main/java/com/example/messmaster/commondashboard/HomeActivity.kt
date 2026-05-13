@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.messmaster.R
 import com.example.messmaster.auth.LoginActivity
-import com.example.messmaster.auth.model.LogoutResponse
+import com.example.messmaster.model.LogoutResponse
 import com.example.messmaster.auth.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback

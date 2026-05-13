@@ -1,6 +1,6 @@
 package com.example.messmaster.auth.network
 
-import com.example.messmaster.auth.model.LogoutResponse
+import com.example.messmaster.model.LogoutResponse
 import com.example.messmaster.auth.model.forgetpass.ForgetPassRequest
 import com.example.messmaster.auth.model.forgetpass.ForgetPassResponse
 import com.example.messmaster.auth.model.login.LoginRequest
