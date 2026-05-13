@@ -28,6 +28,7 @@
         <activity android:name=".auth.ForgetPassActivity"/>
         <activity android:name=".commondashboard.HomeActivity"/>
         <activity android:name=".commondashboard.CreateMessActivity"/>
+        <activity android:name=".commondashboard.JoinMessActivity"/>
     </application>
 
 </manifest>

@@ -21,6 +21,7 @@ class HomeActivity: AppCompatActivity() {
 
     lateinit var btnLogout: ImageButton
     lateinit var btnCreateMess: Button
+    lateinit var btnJoinMess: Button
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -29,9 +30,15 @@ class HomeActivity: AppCompatActivity() {
 
         btnLogout = findViewById<ImageButton>(R.id.btnLogout)
         btnCreateMess = findViewById<Button>(R.id.btnCreateMess)
+        btnJoinMess = findViewById<Button>(R.id.btnJoinMess)
 
         btnCreateMess.setOnClickListener {
             val intent = Intent(this@HomeActivity, CreateMessActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnJoinMess.setOnClickListener {
+            val intent = Intent(this@HomeActivity, JoinMessActivity::class.java)
             startActivity(intent)
         }
 
