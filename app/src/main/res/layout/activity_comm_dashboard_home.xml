@@ -29,14 +29,23 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <ImageButton
-            android:id="@+id/btnLogout"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_logout"
-            android:contentDescription="Logout"
-            app:tint="#FFFFFF" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="41dp"
+            android:layout_height="41dp"
+            app:cardCornerRadius="40dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardElevation="4dp">
+
+            <ImageView
+                android:id="@+id/btnProfile"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:src="@drawable/profile_icon"
+                app:tint="#000000"
+                android:contentDescription="Profile Icon"/>
+
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 

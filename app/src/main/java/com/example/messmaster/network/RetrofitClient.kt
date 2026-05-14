@@ -1,4 +1,4 @@
-package com.example.messmaster.auth.network
+package com.example.messmaster.network
 
 import android.content.Context
 import okhttp3.OkHttpClient
@@ -31,12 +31,19 @@ object RetrofitClient {
             .build()
     }
 
-    val apiService : ApiService by lazy {
+    private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiService::class.java)
+    }
+
+    val authService: com.example.messmaster.auth.network.ApiService by lazy {
+        retrofit.create(com.example.messmaster.auth.network.ApiService::class.java)
+    }
+
+    val messService: com.example.messmaster.commondashboard.network.ApiService by lazy {
+        retrofit.create(com.example.messmaster.commondashboard.network.ApiService::class.java)
     }
 }

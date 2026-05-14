@@ -16,7 +16,7 @@ import com.example.messmaster.R
 import com.example.messmaster.model.ErrorResponse
 import com.example.messmaster.auth.model.registration.RegistrationRequest
 import com.example.messmaster.auth.model.registration.RegistrationResponse
-import com.example.messmaster.auth.network.RetrofitClient
+import com.example.messmaster.network.RetrofitClient
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -91,7 +91,7 @@ class RegistrationActivity : AppCompatActivity() {
 
         val request = RegistrationRequest(name = name, email = email, password = password, nid = nid, phone = phone)
 
-        RetrofitClient.apiService.registration(request)
+        RetrofitClient.authService.registration(request)
             .enqueue(object : Callback<RegistrationResponse>{
                 override fun onResponse(
                     call: Call<RegistrationResponse>,

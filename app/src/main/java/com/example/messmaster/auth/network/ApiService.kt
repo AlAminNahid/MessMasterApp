@@ -1,12 +1,12 @@
 package com.example.messmaster.auth.network
 
-import com.example.messmaster.model.LogoutResponse
 import com.example.messmaster.auth.model.forgetpass.ForgetPassRequest
 import com.example.messmaster.auth.model.forgetpass.ForgetPassResponse
 import com.example.messmaster.auth.model.login.LoginRequest
 import com.example.messmaster.auth.model.login.LoginResponse
 import com.example.messmaster.auth.model.registration.RegistrationRequest
 import com.example.messmaster.auth.model.registration.RegistrationResponse
+import com.example.messmaster.model.LogoutResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.PATCH

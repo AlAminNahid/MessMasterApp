@@ -15,7 +15,7 @@ import com.example.messmaster.R
 import com.example.messmaster.model.ErrorResponse
 import com.example.messmaster.auth.model.forgetpass.ForgetPassRequest
 import com.example.messmaster.auth.model.forgetpass.ForgetPassResponse
-import com.example.messmaster.auth.network.RetrofitClient
+import com.example.messmaster.network.RetrofitClient
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -97,7 +97,7 @@ class ForgetPassActivity : AppCompatActivity() {
 
         val request = ForgetPassRequest(email, newPass, confirmPass)
 
-        RetrofitClient.apiService.forgetPassword(request)
+        RetrofitClient.authService.forgetPassword(request)
             .enqueue(object : Callback<ForgetPassResponse>{
                 override fun onResponse(
                     call: Call<ForgetPassResponse>,

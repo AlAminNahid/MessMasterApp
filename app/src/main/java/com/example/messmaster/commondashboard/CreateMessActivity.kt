@@ -1,6 +1,5 @@
 package com.example.messmaster.commondashboard
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -10,9 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.messmaster.R
 import com.example.messmaster.model.ErrorResponse
-import com.example.messmaster.commondashboard.model.CreateMessRequest
-import com.example.messmaster.commondashboard.model.CreateMessResponse
-import com.example.messmaster.commondashboard.network.RetrofitClient
+import com.example.messmaster.commondashboard.model.createMess.CreateMessRequest
+import com.example.messmaster.commondashboard.model.createMess.CreateMessResponse
+import com.example.messmaster.network.RetrofitClient
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -59,7 +58,7 @@ class CreateMessActivity : AppCompatActivity() {
             address = messAddress
         )
 
-        RetrofitClient.apiService.createMess(request)
+        RetrofitClient.messService.createMess(request)
             .enqueue(object : Callback<CreateMessResponse> {
                 override fun onResponse(
                     call: Call<CreateMessResponse>,

@@ -1,4 +1,4 @@
-package com.example.messmaster.auth.network
+package com.example.messmaster.network
 
 import android.content.Context
 import android.content.SharedPreferences

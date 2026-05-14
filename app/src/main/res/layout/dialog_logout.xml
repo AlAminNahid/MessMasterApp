@@ -21,7 +21,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_logout"
+            android:src="@drawable/logout_icon"
             app:tint="#111111"
             android:contentDescription="Logout" />
 

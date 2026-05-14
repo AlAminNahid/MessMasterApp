@@ -29,6 +29,7 @@
         <activity android:name=".commondashboard.HomeActivity"/>
         <activity android:name=".commondashboard.CreateMessActivity"/>
         <activity android:name=".commondashboard.JoinMessActivity"/>
+        <activity android:name=".commondashboard.ProfileActivity"/>
     </application>
 
 </manifest>

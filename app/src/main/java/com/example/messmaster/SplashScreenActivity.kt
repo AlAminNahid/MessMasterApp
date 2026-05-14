@@ -8,7 +8,7 @@ import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.messmaster.auth.LoginActivity
-import com.example.messmaster.auth.network.RetrofitClient
+import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.commondashboard.HomeActivity
 
 class SplashScreenActivity : AppCompatActivity() {

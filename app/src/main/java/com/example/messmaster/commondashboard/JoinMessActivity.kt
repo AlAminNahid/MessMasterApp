@@ -1,6 +1,5 @@
 package com.example.messmaster.commondashboard
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,10 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.messmaster.R
 import com.example.messmaster.commondashboard.adapter.Messes
 import com.example.messmaster.commondashboard.model.AllMessResponse
-import com.example.messmaster.commondashboard.model.JoinMessRequest
-import com.example.messmaster.commondashboard.model.JoinMessResponse
+import com.example.messmaster.commondashboard.model.joinMess.JoinMessRequest
+import com.example.messmaster.commondashboard.model.joinMess.JoinMessResponse
 import com.example.messmaster.commondashboard.model.MessItems
-import com.example.messmaster.commondashboard.network.RetrofitClient
+import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.model.ErrorResponse
 import com.google.gson.Gson
 import retrofit2.Call
@@ -71,7 +70,7 @@ class JoinMessActivity: AppCompatActivity() {
     }
 
     private fun loadAllMesses() {
-        RetrofitClient.apiService.getAllMesses()
+        RetrofitClient.messService.getAllMesses()
             .enqueue(object : Callback<AllMessResponse>{
                 override fun onResponse(
                     call: Call<AllMessResponse>,
@@ -116,18 +115,14 @@ class JoinMessActivity: AppCompatActivity() {
     private fun joinMess(messID: Int){
         val request = JoinMessRequest(messID)
 
-        RetrofitClient.apiService.joinMess(request)
+        RetrofitClient.messService.joinMess(request)
             .enqueue(object : Callback<JoinMessResponse> {
                 override fun onResponse(
                     call: Call<JoinMessResponse>,
                     response: Response<JoinMessResponse>
                 ) {
                     if (response.isSuccessful) {
-                        Toast.makeText(
-                            this@JoinMessActivity,
-                            response.body()?.message ?: "Joined successfully",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@JoinMessActivity, response.body()?.message ?: "Joined successfully", Toast.LENGTH_SHORT).show()
 
 //                        val intent = Intent(
 //                            this@JoinMessActivity,

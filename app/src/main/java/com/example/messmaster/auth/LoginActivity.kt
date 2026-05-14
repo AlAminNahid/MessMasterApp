@@ -16,7 +16,7 @@ import com.example.messmaster.R
 import com.example.messmaster.model.ErrorResponse
 import com.example.messmaster.auth.model.login.LoginRequest
 import com.example.messmaster.auth.model.login.LoginResponse
-import com.example.messmaster.auth.network.RetrofitClient
+import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.commondashboard.HomeActivity
 import com.google.gson.Gson
 import retrofit2.Call
@@ -85,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
 
         val request = LoginRequest(email, password)
 
-        RetrofitClient.apiService.login(request)
+        RetrofitClient.authService.login(request)
             .enqueue(object : Callback<LoginResponse>{
                 override fun onResponse(
                     call: Call<LoginResponse>,
@@ -96,9 +96,11 @@ class LoginActivity : AppCompatActivity() {
                     if(response.isSuccessful){
                         val loginResponse = response.body()
                         val role = loginResponse?.member?.role ?: "none"
+                        val userID = loginResponse?.user?.id ?: 0
 
                         val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                         prefs.edit().putString("user_role", role).apply()
+                        prefs.edit().putInt("userID", userID).apply()
 
                         Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT
                         ).show()
