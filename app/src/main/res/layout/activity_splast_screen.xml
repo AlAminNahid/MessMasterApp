@@ -18,20 +18,22 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/app_name"
-        android:textColor="@color/black"
-        android:textSize="30sp"
-        android:textStyle="bold"/>
+        android:text="MessMaster"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="20dp"/>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:gravity="center"
-        android:text="Secure access, made simple"
-        android:textColor="@color/text_primary"
-        android:textSize="15sp" />
+        android:textAlignment="center"
+        android:text="A specialized system designed to simplify\nmeal tracking, automate utility expense\ncalculations, and streamline communication\nbetween roommates."
+        android:textColor="#7A7A7A"
+        android:textSize="15sp"
+        android:lineSpacingExtra="4dp"
+        android:fontFamily="sans-serif-light" />
 
 </LinearLayout>
