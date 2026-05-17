@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_member">Select member</string>
+    <string name="meal_type">Meal type</string>
+    <string-array name="manager_utility_types">
+        <item>Electricity</item>
+        <item>Internet</item>
+        <item>Gas</item>
+        <item>Maid</item>
+    </string-array>
+</resources>

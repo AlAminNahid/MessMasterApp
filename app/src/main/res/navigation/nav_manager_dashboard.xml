@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_manager_dashboard"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.messmaster.managerdashboard.FragmentHome"
+        android:label="Home" />
+    <fragment
+        android:id="@+id/mealsFragment"
+        android:name="com.example.messmaster.managerdashboard.MealsFragment"
+        android:label="Meals" />
+    <fragment
+        android:id="@+id/utilityFragment"
+        android:name="com.example.messmaster.managerdashboard.UtilityFragment"
+        android:label="Utility" />
+    <fragment
+        android:id="@+id/noticeFragment"
+        android:name="com.example.messmaster.managerdashboard.NoticeFragment"
+        android:label="Notice" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.messmaster.managerdashboard.ProfileFragment"
+        android:label="Profile">
+        <action
+            android:id="@+id/action_profile_to_settings"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.messmaster.managerdashboard.SettingsFragment"
+        android:label="Settings">
+        <action
+            android:id="@+id/action_settings_to_change_password"
+            app:destination="@id/changePasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.example.messmaster.managerdashboard.ChangePasswordFragment"
+        android:label="Change password" />
+</navigation>

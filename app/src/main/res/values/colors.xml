@@ -5,4 +5,6 @@
     <color name="text_primary">#888888</color>
     <color name="text_secondary">#73757D</color>
     <color name="border">#DADCE2</color>
+    <color name="manager_bottom_nav_color">#9A9A9A</color>
+    <color name="manager_bottom_nav_selected">#000000</color>
 </resources>

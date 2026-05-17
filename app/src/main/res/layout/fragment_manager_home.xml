@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:fillViewport="true"
+    tools:context=".managerdashboard.FragmentHome">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black"
+            android:orientation="vertical"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="34dp"
+            android:paddingBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MANAGER"
+                android:textColor="#8E8E8E"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Al Amin Hossain Nahid"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Anvirs Neighbours"
+                android:textColor="#979797"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="72dp"
+                    android:background="@drawable/bg_dark_card"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginEnd="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MEMBERS"
+                        android:textColor="#8E8E8E"
+                        android:textSize="12sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12"
+                        android:textColor="@color/white"
+                        android:textSize="19sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="72dp"
+                    android:background="@drawable/bg_dark_card"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginEnd="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TOTAL MEALS"
+                        android:textColor="#8E8E8E"
+                        android:textSize="12sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="438"
+                        android:textColor="@color/white"
+                        android:textSize="19sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="72dp"
+                    android:background="@drawable/bg_dark_card"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MEAL RATE"
+                        android:textColor="#8E8E8E"
+                        android:textSize="12sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="৳52"
+                        android:textColor="@color/white"
+                        android:textSize="19sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:padding="18dp"
+            android:rowCount="2">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_white_card"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today's Meals"
+                    android:textColor="#777777"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10"
+                    android:textColor="#111111"
+                    android:textSize="25sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All members"
+                    android:textColor="#9A9A9A"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_white_card"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Utilities"
+                    android:textColor="#777777"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="৳4,800"
+                    android:textColor="#111111"
+                    android:textSize="25sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This month"
+                    android:textColor="#9A9A9A"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_white_card"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Monthly Cost"
+                    android:textColor="#777777"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="৳11,800"
+                    android:textColor="#111111"
+                    android:textSize="25sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This month"
+                    android:textColor="#9A9A9A"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_white_card"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Member Notices"
+                    android:textColor="#777777"
+                    android:textSize="13sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5"
+                    android:textColor="#111111"
+                    android:textSize="25sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Active notices"
+                    android:textColor="#9A9A9A"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+        </GridLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="QUICK ACTIONS"
+            android:textColor="#777777"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.06"
+            android:layout_marginHorizontal="18dp"/>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:padding="18dp"
+            android:rowCount="2">
+
+            <LinearLayout
+                android:id="@+id/btnAddMeal"
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_white_card"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/add_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:text="Add Meal"
+                    android:textColor="#111111"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnAddMeal"
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_white_card"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/utility_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:text="Add Utility"
+                    android:textColor="#111111"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnAddMeal"
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_white_card"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/notification_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:text="Notices"
+                    android:textColor="#111111"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnAddMeal"
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_white_card"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/settings_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:text="Settings"
+                    android:textColor="#111111"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+        </GridLayout>
+
+    </LinearLayout>
+
+</ScrollView>
