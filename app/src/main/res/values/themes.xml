@@ -6,4 +6,16 @@
     </style>
 
     <style name="Theme.MessMaster" parent="Base.Theme.MessMaster" />
+
+    <style name="CustomIndicator">
+        <item name="android:width">50dp</item>
+        <item name="android:height">32dp</item>
+        <item name="marginHorizontal">0dp</item>
+        <item name="shapeAppearance">@style/IndicatorShape</item>
+    </style>
+
+    <style name="IndicatorShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
 </resources>

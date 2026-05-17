@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -8,20 +9,26 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/managerFragmentContainer"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_manager_dashboard"/>
+        app:navGraph="@navigation/nav_manager_dashboard"
+        tools:layout="@layout/fragment_manager_home" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/managerBottomNav"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="90dp"
         android:background="#FFFFFF"
-        app:itemIconTint="@color/manager_bottom_nav_color"
-        app:itemTextColor="@color/manager_bottom_nav_color"
+        app:elevation="8dp"
+        app:itemIconTint="@color/nav_item_color_selector"
+        app:itemTextColor="@color/nav_item_color_selector"
+        app:itemTextAppearanceActive="@style/BottomNavTextStyle.Selected"
+        app:itemTextAppearanceInactive="@style/BottomNavTextStyle"
         app:labelVisibilityMode="labeled"
+        app:itemActiveIndicatorStyle="@style/CustomIndicator"
         app:menu="@menu/menu_manager_bottom_nav" />
 
 </LinearLayout>

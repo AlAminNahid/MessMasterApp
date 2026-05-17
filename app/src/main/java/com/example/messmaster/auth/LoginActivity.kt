@@ -18,6 +18,7 @@ import com.example.messmaster.auth.model.login.LoginRequest
 import com.example.messmaster.auth.model.login.LoginResponse
 import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.commondashboard.HomeActivity
+import com.example.messmaster.managerdashboard.ManagerMainActivity
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -114,7 +115,7 @@ class LoginActivity : AppCompatActivity() {
                         else if(role == "manager"){
                             Toast.makeText(this@LoginActivity, "Welcome Manager", Toast.LENGTH_LONG).show()
 
-                            // startActivity(Intent(this@LoginActivity, ManagerDashboardActivity::class.java))
+                            startActivity(Intent(this@LoginActivity, ManagerMainActivity::class.java))
                         }
                         else {
                             Toast.makeText(this@LoginActivity, "Welcome Member", Toast.LENGTH_LONG).show()

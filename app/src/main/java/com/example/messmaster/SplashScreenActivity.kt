@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.messmaster.auth.LoginActivity
 import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.commondashboard.HomeActivity
+import com.example.messmaster.managerdashboard.ManagerMainActivity
 
 class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +32,7 @@ class SplashScreenActivity : AppCompatActivity() {
 
             val intent = when (role) {
                 "manager" -> {
-                    Intent(this, HomeActivity::class.java)
+                    Intent(this, ManagerMainActivity::class.java)
                 }
                 "member" -> {
                     Intent(this, HomeActivity::class.java)
