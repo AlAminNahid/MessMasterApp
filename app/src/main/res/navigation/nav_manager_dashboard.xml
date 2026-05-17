@@ -6,7 +6,23 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.messmaster.managerdashboard.FragmentHome"
-        android:label="Home" />
+        android:label="Home" >
+
+        <action
+            android:id="@+id/action_homeFragment_to_utilityFragment"
+            app:destination="@id/utilityFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_noticeFragment"
+            app:destination="@id/noticeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_mealsFragment"
+            app:destination="@id/mealsFragment" />
+
+    </fragment>
+
     <fragment
         android:id="@+id/mealsFragment"
         android:name="com.example.messmaster.managerdashboard.MealsFragment"

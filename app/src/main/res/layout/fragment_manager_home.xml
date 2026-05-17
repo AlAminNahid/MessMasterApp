@@ -23,30 +23,57 @@
             android:paddingTop="34dp"
             android:paddingBottom="24dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MANAGER"
-                android:textColor="#8E8E8E"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.08"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Al Amin Hossain Nahid"
-                android:textColor="@color/white"
-                android:textSize="25sp"
-                android:textStyle="bold"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Anvirs Neighbours"
-                android:textColor="#979797"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MANAGER"
+                        android:textColor="#8E8E8E"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Al Amin Hossain Nahid"
+                        android:textColor="@color/white"
+                        android:textSize="25sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Anvirs Neighbours"
+                        android:textColor="#979797"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvAvatar"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:gravity="center"
+                    android:text="AA"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -333,7 +360,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/btnAddMeal"
+                android:id="@+id/btnAddUtility"
                 android:layout_width="0dp"
                 android:layout_height="128dp"
                 android:layout_columnWeight="1"
@@ -362,7 +389,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/btnAddMeal"
+                android:id="@+id/btnNotifcation"
                 android:layout_width="0dp"
                 android:layout_height="128dp"
                 android:layout_columnWeight="1"
@@ -391,7 +418,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/btnAddMeal"
+                android:id="@+id/btnSettings"
                 android:layout_width="0dp"
                 android:layout_height="128dp"
                 android:layout_columnWeight="1"
