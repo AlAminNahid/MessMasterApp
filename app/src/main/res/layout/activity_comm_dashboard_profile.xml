@@ -247,10 +247,10 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/btnEditProfile"
+                android:id="@+id/btnChangePassword"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Edit Profile"
+                android:text="Change Password"
                 android:textSize="16sp"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"

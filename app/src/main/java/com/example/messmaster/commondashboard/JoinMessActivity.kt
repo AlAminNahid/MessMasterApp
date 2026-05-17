@@ -70,7 +70,7 @@ class JoinMessActivity: AppCompatActivity() {
     }
 
     private fun loadAllMesses() {
-        RetrofitClient.messService.getAllMesses()
+        RetrofitClient.commMessService.getAllMesses()
             .enqueue(object : Callback<AllMessResponse>{
                 override fun onResponse(
                     call: Call<AllMessResponse>,
@@ -115,7 +115,7 @@ class JoinMessActivity: AppCompatActivity() {
     private fun joinMess(messID: Int){
         val request = JoinMessRequest(messID)
 
-        RetrofitClient.messService.joinMess(request)
+        RetrofitClient.commMessService.joinMess(request)
             .enqueue(object : Callback<JoinMessResponse> {
                 override fun onResponse(
                     call: Call<JoinMessResponse>,

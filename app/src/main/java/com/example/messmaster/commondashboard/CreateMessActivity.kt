@@ -58,7 +58,7 @@ class CreateMessActivity : AppCompatActivity() {
             address = messAddress
         )
 
-        RetrofitClient.messService.createMess(request)
+        RetrofitClient.commMessService.createMess(request)
             .enqueue(object : Callback<CreateMessResponse> {
                 override fun onResponse(
                     call: Call<CreateMessResponse>,

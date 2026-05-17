@@ -97,10 +97,12 @@ class LoginActivity : AppCompatActivity() {
                         val loginResponse = response.body()
                         val role = loginResponse?.member?.role ?: "none"
                         val userID = loginResponse?.user?.id ?: 0
+                        val userEmail = loginResponse?.user?.email ?: null
 
                         val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                         prefs.edit().putString("user_role", role).apply()
                         prefs.edit().putInt("userID", userID).apply()
+                        prefs.edit().putString("userEmail", userEmail).apply()
 
                         Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT
                         ).show()

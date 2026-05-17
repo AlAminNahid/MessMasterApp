@@ -25,7 +25,7 @@ class ProfileActivity: AppCompatActivity() {
 
     lateinit var btnBack: ImageButton
     lateinit var btnLogout: ImageButton
-    lateinit var btnEditProfile: Button
+    lateinit var btnChangePassword: Button
     lateinit var userNameText: TextView
     lateinit var userEmailText: TextView
     lateinit var userPhoneText: TextView
@@ -38,7 +38,7 @@ class ProfileActivity: AppCompatActivity() {
 
         btnBack = findViewById<ImageButton>(R.id.btnBack)
         btnLogout = findViewById<ImageButton>(R.id.btnLogout)
-        btnEditProfile = findViewById<Button>(R.id.btnEditProfile)
+        btnChangePassword = findViewById<Button>(R.id.btnChangePassword)
 
         userNameText = findViewById<TextView>(R.id.userNameText)
         userEmailText = findViewById<TextView>(R.id.userEmailText)
@@ -56,6 +56,11 @@ class ProfileActivity: AppCompatActivity() {
         btnLogout.setOnClickListener {
             showLogoutDialog()
         }
+
+        btnChangePassword.setOnClickListener {
+            val intent = Intent(this@ProfileActivity, ChangePassActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun fetchUserProfile(){
@@ -68,7 +73,7 @@ class ProfileActivity: AppCompatActivity() {
             return
         }
 
-        RetrofitClient.messService.getUserById(userID)
+        RetrofitClient.commMessService.getUserById(userID)
             .enqueue(object : Callback<UserProfileResponse>{
                 override fun onResponse(
                     call: Call<UserProfileResponse>,

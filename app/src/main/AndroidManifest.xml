@@ -30,6 +30,7 @@
         <activity android:name=".commondashboard.CreateMessActivity"/>
         <activity android:name=".commondashboard.JoinMessActivity"/>
         <activity android:name=".commondashboard.ProfileActivity"/>
+        <activity android:name=".commondashboard.ChangePassActivity"/>
     </application>
 
 </manifest>
