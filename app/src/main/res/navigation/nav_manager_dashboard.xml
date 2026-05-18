@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/mealsFragment"
-        android:name="com.example.messmaster.managerdashboard.MealsFragment"
+        android:name="com.example.messmaster.managerdashboard.FragmentMeal"
         android:label="Meals" />
     <fragment
         android:id="@+id/utilityFragment"
