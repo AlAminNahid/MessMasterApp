@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/utilityFragment"
-        android:name="com.example.messmaster.managerdashboard.UtilityFragment"
+        android:name="com.example.messmaster.managerdashboard.FragmentUtility"
         android:label="Utility" />
 
     <fragment

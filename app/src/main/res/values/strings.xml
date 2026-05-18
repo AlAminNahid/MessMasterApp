@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">MessMaster</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="manager_utility_types">
+        <item>Electricity</item>
+        <item>Internet</item>
+        <item>Gas</item>
+        <item>Maid</item>
+    </string-array>
 </resources>
