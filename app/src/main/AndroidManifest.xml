@@ -33,6 +33,7 @@
         <activity android:name=".commondashboard.ProfileActivity"/>
         <activity android:name=".commondashboard.ChangePassActivity"/>
         <activity android:name=".managerdashboard.ManagerMainActivity"/>
+        <activity android:name=".managerdashboard.SettingsActivity"/>
     </application>
 
 </manifest>

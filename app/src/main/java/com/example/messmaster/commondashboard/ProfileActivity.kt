@@ -68,7 +68,7 @@ class ProfileActivity: AppCompatActivity() {
 
         val userID = prefs.getInt("userID", 0)
 
-        if(userID === 0){
+        if(userID == 0){
             Toast.makeText(this@ProfileActivity, "User ID not found", Toast.LENGTH_SHORT).show()
             return
         }

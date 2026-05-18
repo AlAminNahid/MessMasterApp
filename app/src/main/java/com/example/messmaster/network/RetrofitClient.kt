@@ -6,6 +6,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.example.messmaster.BuildConfig
+import retrofit2.create
 
 object RetrofitClient {
 
@@ -45,5 +46,9 @@ object RetrofitClient {
 
     val commMessService: com.example.messmaster.commondashboard.network.ApiService by lazy {
         retrofit.create(com.example.messmaster.commondashboard.network.ApiService::class.java)
+    }
+
+    val managerService: com.example.messmaster.managerdashboard.network.ApiService by lazy {
+        retrofit.create(com.example.messmaster.managerdashboard.network.ApiService::class.java)
     }
 }

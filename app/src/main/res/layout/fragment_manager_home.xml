@@ -46,17 +46,19 @@
                         android:letterSpacing="0.08" />
 
                     <TextView
+                        android:id="@+id/txtManagerName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Al Amin Hossain Nahid"
+                        android:text="Loading..."
                         android:textColor="@color/white"
                         android:textSize="25sp"
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/txtMessName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Anvirs Neighbours"
+                        android:text="Loading..."
                         android:textColor="#979797"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -69,7 +71,7 @@
                     android:layout_height="52dp"
                     android:background="@drawable/bg_avatar_circle"
                     android:gravity="center"
-                    android:text="AA"
+                    android:text=".."
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -102,9 +104,10 @@
                         android:textStyle="bold"/>
 
                     <TextView
+                        android:id="@+id/txtTotalMembers"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12"
+                        android:text=".."
                         android:textColor="@color/white"
                         android:textSize="19sp"
                         android:textStyle="bold"/>
@@ -130,9 +133,10 @@
                         android:textStyle="bold"/>
 
                     <TextView
+                        android:id="@+id/txtTotalMeals"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="438"
+                        android:text=".."
                         android:textColor="@color/white"
                         android:textSize="19sp"
                         android:textStyle="bold"/>
@@ -157,9 +161,10 @@
                         android:textStyle="bold"/>
 
                     <TextView
+                        android:id="@+id/txtMealRate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="৳52"
+                        android:text="৳ .."
                         android:textColor="@color/white"
                         android:textSize="19sp"
                         android:textStyle="bold"/>
@@ -194,6 +199,7 @@
                     android:textSize="13sp"/>
 
                 <TextView
+                    android:id="@+id/txtTodaysMeals"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="10"
@@ -262,6 +268,7 @@
                     android:textSize="13sp"/>
 
                 <TextView
+                    android:id="@+id/txtTotalMealExpense"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="৳11,800"
