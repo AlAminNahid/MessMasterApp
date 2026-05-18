@@ -6,51 +6,33 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.messmaster.managerdashboard.FragmentHome"
-        android:label="Home" >
-
-        <action
-            android:id="@+id/action_homeFragment_to_utilityFragment"
-            app:destination="@id/utilityFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_noticeFragment"
-            app:destination="@id/noticeFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_mealsFragment"
-            app:destination="@id/mealsFragment" />
-
-    </fragment>
+        android:label="Home" />
 
     <fragment
         android:id="@+id/mealsFragment"
         android:name="com.example.messmaster.managerdashboard.FragmentMeal"
         android:label="Meals" />
+
     <fragment
         android:id="@+id/utilityFragment"
         android:name="com.example.messmaster.managerdashboard.UtilityFragment"
         android:label="Utility" />
+
     <fragment
         android:id="@+id/noticeFragment"
         android:name="com.example.messmaster.managerdashboard.NoticeFragment"
         android:label="Notice" />
+
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.messmaster.managerdashboard.ProfileFragment"
-        android:label="Profile">
-        <action
-            android:id="@+id/action_profile_to_settings"
-            app:destination="@id/settingsFragment" />
-    </fragment>
+        android:label="Profile"/>
+
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.messmaster.managerdashboard.SettingsFragment"
-        android:label="Settings">
-        <action
-            android:id="@+id/action_settings_to_change_password"
-            app:destination="@id/changePasswordFragment" />
-    </fragment>
+        android:label="Settings"/>
+
     <fragment
         android:id="@+id/changePasswordFragment"
         android:name="com.example.messmaster.managerdashboard.ChangePasswordFragment"
