@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/noticeFragment"
-        android:name="com.example.messmaster.managerdashboard.NoticeFragment"
+        android:name="com.example.messmaster.managerdashboard.FragmentNotice"
         android:label="Notice" />
 
     <fragment

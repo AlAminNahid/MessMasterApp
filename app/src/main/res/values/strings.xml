@@ -9,4 +9,9 @@
         <item>Gas</item>
         <item>Maid</item>
     </string-array>
+
+    <string-array name="manager_notice_types">
+        <item>annoucement</item>
+        <item>shopping_request</item>
+    </string-array>
 </resources>
