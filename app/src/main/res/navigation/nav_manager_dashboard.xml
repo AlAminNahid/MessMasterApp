@@ -25,16 +25,12 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.messmaster.managerdashboard.ProfileFragment"
+        android:name="com.example.messmaster.managerdashboard.FragmentProfile"
         android:label="Profile"/>
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.messmaster.managerdashboard.SettingsFragment"
+        android:name="com.example.messmaster.managerdashboard.FragmentSettings"
         android:label="Settings"/>
 
-    <fragment
-        android:id="@+id/changePasswordFragment"
-        android:name="com.example.messmaster.managerdashboard.ChangePasswordFragment"
-        android:label="Change password" />
 </navigation>
