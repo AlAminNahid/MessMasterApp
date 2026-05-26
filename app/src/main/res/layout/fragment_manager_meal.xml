@@ -86,9 +86,10 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/txtMonthlyTotalMeals"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="12"
+                    android:text="..."
                     android:textColor="@color/white"
                     android:textSize="19sp"
                     android:textStyle="bold"/>
@@ -114,9 +115,10 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/txtMonthlyMealRate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="438"
+                    android:text="৳ ..."
                     android:textColor="@color/white"
                     android:textSize="19sp"
                     android:textStyle="bold"/>
@@ -195,9 +197,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:background="@drawable/bg_input_manager"
+                        android:clickable="true"
+                        android:focusable="false"
                         android:paddingStart="16dp"
                         android:paddingEnd="8dp"
-                        android:hint="mm/dd/yyyy"
+                        android:textColor="@color/black"
+                        android:hint="yyyy-mm-dd"
                         android:textColorHint="@color/text_secondary"
                         android:inputType="date"/>
                 </LinearLayout>
@@ -253,6 +258,7 @@
                         android:background="@drawable/bg_input_manager"
                         android:paddingStart="16dp"
                         android:paddingEnd="8dp"
+                        android:textColor="@color/black"
                         android:hint="2"
                         android:textColorHint="@color/text_secondary"
                         android:inputType="numberDecimal"/>
@@ -312,6 +318,7 @@
                     android:background="@drawable/bg_input_manager"
                     android:paddingStart="16dp"
                     android:paddingEnd="8dp"
+                    android:textColor="@color/black"
                     android:hint="Amount (৳)"
                     android:textColorHint="@color/text_secondary"
                     android:inputType="numberDecimal"/>
@@ -340,6 +347,7 @@
                     android:background="@drawable/bg_input_manager"
                     android:paddingStart="16dp"
                     android:paddingEnd="8dp"
+                    android:textColor="@color/black"
                     android:hint="Description, e.g., Rice, fish, vegetables"
                     android:textColorHint="@color/text_secondary"
                     android:inputType="text"/>

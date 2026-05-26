@@ -124,8 +124,9 @@ class FragmentHome : Fragment() {
                     if (!isAdded) return
 
                     if (response.isSuccessful && response.body() != null) {
-                        val mealRate = response.body()!!.mealRate
-                        txtMealRate.text = "৳${formatMealRate(mealRate)}"
+                        val summary = response.body()!!
+                        txtTotalMeals.text = summary.totalMeals.toString()
+                        txtMealRate.text = "৳${formatMealRate(summary.mealRate)}"
                     } else {
                         val errorMessage = getMealRateErrorMessage(response)
                         Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
@@ -388,7 +389,6 @@ class FragmentHome : Fragment() {
                         val statistics = response.body()!!
 
                         txtTotalMembers.text = statistics.totalMembers.toString()
-                        txtTotalMeals.text = statistics.totalMeals.toString()
                     } else {
                         val errorMessage = getMessStatisticErrorMessage(response)
                         Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
