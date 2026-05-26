@@ -49,7 +49,7 @@
                         android:id="@+id/txtManagerName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Loading..."
+                        android:text="..."
                         android:textColor="@color/white"
                         android:textSize="25sp"
                         android:textStyle="bold" />
@@ -58,7 +58,7 @@
                         android:id="@+id/txtMessName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Loading..."
+                        android:text="..."
                         android:textColor="#979797"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -107,7 +107,7 @@
                         android:id="@+id/txtTotalMembers"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=".."
+                        android:text="..."
                         android:textColor="@color/white"
                         android:textSize="19sp"
                         android:textStyle="bold"/>
@@ -136,7 +136,7 @@
                         android:id="@+id/txtTotalMeals"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=".."
+                        android:text="..."
                         android:textColor="@color/white"
                         android:textSize="19sp"
                         android:textStyle="bold"/>
@@ -164,7 +164,7 @@
                         android:id="@+id/txtMealRate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="৳ .."
+                        android:text="৳ ..."
                         android:textColor="@color/white"
                         android:textSize="19sp"
                         android:textStyle="bold"/>
@@ -202,7 +202,7 @@
                     android:id="@+id/txtTodaysMeals"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10"
+                    android:text="..."
                     android:textColor="#111111"
                     android:textSize="25sp"
                     android:textStyle="bold"/>
@@ -234,9 +234,10 @@
                     android:textSize="13sp"/>
 
                 <TextView
+                    android:id="@+id/txtTotalUtility"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="৳4,800"
+                    android:text="৳ ..."
                     android:textColor="#111111"
                     android:textSize="25sp"
                     android:textStyle="bold"/>
@@ -263,7 +264,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Monthly Cost"
+                    android:text="Total Meal Expense"
                     android:textColor="#777777"
                     android:textSize="13sp"/>
 
@@ -271,7 +272,7 @@
                     android:id="@+id/txtTotalMealExpense"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="৳11,800"
+                    android:text="৳ ..."
                     android:textColor="#111111"
                     android:textSize="25sp"
                     android:textStyle="bold"/>
@@ -303,9 +304,10 @@
                     android:textSize="13sp"/>
 
                 <TextView
+                    android:id="@+id/txtTodayMemberNotices"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5"
+                    android:text="..."
                     android:textColor="#111111"
                     android:textSize="25sp"
                     android:textStyle="bold"/>
@@ -313,7 +315,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Active notices"
+                    android:text="Today's notices"
                     android:textColor="#9A9A9A"
                     android:textSize="13sp" />
 
