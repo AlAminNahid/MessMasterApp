@@ -93,6 +93,7 @@
                 android:background="@drawable/bg_input_manager"
                 android:paddingStart="16dp"
                 android:paddingEnd="8dp"
+                android:textColor="@color/black"
                 android:hint="Enter title"
                 android:textColorHint="@color/text_secondary"
                 android:inputType="text"/>
@@ -114,6 +115,7 @@
                 android:background="@drawable/bg_input_manager"
                 android:padding="16dp"
                 android:hint="Enter description"
+                android:textColor="@color/black"
                 android:textColorHint="@color/text_secondary"
                 android:inputType="textMultiLine"
                 android:gravity="top|start"
@@ -164,6 +166,7 @@
             android:letterSpacing="0.08"/>
 
         <LinearLayout
+            android:id="@+id/layoutMemberNotices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="18dp"

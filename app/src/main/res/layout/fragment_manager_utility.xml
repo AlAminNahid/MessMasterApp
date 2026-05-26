@@ -86,9 +86,10 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/txtTotalUtilityCost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="৳ 4,800"
+                    android:text="৳ ..."
                     android:textColor="@color/white"
                     android:textSize="19sp"
                     android:textStyle="bold"/>
@@ -114,9 +115,10 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/txtUtilityPerPerson"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="৳ 400"
+                    android:text="৳ ..."
                     android:textColor="@color/white"
                     android:textSize="19sp"
                     android:textStyle="bold"/>
@@ -141,15 +143,6 @@
                 android:textStyle="bold"
                 android:letterSpacing="0.08"/>
 
-            <Spinner
-                android:id="@+id/spinnerUtilityType"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="@drawable/bg_input_manager"
-                android:paddingStart="16dp"
-                android:paddingEnd="8dp"
-                android:spinnerMode="dropdown"/>
-
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -167,20 +160,21 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="AMOUNT"
+                        android:text="ELECTRICITY"
                         android:textStyle="bold"
                         android:textColor="#555555"
                         android:textSize="14sp"
                         android:layout_marginBottom="6dp"/>
 
                     <EditText
-                        android:id="@+id/inputUtilityAmount"
+                        android:id="@+id/inputElectricityAmount"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:background="@drawable/bg_input_manager"
                         android:paddingStart="16dp"
                         android:paddingEnd="8dp"
-                        android:hint="Amount (৳)"
+                        android:textColor="@color/black"
+                        android:hint="Electricity (৳)"
                         android:textColorHint="@color/text_secondary"
                         android:inputType="numberDecimal"/>
                 </LinearLayout>
@@ -196,25 +190,116 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="MONTH"
+                        android:text="INTERNET"
                         android:textStyle="bold"
                         android:textColor="#555555"
                         android:textSize="14sp"
                         android:layout_marginBottom="6dp"/>
 
                     <EditText
-                        android:id="@+id/inputMealCount"
+                        android:id="@+id/inputInternetAmount"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:background="@drawable/bg_input_manager"
                         android:paddingStart="16dp"
                         android:paddingEnd="8dp"
-                        android:hint="Month"
+                        android:textColor="@color/black"
+                        android:hint="Internet (৳)"
                         android:textColorHint="@color/text_secondary"
-                        android:inputType="date"/>
+                        android:inputType="numberDecimal"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="6dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="GAS"
+                        android:textStyle="bold"
+                        android:textColor="#555555"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="6dp"/>
+
+                    <EditText
+                        android:id="@+id/inputGasAmount"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_input_manager"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="@color/black"
+                        android:hint="Gas (৳)"
+                        android:textColorHint="@color/text_secondary"
+                        android:inputType="numberDecimal"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="6dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MAID"
+                        android:textStyle="bold"
+                        android:textColor="#555555"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="6dp"/>
+
+                    <EditText
+                        android:id="@+id/inputMaidAmount"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_input_manager"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="@color/black"
+                        android:hint="Maid (৳)"
+                        android:textColorHint="@color/text_secondary"
+                        android:inputType="numberDecimal"/>
                 </LinearLayout>
 
             </GridLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MONTH"
+                    android:textStyle="bold"
+                    android:textColor="#555555"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="6dp"/>
+
+                <EditText
+                    android:id="@+id/inputUtilityMonth"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_input_manager"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:textColor="@color/black"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    android:hint="Month"
+                    android:textColorHint="@color/text_secondary"
+                    android:inputType="date"/>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btnAddUtility"
@@ -222,7 +307,7 @@
                 android:layout_height="56dp"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/black"
-                android:text="SAVE MEAL ENTRY"
+                android:text="SAVE UTILITY ENTRY"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -264,9 +349,10 @@
                     android:letterSpacing="0.08" />
 
                 <TextView
+                    android:id="@+id/txtElectricityBill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="৳ 1050"
+                    android:text="৳ ..."
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -292,9 +378,10 @@
                     android:letterSpacing="0.08" />
 
                 <TextView
+                    android:id="@+id/txtInternetBill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="৳ 1050"
+                    android:text="৳ ..."
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -320,9 +407,10 @@
                     android:letterSpacing="0.08" />
 
                 <TextView
+                    android:id="@+id/txtGasBill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="৳ 1750"
+                    android:text="৳ ..."
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -348,9 +436,10 @@
                     android:letterSpacing="0.08" />
 
                 <TextView
+                    android:id="@+id/txtMaidBill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="৳ 5500"
+                    android:text="৳ ..."
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"

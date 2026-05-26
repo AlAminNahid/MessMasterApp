@@ -79,7 +79,7 @@
                 android:paddingEnd="8dp"
                 android:hint="Enter current password"
                 android:textColorHint="@color/text_secondary"
-                android:inputType="text"/>
+                android:inputType="textPassword"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -100,7 +100,28 @@
                 android:paddingEnd="8dp"
                 android:hint="Enter new password"
                 android:textColorHint="@color/text_secondary"
-                android:inputType="text"/>
+                android:inputType="textPassword"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CONFIRM PASSWORD"
+                android:textStyle="bold"
+                android:textColor="#555555"
+                android:textSize="14sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_manager"
+                android:paddingStart="16dp"
+                android:paddingEnd="8dp"
+                android:hint="Confirm new password"
+                android:textColorHint="@color/text_secondary"
+                android:inputType="textPassword"/>
 
             <Button
                 android:id="@+id/btnUpdatePassword"
