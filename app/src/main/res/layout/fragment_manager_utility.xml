@@ -449,6 +449,17 @@
 
         </LinearLayout>
 
+        <Button
+            android:id="@+id/btnEditCurrentUtility"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_margin="18dp"
+            android:backgroundTint="@color/black"
+            android:text="EDIT CURRENT MONTH UTILITY"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
 </ScrollView>

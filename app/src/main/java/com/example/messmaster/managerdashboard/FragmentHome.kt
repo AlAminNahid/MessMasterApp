@@ -3,18 +3,28 @@ package com.example.messmaster.managerdashboard
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.example.messmaster.R
 import com.example.messmaster.managerdashboard.model.CurrentMessResponse
 import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityBillsResponse
 import com.example.messmaster.managerdashboard.model.MealRateResponse
 import com.example.messmaster.managerdashboard.model.MessStatisticsResponse
+import com.example.messmaster.managerdashboard.model.MonthlySheetDay
+import com.example.messmaster.managerdashboard.model.MonthlySheetResponse
 import com.example.messmaster.managerdashboard.model.NoticesResponse
 import com.example.messmaster.managerdashboard.model.TodayTotalMealsResponse
 import com.example.messmaster.managerdashboard.model.TotalMealExpenseResponse
@@ -43,6 +53,7 @@ class FragmentHome : Fragment() {
     lateinit var btnSettings: LinearLayout
     lateinit var btnAddUtility: LinearLayout
     lateinit var btnNotifcation: LinearLayout
+    lateinit var btnMonthlySheet: LinearLayout
     lateinit var txtTotalMealExpense: TextView
     lateinit var txtTodaysMeals: TextView
     lateinit var txtMealRate: TextView
@@ -75,6 +86,7 @@ class FragmentHome : Fragment() {
         btnAddUtility = view.findViewById<LinearLayout>(R.id.btnAddUtility)
         btnSettings = view.findViewById<LinearLayout>(R.id.btnSettings)
         btnNotifcation = view.findViewById<LinearLayout>(R.id.btnNotifcation)
+        btnMonthlySheet = view.findViewById<LinearLayout>(R.id.btnMonthlySheet)
 
         val prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         userID = prefs.getInt("userID", 0)
@@ -103,6 +115,10 @@ class FragmentHome : Fragment() {
         btnSettings.setOnClickListener {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
             startActivity(intent)
+        }
+
+        btnMonthlySheet.setOnClickListener {
+            loadMonthlySheet()
         }
 
         loadUserAndMessInfo()
@@ -347,6 +363,198 @@ class FragmentHome : Fragment() {
 
     private fun currentDate(): String {
         return SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+    }
+
+    private fun loadMonthlySheet() {
+        RetrofitClient.managerService.getMonthlySheet()
+            .enqueue(object : Callback<MonthlySheetResponse> {
+                override fun onResponse(
+                    call: Call<MonthlySheetResponse>,
+                    response: Response<MonthlySheetResponse>
+                ) {
+                    if (!isAdded) return
+
+                    if (response.isSuccessful && response.body() != null) {
+                        showMonthlySheetTable(response.body()!!.days)
+                    } else {
+                        Toast.makeText(requireContext(), getErrorMessage(response), Toast.LENGTH_LONG).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<MonthlySheetResponse>, t: Throwable) {
+                    if (!isAdded) return
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Network error: ${t.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+    }
+
+    private fun showMonthlySheetTable(days: List<MonthlySheetDay>) {
+        val dialogView = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(24), dp(22), dp(24), dp(20))
+            setBackgroundResource(R.drawable.bg_dialog_rounded)
+        }
+        val titleView = TextView(requireContext()).apply {
+            text = "Day-Wise Monthly Sheet"
+            gravity = Gravity.CENTER
+            textSize = 20f
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setTextColor(requireContext().getColor(R.color.black))
+        }
+        val subtitleView = TextView(requireContext()).apply {
+            text = "Search by date, member, meal count, or bazar amount."
+            gravity = Gravity.CENTER
+            textSize = 14f
+            setTextColor(requireContext().getColor(R.color.text_secondary))
+            setPadding(0, dp(6), 0, dp(18))
+        }
+        val searchInput = EditText(requireContext()).apply {
+            hint = "Search"
+            setSingleLine(true)
+            setPadding(dp(16), 0, dp(16), 0)
+            setBackgroundResource(R.drawable.bg_input_manager)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(52)
+            )
+        }
+        val rowsContainer = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+        }
+        val scrollView = ScrollView(requireContext()).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(380)
+            ).apply {
+                topMargin = dp(16)
+            }
+            addView(HorizontalScrollView(requireContext()).apply {
+                addView(rowsContainer)
+            })
+        }
+        val closeButton = Button(requireContext()).apply {
+            text = "Close"
+            setTextColor(requireContext().getColor(R.color.white))
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            backgroundTintList = android.content.res.ColorStateList.valueOf(
+                requireContext().getColor(R.color.black)
+            )
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(52)
+            ).apply {
+                topMargin = dp(18)
+            }
+        }
+
+        dialogView.addView(titleView)
+        dialogView.addView(subtitleView)
+        dialogView.addView(searchInput)
+        dialogView.addView(scrollView)
+        dialogView.addView(closeButton)
+
+        fun daySearchText(day: MonthlySheetDay): String {
+            val meals = day.meals.joinToString(" ") {
+                "${it.member_name} ${it.total_meals}"
+            }
+            val bazar = day.bazar.joinToString(" ") {
+                "${it.member_name} ${it.total_amount}"
+            }
+            return "${day.date} ${day.totalMeals} ${day.totalBazar} $meals $bazar"
+        }
+
+        fun render(query: String) {
+            rowsContainer.removeAllViews()
+            val filtered = days.filter {
+                daySearchText(it).contains(query, ignoreCase = true)
+            }
+
+            if (days.isEmpty()) {
+                rowsContainer.addView(tableMessage("No day-wise activity for this month yet."))
+                return
+            }
+            if (filtered.isEmpty()) {
+                rowsContainer.addView(tableMessage("No matching records found."))
+                return
+            }
+
+            rowsContainer.addView(tableRow(listOf("Date", "Meals", "Bazar", "Details"), true))
+            filtered.forEach { day ->
+                val mealLine = if (day.meals.isEmpty()) {
+                    "No meals"
+                } else {
+                    day.meals.joinToString(", ") { "${it.member_name}: ${formatAmount(it.total_meals)}" }
+                }
+                val bazarLine = if (day.bazar.isEmpty()) {
+                    "No bazar"
+                } else {
+                    day.bazar.joinToString(", ") { "${it.member_name}: ৳${formatAmount(it.total_amount)}" }
+                }
+                rowsContainer.addView(
+                    tableRow(
+                        listOf(
+                            day.date,
+                            formatAmount(day.totalMeals),
+                            "৳${formatAmount(day.totalBazar)}",
+                            "$mealLine\n$bazarLine"
+                        ),
+                        false
+                    )
+                )
+            }
+        }
+
+        searchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                render(s?.toString().orEmpty())
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        render("")
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        closeButton.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+    }
+
+    private fun tableRow(values: List<String>, isHeader: Boolean): LinearLayout {
+        return LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(0, dp(12), 0, dp(12))
+            values.forEach { value ->
+                addView(TextView(requireContext()).apply {
+                    text = value
+                    textSize = if (isHeader) 13f else 12f
+                    setTextColor(requireContext().getColor(if (isHeader) R.color.text_secondary else R.color.black))
+                    setTypeface(typeface, if (isHeader) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
+                    layoutParams = LinearLayout.LayoutParams(dp(118), LinearLayout.LayoutParams.WRAP_CONTENT)
+                })
+            }
+        }
+    }
+
+    private fun tableMessage(message: String): TextView {
+        return TextView(requireContext()).apply {
+            text = message
+            textSize = 15f
+            setTextColor(requireContext().getColor(R.color.black))
+            setPadding(0, dp(24), 0, dp(18))
+        }
+    }
+
+    private fun dp(value: Int): Int {
+        return (value * resources.displayMetrics.density).toInt()
     }
 
     private fun getErrorMessage(response: Response<*>) : String {

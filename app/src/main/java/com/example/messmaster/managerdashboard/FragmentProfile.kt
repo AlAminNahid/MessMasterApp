@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -164,40 +163,29 @@ class FragmentProfile : Fragment() {
             return
         }
 
-        val container = LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(48, 16, 48, 0)
-        }
-        val inputName = EditText(requireContext()).apply {
-            hint = "Name"
-            setText(profile.name)
-        }
-        val inputPhone = EditText(requireContext()).apply {
-            hint = "Phone"
-            setText(profile.phone)
-            inputType = android.text.InputType.TYPE_CLASS_PHONE
-        }
+        val dialogView = layoutInflater.inflate(R.layout.dialog_edit_profile, null)
+        val inputName = dialogView.findViewById<EditText>(R.id.inputEditProfileName)
+        val inputPhone = dialogView.findViewById<EditText>(R.id.inputEditProfilePhone)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelEditProfile)
+        val btnSave = dialogView.findViewById<Button>(R.id.btnSaveEditProfile)
 
-        container.addView(inputName)
-        container.addView(inputPhone)
+        inputName.setText(profile.name)
+        inputPhone.setText(profile.phone)
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Edit profile")
-            .setView(container)
-            .setNegativeButton("Cancel", null)
-            .setPositiveButton("Save", null)
+            .setView(dialogView)
             .create()
             .apply {
-                setOnShowListener {
-                    getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                        val name = inputName.text.toString().trim()
-                        val phone = inputPhone.text.toString().trim()
+                window?.setBackgroundDrawableResource(android.R.color.transparent)
+                btnCancel.setOnClickListener { dismiss() }
+                btnSave.setOnClickListener {
+                    val name = inputName.text.toString().trim()
+                    val phone = inputPhone.text.toString().trim()
 
-                        when {
-                            name.isEmpty() -> inputName.error = "Name is required"
-                            phone.isEmpty() -> inputPhone.error = "Phone is required"
-                            else -> updateProfile(name, phone, this)
-                        }
+                    when {
+                        name.isEmpty() -> inputName.error = "Name is required"
+                        phone.isEmpty() -> inputPhone.error = "Phone is required"
+                        else -> updateProfile(name, phone, this)
                     }
                 }
                 show()

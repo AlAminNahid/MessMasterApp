@@ -305,6 +305,63 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="BAZAR DONE BY"
+                    android:textStyle="bold"
+                    android:textColor="#555555"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="6dp"/>
+
+                <Spinner
+                    android:id="@+id/spinnerMealExpenseMember"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_input_manager"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    android:spinnerMode="dropdown"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BAZAR DATE"
+                    android:textStyle="bold"
+                    android:textColor="#555555"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="6dp"/>
+
+                <EditText
+                    android:id="@+id/inputMealExpenseDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_input_manager"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    android:textColor="@color/black"
+                    android:hint="yyyy-mm-dd"
+                    android:textColorHint="@color/text_secondary"
+                    android:inputType="date"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="MEAL AMOUNT"
                     android:textStyle="bold"
                     android:textColor="#555555"
@@ -366,6 +423,84 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="24dp"
+            android:text="MONTHLY VIEW"
+            android:textColor="#777777"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"/>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:padding="18dp"
+            android:rowCount="1">
+
+            <LinearLayout
+                android:id="@+id/btnViewCurrentMonthMeals"
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_white_card"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/meal_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:text="Meals Table"
+                    android:textColor="#111111"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnViewCurrentMonthExpenses"
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_white_card"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/meal_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:text="Bazar Table"
+                    android:textColor="#111111"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+        </GridLayout>
 
     </LinearLayout>
 
