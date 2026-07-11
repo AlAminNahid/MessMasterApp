@@ -1,6 +1,5 @@
 package com.example.messmaster.managerdashboard
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -18,23 +17,19 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
-import com.example.messmaster.managerdashboard.model.CurrentMessResponse
-import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityBillsResponse
-import com.example.messmaster.managerdashboard.model.MealRateResponse
-import com.example.messmaster.managerdashboard.model.MessStatisticsResponse
 import com.example.messmaster.managerdashboard.model.MonthlySheetDay
 import com.example.messmaster.managerdashboard.model.MonthlySheetResponse
-import com.example.messmaster.managerdashboard.model.NoticesResponse
-import com.example.messmaster.managerdashboard.model.TodayTotalMealsResponse
-import com.example.messmaster.managerdashboard.model.TotalMealExpenseResponse
-import com.example.messmaster.model.ErrorResponse
-import com.example.messmaster.network.RetrofitClient
+import com.example.messmaster.managerdashboard.viewmodel.HomeViewModel
+import com.example.messmaster.managerdashboard.viewmodel.ManagerSharedViewModel
+import com.example.messmaster.util.UiState
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -42,355 +37,171 @@ import java.util.Locale
 
 class FragmentHome : Fragment() {
 
-    private var userID: Int = 0
+    private val sharedViewModel: ManagerSharedViewModel by activityViewModels { ManagerSharedViewModel.Factory }
+    private val homeViewModel: HomeViewModel by viewModels { HomeViewModel.Factory }
 
-    lateinit var txtManagerName: TextView
-    lateinit var txtMessName: TextView
-    lateinit var tvAvatar: TextView
-    lateinit var txtTotalMembers: TextView
-    lateinit var txtTotalMeals: TextView
-    lateinit var btnAddMeal: LinearLayout
-    lateinit var btnSettings: LinearLayout
-    lateinit var btnAddUtility: LinearLayout
-    lateinit var btnNotifcation: LinearLayout
-    lateinit var btnMonthlySheet: LinearLayout
-    lateinit var txtTotalMealExpense: TextView
-    lateinit var txtTodaysMeals: TextView
-    lateinit var txtMealRate: TextView
-    lateinit var txtTotalUtility: TextView
-    lateinit var txtTodayMemberNotices: TextView
+    private lateinit var txtManagerName: TextView
+    private lateinit var txtMessName: TextView
+    private lateinit var tvAvatar: TextView
+    private lateinit var txtTotalMembers: TextView
+    private lateinit var txtTotalMeals: TextView
+    private lateinit var btnAddMeal: LinearLayout
+    private lateinit var btnSettings: LinearLayout
+    private lateinit var btnAddUtility: LinearLayout
+    private lateinit var btnNotifcation: LinearLayout
+    private lateinit var btnMonthlySheet: LinearLayout
+    private lateinit var txtTotalMealExpense: TextView
+    private lateinit var txtTodaysMeals: TextView
+    private lateinit var txtMealRate: TextView
+    private lateinit var txtTotalUtility: TextView
+    private lateinit var txtTodayMemberNotices: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) : View {
-        val view =  inflater.inflate(
-            R.layout.fragment_manager_home,
-            container,
-            false
-        )
+    ): View {
+        val view = inflater.inflate(R.layout.fragment_manager_home, container, false)
 
-        txtManagerName = view.findViewById<TextView>(R.id.txtManagerName)
-        txtMessName = view.findViewById<TextView>(R.id.txtMessName)
-        tvAvatar = view.findViewById<TextView>(R.id.tvAvatar)
-        txtTotalMembers = view.findViewById<TextView>(R.id.txtTotalMembers)
-        txtTotalMeals = view.findViewById<TextView>(R.id.txtTotalMeals)
-        txtTotalMealExpense = view.findViewById<TextView>(R.id.txtTotalMealExpense)
-        txtTodaysMeals = view.findViewById<TextView>(R.id.txtTodaysMeals)
-        txtMealRate = view.findViewById<TextView>(R.id.txtMealRate)
-        txtTotalUtility = view.findViewById<TextView>(R.id.txtTotalUtility)
-        txtTodayMemberNotices = view.findViewById<TextView>(R.id.txtTodayMemberNotices)
-
-        btnAddMeal = view.findViewById<LinearLayout>(R.id.btnAddMeal)
-        btnAddUtility = view.findViewById<LinearLayout>(R.id.btnAddUtility)
-        btnSettings = view.findViewById<LinearLayout>(R.id.btnSettings)
-        btnNotifcation = view.findViewById<LinearLayout>(R.id.btnNotifcation)
-        btnMonthlySheet = view.findViewById<LinearLayout>(R.id.btnMonthlySheet)
-
-        val prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        userID = prefs.getInt("userID", 0)
+        txtManagerName = view.findViewById(R.id.txtManagerName)
+        txtMessName = view.findViewById(R.id.txtMessName)
+        tvAvatar = view.findViewById(R.id.tvAvatar)
+        txtTotalMembers = view.findViewById(R.id.txtTotalMembers)
+        txtTotalMeals = view.findViewById(R.id.txtTotalMeals)
+        txtTotalMealExpense = view.findViewById(R.id.txtTotalMealExpense)
+        txtTodaysMeals = view.findViewById(R.id.txtTodaysMeals)
+        txtMealRate = view.findViewById(R.id.txtMealRate)
+        txtTotalUtility = view.findViewById(R.id.txtTotalUtility)
+        txtTodayMemberNotices = view.findViewById(R.id.txtTodayMemberNotices)
+        btnAddMeal = view.findViewById(R.id.btnAddMeal)
+        btnAddUtility = view.findViewById(R.id.btnAddUtility)
+        btnSettings = view.findViewById(R.id.btnSettings)
+        btnNotifcation = view.findViewById(R.id.btnNotifcation)
+        btnMonthlySheet = view.findViewById(R.id.btnMonthlySheet)
 
         btnAddMeal.setOnClickListener {
-            val bottomNav = requireActivity()
-                .findViewById<BottomNavigationView>(R.id.managerBottomNav)
-
-            bottomNav.selectedItemId = R.id.mealsFragment
+            requireActivity().findViewById<BottomNavigationView>(R.id.managerBottomNav)
+                .selectedItemId = R.id.mealsFragment
         }
-
         btnAddUtility.setOnClickListener {
-            val bottomNav = requireActivity()
-                .findViewById<BottomNavigationView>(R.id.managerBottomNav)
-
-            bottomNav.selectedItemId = R.id.utilityFragment
+            requireActivity().findViewById<BottomNavigationView>(R.id.managerBottomNav)
+                .selectedItemId = R.id.utilityFragment
         }
-
         btnNotifcation.setOnClickListener {
-            val bottomNav = requireActivity()
-                .findViewById<BottomNavigationView>(R.id.managerBottomNav)
-
-            bottomNav.selectedItemId = R.id.noticeFragment
+            requireActivity().findViewById<BottomNavigationView>(R.id.managerBottomNav)
+                .selectedItemId = R.id.noticeFragment
         }
-
         btnSettings.setOnClickListener {
-            val intent = Intent(requireContext(), SettingsActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
+        btnMonthlySheet.setOnClickListener { homeViewModel.loadMonthlySheet() }
 
-        btnMonthlySheet.setOnClickListener {
-            loadMonthlySheet()
-        }
-
-        loadUserAndMessInfo()
-        loadMessStatistics()
-        loadTotalMealExpense()
-        loadTodayTotalMeals()
-        loadMealRate()
-
+        observeStates()
         return view
     }
 
-    private fun loadMealRate(){
-        RetrofitClient.managerService.getMealRate()
-            .enqueue(object : Callback<MealRateResponse> {
-                override fun onResponse(
-                    call: Call<MealRateResponse>,
-                    response: Response<MealRateResponse>
-                ) {
-                    if (!isAdded) return
+    private fun observeStates() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                    if (response.isSuccessful && response.body() != null) {
-                        val summary = response.body()!!
-                        txtTotalMeals.text = summary.totalMeals.toString()
-                        txtMealRate.text = "৳${formatMealRate(summary.mealRate)}"
-                    } else {
-                        val errorMessage = getMealRateErrorMessage(response)
-                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<MealRateResponse>, t: Throwable) {
-                    if (!isAdded) return
-
-                    Toast.makeText(requireContext(), "Network error: ${t.message}", Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
-    }
-
-    private fun getMealRateErrorMessage(response: Response<MealRateResponse>) : String {
-        return try {
-            val errorBody = response.errorBody()?.string()
-
-            if(errorBody.isNullOrEmpty()){
-                "Something went wrong"
-            } else{
-                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
-
-                when(val message = errorResponse.message){
-                    is String -> message
-                    is List<*> -> message.joinToString("\n")
-                    else -> errorResponse.error ?: "Something went wrong"
-                }
-            }
-        } catch (e: Exception){
-            "Something went wrong"
-        }
-    }
-
-    private fun formatMealRate(rate: Double): String {
-        return if (rate % 1.0 == 0.0) {
-            rate.toInt().toString()
-        } else {
-            String.format("%.2f", rate)
-        }
-    }
-
-    private fun loadTodayTotalMeals(){
-        RetrofitClient.managerService.getTodayTotalMeals()
-            .enqueue(object : Callback<TodayTotalMealsResponse> {
-                override fun onResponse(
-                    call: Call<TodayTotalMealsResponse>,
-                    response: Response<TodayTotalMealsResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-
-                        val todayTotalMeals = response.body()!!.todayTotalMeals
-                        txtTodaysMeals.text = todayTotalMeals.toString()
-
-                    } else {
-
-                        val errorMessage = getTodaysMealsErrorMessage(response)
-                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<TodayTotalMealsResponse>, t: Throwable) {
-                    if (!isAdded) return
-
-                    Toast.makeText(requireContext(), "Network error: ${t.message}", Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
-    }
-
-    private fun getTodaysMealsErrorMessage(response: Response<TodayTotalMealsResponse>) : String {
-        return try {
-            val errorBody = response.errorBody()?.string()
-
-            if(errorBody.isNullOrEmpty()){
-                "Something went wrong"
-            } else{
-                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
-
-                when(val message = errorResponse.message){
-                    is String -> message
-                    is List<*> -> message.joinToString("\n")
-                    else -> errorResponse.error ?: "Something went wrong"
-                }
-            }
-        } catch (e: Exception){
-            "Something went wrong"
-        }
-    }
-
-    private fun loadTotalMealExpense(){
-        RetrofitClient.managerService.getTotalMealExpense()
-            .enqueue(object : Callback<TotalMealExpenseResponse>{
-                override fun onResponse(
-                    call: Call<TotalMealExpenseResponse>,
-                    response: Response<TotalMealExpenseResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-
-                        val totalExpense = response.body()!!.totalExpense
-                        txtTotalMealExpense.text = "৳${formatAmount(totalExpense)}"
-
-                    } else {
-                        val errorMessage = getTotalExpenseErrorMessage(response)
-                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<TotalMealExpenseResponse>, t: Throwable) {
-                    if (!isAdded) return
-
-                    Toast.makeText(requireContext(), "Network error: ${t.message}", Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
-    }
-
-
-
-    private fun getTotalExpenseErrorMessage(response: Response<TotalMealExpenseResponse>) : String {
-        return try {
-            val errorBody = response.errorBody()?.string()
-
-            if(errorBody.isNullOrEmpty()){
-                "Something went wrong"
-            } else{
-                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
-
-                when(val message = errorResponse.message){
-                    is String -> message
-                    is List<*> -> message.joinToString("\n")
-                    else -> errorResponse.error ?: "Something went wrong"
-                }
-            }
-        } catch (e: Exception){
-            "Something went wrong"
-        }
-    }
-
-    private fun formatAmount(amount: Int): String {
-        return NumberFormat.getNumberInstance(Locale.US).format(amount)
-    }
-
-    private fun formatAmount(amount: Double): String {
-        return NumberFormat.getNumberInstance(Locale.US).apply {
-            maximumFractionDigits = 2
-            minimumFractionDigits = 0
-        }.format(amount)
-    }
-
-    private fun loadCurrentMonthUtilityBills(messID: Int) {
-        RetrofitClient.managerService.getCurrentMonthUtilityBills(messID)
-            .enqueue(object : Callback<CurrentMonthUtilityBillsResponse> {
-                override fun onResponse(
-                    call: Call<CurrentMonthUtilityBillsResponse>,
-                    response: Response<CurrentMonthUtilityBillsResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        txtTotalUtility.text = "৳${formatAmount(response.body()!!.totalUtilityBill)}"
-                    } else {
-                        val errorMessage = getErrorMessage(response)
-                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<CurrentMonthUtilityBillsResponse>, t: Throwable) {
-                    if (!isAdded) return
-
-                    Toast.makeText(
-                        requireContext(),
-                        "Network error: ${t.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
-    }
-
-    private fun loadTodayMemberNotices(messID: Int) {
-        RetrofitClient.managerService.getNotices(messID)
-            .enqueue(object : Callback<NoticesResponse> {
-                override fun onResponse(
-                    call: Call<NoticesResponse>,
-                    response: Response<NoticesResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        val today = currentDate()
-                        val todayNotices = response.body()!!.notices.count {
-                            it.posted_date.take(10) == today
+                launch {
+                    sharedViewModel.currentMessState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                val info = state.data.messInfo
+                                txtManagerName.text = info.user_name
+                                txtMessName.text = info.mess_name
+                                tvAvatar.text = getInitials(info.user_name)
+                                homeViewModel.loadUtilityBills(info.mess_id)
+                                homeViewModel.loadNotices(info.mess_id)
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
                         }
-
-                        txtTodayMemberNotices.text = todayNotices.toString()
-                    } else {
-                        val errorMessage = getErrorMessage(response)
-                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
                     }
                 }
 
-                override fun onFailure(call: Call<NoticesResponse>, t: Throwable) {
-                    if (!isAdded) return
-
-                    Toast.makeText(
-                        requireContext(),
-                        "Network error: ${t.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
-    }
-
-    private fun currentDate(): String {
-        return SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
-    }
-
-    private fun loadMonthlySheet() {
-        RetrofitClient.managerService.getMonthlySheet()
-            .enqueue(object : Callback<MonthlySheetResponse> {
-                override fun onResponse(
-                    call: Call<MonthlySheetResponse>,
-                    response: Response<MonthlySheetResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        showMonthlySheetTable(response.body()!!.days)
-                    } else {
-                        Toast.makeText(requireContext(), getErrorMessage(response), Toast.LENGTH_LONG).show()
+                launch {
+                    sharedViewModel.messStatisticsState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> txtTotalMembers.text = state.data.totalMembers.toString()
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
                     }
                 }
 
-                override fun onFailure(call: Call<MonthlySheetResponse>, t: Throwable) {
-                    if (!isAdded) return
-
-                    Toast.makeText(
-                        requireContext(),
-                        "Network error: ${t.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                launch {
+                    sharedViewModel.mealRateState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                txtTotalMeals.text = state.data.totalMeals.toString()
+                                txtMealRate.text = "৳${formatMealRate(state.data.mealRate)}"
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
                 }
-            })
+
+                launch {
+                    homeViewModel.totalMealExpenseState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> txtTotalMealExpense.text = "৳${formatAmount(state.data.totalExpense)}"
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    homeViewModel.todayTotalMealsState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> txtTodaysMeals.text = state.data.todayTotalMeals.toString()
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    homeViewModel.utilityBillsState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> txtTotalUtility.text = "৳${formatAmount(state.data.totalUtilityBill)}"
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    homeViewModel.noticesState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                val today = currentDate()
+                                val count = state.data.count { it.posted_date.take(10) == today }
+                                txtTodayMemberNotices.text = count.toString()
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    homeViewModel.monthlySheetState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                homeViewModel.consumeMonthlySheet()
+                                showMonthlySheetTable(state.data.days)
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun showMonthlySheetTable(days: List<MonthlySheetDay>) {
@@ -418,36 +229,21 @@ class FragmentHome : Fragment() {
             setSingleLine(true)
             setPadding(dp(16), 0, dp(16), 0)
             setBackgroundResource(R.drawable.bg_input_manager)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(52)
-            )
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52))
         }
-        val rowsContainer = LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.VERTICAL
-        }
+        val rowsContainer = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
         val scrollView = ScrollView(requireContext()).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(380)
-            ).apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(380)).apply {
                 topMargin = dp(16)
             }
-            addView(HorizontalScrollView(requireContext()).apply {
-                addView(rowsContainer)
-            })
+            addView(HorizontalScrollView(requireContext()).apply { addView(rowsContainer) })
         }
         val closeButton = Button(requireContext()).apply {
             text = "Close"
             setTextColor(requireContext().getColor(R.color.white))
             setTypeface(typeface, android.graphics.Typeface.BOLD)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(
-                requireContext().getColor(R.color.black)
-            )
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(52)
-            ).apply {
+            backgroundTintList = android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.black))
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52)).apply {
                 topMargin = dp(18)
             }
         }
@@ -459,20 +255,14 @@ class FragmentHome : Fragment() {
         dialogView.addView(closeButton)
 
         fun daySearchText(day: MonthlySheetDay): String {
-            val meals = day.meals.joinToString(" ") {
-                "${it.member_name} ${it.total_meals}"
-            }
-            val bazar = day.bazar.joinToString(" ") {
-                "${it.member_name} ${it.total_amount}"
-            }
+            val meals = day.meals.joinToString(" ") { "${it.member_name} ${it.total_meals}" }
+            val bazar = day.bazar.joinToString(" ") { "${it.member_name} ${it.total_amount}" }
             return "${day.date} ${day.totalMeals} ${day.totalBazar} $meals $bazar"
         }
 
         fun render(query: String) {
             rowsContainer.removeAllViews()
-            val filtered = days.filter {
-                daySearchText(it).contains(query, ignoreCase = true)
-            }
+            val filtered = days.filter { daySearchText(it).contains(query, ignoreCase = true) }
 
             if (days.isEmpty()) {
                 rowsContainer.addView(tableMessage("No day-wise activity for this month yet."))
@@ -485,24 +275,13 @@ class FragmentHome : Fragment() {
 
             rowsContainer.addView(tableRow(listOf("Date", "Meals", "Bazar", "Details"), true))
             filtered.forEach { day ->
-                val mealLine = if (day.meals.isEmpty()) {
-                    "No meals"
-                } else {
-                    day.meals.joinToString(", ") { "${it.member_name}: ${formatAmount(it.total_meals)}" }
-                }
-                val bazarLine = if (day.bazar.isEmpty()) {
-                    "No bazar"
-                } else {
-                    day.bazar.joinToString(", ") { "${it.member_name}: ৳${formatAmount(it.total_amount)}" }
-                }
+                val mealLine = if (day.meals.isEmpty()) "No meals"
+                else day.meals.joinToString(", ") { "${it.member_name}: ${formatAmount(it.total_meals)}" }
+                val bazarLine = if (day.bazar.isEmpty()) "No bazar"
+                else day.bazar.joinToString(", ") { "${it.member_name}: ৳${formatAmount(it.total_amount)}" }
                 rowsContainer.addView(
                     tableRow(
-                        listOf(
-                            day.date,
-                            formatAmount(day.totalMeals),
-                            "৳${formatAmount(day.totalBazar)}",
-                            "$mealLine\n$bazarLine"
-                        ),
+                        listOf(day.date, formatAmount(day.totalMeals), "৳${formatAmount(day.totalBazar)}", "$mealLine\n$bazarLine"),
                         false
                     )
                 )
@@ -511,9 +290,7 @@ class FragmentHome : Fragment() {
 
         searchInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                render(s?.toString().orEmpty())
-            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { render(s?.toString().orEmpty()) }
             override fun afterTextChanged(s: Editable?) {}
         })
 
@@ -553,160 +330,27 @@ class FragmentHome : Fragment() {
         }
     }
 
-    private fun dp(value: Int): Int {
-        return (value * resources.displayMetrics.density).toInt()
-    }
-
-    private fun getErrorMessage(response: Response<*>) : String {
-        return try {
-            val errorBody = response.errorBody()?.string()
-
-            if(errorBody.isNullOrEmpty()){
-                "Something went wrong"
-            } else{
-                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
-
-                when(val message = errorResponse.message){
-                    is String -> message
-                    is List<*> -> message.joinToString("\n")
-                    else -> errorResponse.error ?: "Something went wrong"
-                }
-            }
-        } catch (e: Exception){
-            "Something went wrong"
-        }
-    }
-
-    private fun loadMessStatistics(){
-        if(userID == 0){
-            if (!isAdded) return
-
-            Toast.makeText(requireContext(), "User ID not found", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        RetrofitClient.managerService.getMessStatistics()
-            .enqueue(object : Callback<MessStatisticsResponse>{
-                override fun onResponse(
-                    call: Call<MessStatisticsResponse>,
-                    response: Response<MessStatisticsResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        val statistics = response.body()!!
-
-                        txtTotalMembers.text = statistics.totalMembers.toString()
-                    } else {
-                        val errorMessage = getMessStatisticErrorMessage(response)
-                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<MessStatisticsResponse>, t: Throwable) {
-                    if (!isAdded) return
-
-                    Toast.makeText(requireContext(), "Network error: ${t.message}", Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
-    }
-
-    private fun loadUserAndMessInfo(){
-        if(userID == 0){
-            if (!isAdded) return
-
-            Toast.makeText(requireContext(), "User ID not found", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        RetrofitClient.managerService.getCurrentMess()
-            .enqueue(object : Callback<CurrentMessResponse> {
-                override fun onResponse(
-                    call: Call<CurrentMessResponse>,
-                    response: Response<CurrentMessResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if(response.isSuccessful && response.body() != null){
-                        val messInfo = response.body()!!.messInfo
-
-                        txtManagerName.text = messInfo.user_name
-                        txtMessName.text = messInfo.mess_name
-                        tvAvatar.text = getInitials(messInfo.user_name)
-                        loadCurrentMonthUtilityBills(messInfo.mess_id)
-                        loadTodayMemberNotices(messInfo.mess_id)
-                    }
-                    else{
-                        val errorMessage = getCurrentMessErrorMessage(response)
-                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<CurrentMessResponse>, t: Throwable){
-                    if (!isAdded) return
-
-                    Toast.makeText(requireContext(), "Network error: ${t.message}", Toast.LENGTH_SHORT).show()
-                }
-            })
-    }
-
     private fun getInitials(name: String): String {
-        val words = name.trim()
-            .split("\\s+".toRegex())
-            .filter { it.isNotEmpty() }
-
+        val words = name.trim().split("\\s+".toRegex()).filter { it.isNotEmpty() }
         return when {
-            words.size >= 2 -> {
-                "${words[0].first()}${words[1].first()}".uppercase()
-            }
-            words.size == 1 -> {
-                words[0].take(2).uppercase()
-            }
-            else -> {
-                "NA"
-            }
+            words.size >= 2 -> "${words[0].first()}${words[1].first()}".uppercase()
+            words.size == 1 -> words[0].take(2).uppercase()
+            else -> "NA"
         }
     }
 
-    private fun getMessStatisticErrorMessage(response: Response<MessStatisticsResponse>) : String {
-        return try {
-            val errorBody = response.errorBody()?.string()
+    private fun currentDate(): String = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
 
-            if(errorBody.isNullOrEmpty()){
-                "Something went wrong"
-            } else{
-                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
+    private fun formatMealRate(rate: Double): String =
+        if (rate % 1.0 == 0.0) rate.toInt().toString() else String.format("%.2f", rate)
 
-                when(val message = errorResponse.message){
-                    is String -> message
-                    is List<*> -> message.joinToString("\n")
-                    else -> errorResponse.error ?: "Something went wrong"
-                }
-            }
-        } catch (e: Exception){
-            "Something went wrong"
-        }
-    }
+    private fun formatAmount(amount: Int): String = NumberFormat.getNumberInstance(Locale.US).format(amount)
 
-    private fun getCurrentMessErrorMessage(response: Response<CurrentMessResponse>) : String {
-        return try {
-            val errorBody = response.errorBody()?.string()
+    private fun formatAmount(amount: Double): String =
+        NumberFormat.getNumberInstance(Locale.US).apply {
+            maximumFractionDigits = 2
+            minimumFractionDigits = 0
+        }.format(amount)
 
-            if(errorBody.isNullOrEmpty()){
-                "Something went wrong"
-            } else{
-                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
-
-                when(val message = errorResponse.message){
-                    is String -> message
-                    is List<*> -> message.joinToString("\n")
-                    else -> errorResponse.error ?: "Something went wrong"
-                }
-            }
-        } catch (e: Exception){
-            "Something went wrong"
-        }
-    }
-
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 }

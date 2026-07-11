@@ -7,7 +7,7 @@ import com.example.messmaster.auth.model.login.LoginResponse
 import com.example.messmaster.auth.model.registration.RegistrationRequest
 import com.example.messmaster.auth.model.registration.RegistrationResponse
 import com.example.messmaster.model.LogoutResponse
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -15,20 +15,14 @@ import retrofit2.http.POST
 interface ApiService {
 
     @POST("auth/login")
-    fun login(
-        @Body request: LoginRequest
-    ) : Call<LoginResponse>
+    suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
     @POST("auth/registration")
-    fun registration(
-        @Body request: RegistrationRequest
-    ) : Call<RegistrationResponse>
+    suspend fun registration(@Body request: RegistrationRequest): Response<RegistrationResponse>
 
     @PATCH("auth/forget-password")
-    fun forgetPassword(
-        @Body request: ForgetPassRequest
-    ) : Call<ForgetPassResponse>
+    suspend fun forgetPassword(@Body request: ForgetPassRequest): Response<ForgetPassResponse>
 
     @POST("auth/logout")
-    fun logout(): Call<LogoutResponse>
+    suspend fun logout(): Response<LogoutResponse>
 }

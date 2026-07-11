@@ -1,6 +1,6 @@
 package com.example.messmaster.managerdashboard
 
-import androidx.appcompat.app.AlertDialog
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -12,20 +12,18 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
-import com.example.messmaster.managerdashboard.model.CurrentMessResponse
-import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityBillsResponse
 import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityEntry
-import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityEntriesResponse
 import com.example.messmaster.managerdashboard.model.InsertUtilityCostRequest
-import com.example.messmaster.managerdashboard.model.InsertUtilityCostResponse
-import com.example.messmaster.managerdashboard.model.MessStatisticsResponse
-import com.example.messmaster.model.ErrorResponse
-import com.example.messmaster.network.RetrofitClient
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.messmaster.managerdashboard.viewmodel.ManagerSharedViewModel
+import com.example.messmaster.managerdashboard.viewmodel.UtilityViewModel
+import com.example.messmaster.util.UiState
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -33,8 +31,12 @@ import java.util.Locale
 
 class FragmentUtility : Fragment() {
 
+    private val sharedViewModel: ManagerSharedViewModel by activityViewModels { ManagerSharedViewModel.Factory }
+    private val utilityViewModel: UtilityViewModel by viewModels { UtilityViewModel.Factory }
+
     private var messID: Int = 0
     private var totalMembers: Int = 0
+    private var editUtilityDialog: AlertDialog? = null
 
     private lateinit var inputElectricityAmount: EditText
     private lateinit var inputInternetAmount: EditText
@@ -74,88 +76,126 @@ class FragmentUtility : Fragment() {
         inputUtilityMonth.setText(currentMonthName())
         inputUtilityMonth.setOnClickListener { showMonthPicker() }
         btnAddUtility.setOnClickListener { submitUtilityEntry() }
-        btnEditCurrentUtility.setOnClickListener { loadCurrentMonthUtilityEntryForEdit() }
+        btnEditCurrentUtility.setOnClickListener {
+            if (messID == 0) {
+                Toast.makeText(requireContext(), "Mess info is still loading.", Toast.LENGTH_SHORT).show()
+            } else {
+                utilityViewModel.loadUtilityEntries(messID)
+            }
+        }
 
-        loadCurrentMess()
-        loadMessStatistics()
-
+        observeStates()
         return view
     }
 
-    private fun loadCurrentMess() {
-        RetrofitClient.managerService.getCurrentMess()
-            .enqueue(object : Callback<CurrentMessResponse> {
-                override fun onResponse(
-                    call: Call<CurrentMessResponse>,
-                    response: Response<CurrentMessResponse>
-                ) {
-                    if (!isAdded) return
+    private fun observeStates() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                    if (response.isSuccessful && response.body() != null) {
-                        messID = response.body()!!.messInfo.mess_id
-                        loadCurrentMonthUtilityBills()
-                    } else {
-                        showError(response)
+                launch {
+                    sharedViewModel.currentMessState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                messID = state.data.messInfo.mess_id
+                                utilityViewModel.loadUtilityBills(messID)
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
                     }
                 }
 
-                override fun onFailure(call: Call<CurrentMessResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
-    }
-
-    private fun loadMessStatistics() {
-        RetrofitClient.managerService.getMessStatistics()
-            .enqueue(object : Callback<MessStatisticsResponse> {
-                override fun onResponse(
-                    call: Call<MessStatisticsResponse>,
-                    response: Response<MessStatisticsResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        totalMembers = response.body()!!.totalMembers
-                        updatePerPersonFromTotal()
-                    } else {
-                        showError(response)
+                launch {
+                    sharedViewModel.messStatisticsState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                totalMembers = state.data.totalMembers
+                                updatePerPersonFromTotal()
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
                     }
                 }
 
-                override fun onFailure(call: Call<MessStatisticsResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
-    }
-
-    private fun loadCurrentMonthUtilityBills() {
-        if (messID == 0) return
-
-        RetrofitClient.managerService.getCurrentMonthUtilityBills(messID)
-            .enqueue(object : Callback<CurrentMonthUtilityBillsResponse> {
-                override fun onResponse(
-                    call: Call<CurrentMonthUtilityBillsResponse>,
-                    response: Response<CurrentMonthUtilityBillsResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        val bills = response.body()!!
-                        txtElectricityBill.text = "৳${formatAmount(bills.electricity)}"
-                        txtInternetBill.text = "৳${formatAmount(bills.internet)}"
-                        txtGasBill.text = "৳${formatAmount(bills.gas)}"
-                        txtMaidBill.text = "৳${formatAmount(bills.maid)}"
-                        txtTotalUtilityCost.text = "৳${formatAmount(bills.totalUtilityBill)}"
-                        updatePerPerson(bills.totalUtilityBill)
-                    } else {
-                        showError(response)
+                launch {
+                    utilityViewModel.utilityBillsState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                val bills = state.data
+                                txtElectricityBill.text = "৳${formatAmount(bills.electricity)}"
+                                txtInternetBill.text = "৳${formatAmount(bills.internet)}"
+                                txtGasBill.text = "৳${formatAmount(bills.gas)}"
+                                txtMaidBill.text = "৳${formatAmount(bills.maid)}"
+                                txtTotalUtilityCost.text = "৳${formatAmount(bills.totalUtilityBill)}"
+                                updatePerPerson(bills.totalUtilityBill)
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
                     }
                 }
 
-                override fun onFailure(call: Call<CurrentMonthUtilityBillsResponse>, t: Throwable) {
-                    showNetworkError(t)
+                launch {
+                    utilityViewModel.utilityEntriesState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                utilityViewModel.consumeUtilityEntries()
+                                val entry = state.data.firstOrNull()
+                                if (entry == null) {
+                                    Toast.makeText(requireContext(), "No utility bill added for this month yet.", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    showEditUtilityDialog(entry)
+                                }
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
                 }
-            })
+
+                launch {
+                    utilityViewModel.insertState.collect { state ->
+                        when (state) {
+                            is UiState.Loading -> btnAddUtility.isEnabled = false
+                            is UiState.Success -> {
+                                btnAddUtility.isEnabled = true
+                                inputElectricityAmount.text?.clear()
+                                inputInternetAmount.text?.clear()
+                                inputGasAmount.text?.clear()
+                                inputMaidAmount.text?.clear()
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Utility bills saved for ${inputUtilityMonth.text}.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                utilityViewModel.loadUtilityBills(messID)
+                            }
+                            is UiState.Error -> {
+                                btnAddUtility.isEnabled = true
+                                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            }
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    utilityViewModel.updateState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                editUtilityDialog?.dismiss()
+                                editUtilityDialog = null
+                                Toast.makeText(requireContext(), "Utility entry updated.", Toast.LENGTH_SHORT).show()
+                                utilityViewModel.loadUtilityBills(messID)
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun submitUtilityEntry() {
@@ -179,79 +219,15 @@ class FragmentUtility : Fragment() {
             }
         }
 
-        btnAddUtility.isEnabled = false
-        val request = InsertUtilityCostRequest(
-            mess_id = messID,
-            electricity = electricity,
-            internet = internet,
-            gas = gas,
-            maid = maid
+        utilityViewModel.insertUtilityCost(
+            InsertUtilityCostRequest(
+                mess_id = messID,
+                electricity = electricity!!,
+                internet = internet!!,
+                gas = gas!!,
+                maid = maid!!
+            )
         )
-
-        RetrofitClient.managerService.insertUtilityCost(request)
-            .enqueue(object : Callback<InsertUtilityCostResponse> {
-                override fun onResponse(
-                    call: Call<InsertUtilityCostResponse>,
-                    response: Response<InsertUtilityCostResponse>
-                ) {
-                    if (!isAdded) return
-
-                    btnAddUtility.isEnabled = true
-                    if (response.isSuccessful && response.body() != null) {
-                        inputElectricityAmount.text?.clear()
-                        inputInternetAmount.text?.clear()
-                        inputGasAmount.text?.clear()
-                        inputMaidAmount.text?.clear()
-                        Toast.makeText(
-                            requireContext(),
-                            "Utility bills saved for ${inputUtilityMonth.text}.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        loadCurrentMonthUtilityBills()
-                    } else {
-                        showError(response)
-                    }
-                }
-
-                override fun onFailure(call: Call<InsertUtilityCostResponse>, t: Throwable) {
-                    if (!isAdded) return
-                    btnAddUtility.isEnabled = true
-                    showNetworkError(t)
-                }
-            })
-    }
-
-    private fun loadCurrentMonthUtilityEntryForEdit() {
-        if (messID == 0) return
-
-        RetrofitClient.managerService.getCurrentMonthUtilityEntries(messID)
-            .enqueue(object : Callback<CurrentMonthUtilityEntriesResponse> {
-                override fun onResponse(
-                    call: Call<CurrentMonthUtilityEntriesResponse>,
-                    response: Response<CurrentMonthUtilityEntriesResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        val entry = response.body()!!.entries.firstOrNull()
-                        if (entry == null) {
-                            Toast.makeText(
-                                requireContext(),
-                                "No utility bill added for this month yet.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            showEditUtilityDialog(entry)
-                        }
-                    } else {
-                        showError(response)
-                    }
-                }
-
-                override fun onFailure(call: Call<CurrentMonthUtilityEntriesResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
     }
 
     private fun showEditUtilityDialog(entry: CurrentMonthUtilityEntry) {
@@ -270,11 +246,11 @@ class FragmentUtility : Fragment() {
         content.addView(dialogLabel("Maid"))
         content.addView(maidInput)
 
-        val dialog = showFormDialog(
+        editUtilityDialog = showFormDialog(
             title = "Edit Utility",
             subtitle = "Update the running month utility bill.",
             content = content
-        ) { dialog ->
+        ) {
             val electricity = electricityInput.text.toString().trim().toDoubleOrNull()
             val internet = internetInput.text.toString().trim().toDoubleOrNull()
             val gas = gasInput.text.toString().trim().toDoubleOrNull()
@@ -285,7 +261,7 @@ class FragmentUtility : Fragment() {
                 internet == null || internet < 0.0 -> internetInput.error = "Invalid amount"
                 gas == null || gas < 0.0 -> gasInput.error = "Invalid amount"
                 maid == null || maid < 0.0 -> maidInput.error = "Invalid amount"
-                else -> updateUtilityEntry(
+                else -> utilityViewModel.updateUtilityCost(
                     entry.id,
                     InsertUtilityCostRequest(
                         mess_id = messID,
@@ -293,49 +269,20 @@ class FragmentUtility : Fragment() {
                         internet = internet,
                         gas = gas,
                         maid = maid
-                    ),
-                    dialog
+                    )
                 )
             }
         }
 
-        dialog.show()
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-    }
-
-    private fun updateUtilityEntry(
-        utilityID: Int,
-        request: InsertUtilityCostRequest,
-        dialog: AlertDialog
-    ) {
-        RetrofitClient.managerService.updateUtilityCost(utilityID, request)
-            .enqueue(object : Callback<InsertUtilityCostResponse> {
-                override fun onResponse(
-                    call: Call<InsertUtilityCostResponse>,
-                    response: Response<InsertUtilityCostResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful) {
-                        dialog.dismiss()
-                        Toast.makeText(requireContext(), "Utility entry updated.", Toast.LENGTH_SHORT).show()
-                        loadCurrentMonthUtilityBills()
-                    } else {
-                        showError(response)
-                    }
-                }
-
-                override fun onFailure(call: Call<InsertUtilityCostResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
+        editUtilityDialog?.show()
+        editUtilityDialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
     }
 
     private fun showFormDialog(
         title: String,
         subtitle: String,
         content: View,
-        onSave: (AlertDialog) -> Unit
+        onSave: () -> Unit
     ): AlertDialog {
         val dialogView = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.VERTICAL
@@ -365,23 +312,15 @@ class FragmentUtility : Fragment() {
         val cancelButton = Button(requireContext()).apply {
             text = "Cancel"
             setTextColor(requireContext().getColor(R.color.black))
-            backgroundTintList = android.content.res.ColorStateList.valueOf(
-                requireContext().getColor(R.color.white)
-            )
-            layoutParams = LinearLayout.LayoutParams(0, dp(52), 1f).apply {
-                marginEnd = dp(8)
-            }
+            backgroundTintList = android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.white))
+            layoutParams = LinearLayout.LayoutParams(0, dp(52), 1f).apply { marginEnd = dp(8) }
         }
         val saveButton = Button(requireContext()).apply {
             text = "Save"
             setTextColor(requireContext().getColor(R.color.white))
             setTypeface(typeface, android.graphics.Typeface.BOLD)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(
-                requireContext().getColor(R.color.black)
-            )
-            layoutParams = LinearLayout.LayoutParams(0, dp(52), 1f).apply {
-                marginStart = dp(8)
-            }
+            backgroundTintList = android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.black))
+            layoutParams = LinearLayout.LayoutParams(0, dp(52), 1f).apply { marginStart = dp(8) }
         }
         actions.addView(cancelButton)
         actions.addView(saveButton)
@@ -392,7 +331,7 @@ class FragmentUtility : Fragment() {
             .create()
 
         cancelButton.setOnClickListener { dialog.dismiss() }
-        saveButton.setOnClickListener { onSave(dialog) }
+        saveButton.setOnClickListener { onSave() }
         return dialog
     }
 
@@ -405,10 +344,7 @@ class FragmentUtility : Fragment() {
                     android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
             setBackgroundResource(R.drawable.bg_input_manager)
             setPadding(dp(16), 0, dp(16), 0)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(52)
-            )
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52))
         }
     }
 
@@ -424,13 +360,11 @@ class FragmentUtility : Fragment() {
     private fun readAmount(input: EditText): Double? {
         val value = input.text.toString().trim()
         if (value.isEmpty()) return 0.0
-
         val amount = value.toDoubleOrNull()
         if (amount == null || amount < 0.0) {
             input.error = "Invalid amount"
             return null
         }
-
         input.error = null
         return amount
     }
@@ -439,18 +373,12 @@ class FragmentUtility : Fragment() {
         val months = resources.getStringArray(R.array.manager_month_names)
         AlertDialog.Builder(requireContext())
             .setTitle("Select month")
-            .setItems(months) { _, which ->
-                inputUtilityMonth.setText(months[which])
-            }
+            .setItems(months) { _, which -> inputUtilityMonth.setText(months[which]) }
             .show()
     }
 
     private fun updatePerPersonFromTotal() {
-        val totalText = txtTotalUtilityCost.text.toString()
-            .replace("৳", "")
-            .replace(",", "")
-            .trim()
-            .toDoubleOrNull() ?: 0.0
+        val totalText = txtTotalUtilityCost.text.toString().replace("৳", "").replace(",", "").trim().toDoubleOrNull() ?: 0.0
         updatePerPerson(totalText)
     }
 
@@ -459,9 +387,7 @@ class FragmentUtility : Fragment() {
         txtUtilityPerPerson.text = "৳${formatAmount(perPerson)}"
     }
 
-    private fun currentMonthName(): String {
-        return SimpleDateFormat("MMMM", Locale.US).format(Date())
-    }
+    private fun currentMonthName(): String = SimpleDateFormat("MMMM", Locale.US).format(Date())
 
     private fun formatAmount(amount: Double): String {
         return NumberFormat.getNumberInstance(Locale.US).apply {
@@ -470,41 +396,5 @@ class FragmentUtility : Fragment() {
         }.format(amount)
     }
 
-    private fun showError(response: Response<*>) {
-        Toast.makeText(requireContext(), getErrorMessage(response), Toast.LENGTH_LONG).show()
-    }
-
-    private fun getErrorMessage(response: Response<*>): String {
-        return try {
-            val errorBody = response.errorBody()?.string()
-
-            if (errorBody.isNullOrEmpty()) {
-                "Something went wrong"
-            } else {
-                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
-
-                when (val message = errorResponse.message) {
-                    is String -> message
-                    is List<*> -> message.joinToString("\n")
-                    else -> errorResponse.error ?: "Something went wrong"
-                }
-            }
-        } catch (e: Exception) {
-            "Something went wrong"
-        }
-    }
-
-    private fun showNetworkError(t: Throwable) {
-        if (!isAdded) return
-
-        Toast.makeText(
-            requireContext(),
-            "Network error: ${t.message}",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    private fun dp(value: Int): Int {
-        return (value * resources.displayMetrics.density).toInt()
-    }
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 }

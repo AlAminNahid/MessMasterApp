@@ -11,18 +11,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
-import com.example.messmaster.model.ErrorResponse
-import com.example.messmaster.auth.model.login.LoginRequest
-import com.example.messmaster.auth.model.login.LoginResponse
-import com.example.messmaster.network.RetrofitClient
+import com.example.messmaster.auth.viewmodel.LoginViewModel
 import com.example.messmaster.commondashboard.HomeActivity
 import com.example.messmaster.managerdashboard.ManagerMainActivity
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.messmaster.util.UiState
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -31,159 +30,105 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var btnLogin: Button
     private lateinit var btnForgotPassword: TextView
     private lateinit var btnRegistration: TextView
-    private lateinit var btneyeTogglePassword: ImageView
+    private lateinit var btnEyeTogglePassword: ImageView
     private var isPasswordVisible = false
+
+    private val viewModel: LoginViewModel by viewModels { LoginViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_login)
 
-        etEmail = findViewById<EditText>(R.id.etEmail)
-        etPassword = findViewById<EditText>(R.id.etPassword)
-        btnLogin = findViewById<Button>(R.id.btnLogin)
-        btnForgotPassword = findViewById<TextView>(R.id.btnForgotPassword)
-        btnRegistration = findViewById<TextView>(R.id.btnRegister)
-        btneyeTogglePassword = findViewById<ImageView>(R.id.eyeTogglePassword)
+        etEmail = findViewById(R.id.etEmail)
+        etPassword = findViewById(R.id.etPassword)
+        btnLogin = findViewById(R.id.btnLogin)
+        btnForgotPassword = findViewById(R.id.btnForgotPassword)
+        btnRegistration = findViewById(R.id.btnRegister)
+        btnEyeTogglePassword = findViewById(R.id.eyeTogglePassword)
 
-        btneyeTogglePassword.setOnClickListener {
-            if(isPasswordVisible) {
+        btnEyeTogglePassword.setOnClickListener {
+            if (isPasswordVisible) {
                 etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-                btneyeTogglePassword.setImageResource(R.drawable.eye_close)
+                btnEyeTogglePassword.setImageResource(R.drawable.eye_close)
                 isPasswordVisible = false
-            }
-            else{
+            } else {
                 etPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                btneyeTogglePassword.setImageResource(R.drawable.eye_open)
+                btnEyeTogglePassword.setImageResource(R.drawable.eye_open)
                 isPasswordVisible = true
             }
-
             etPassword.setSelection(etPassword.text.length)
         }
 
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
-
-            if(validation(email, password)) {
-                loginUser(email, password)
+            if (validation(email, password)) {
+                viewModel.login(email, password)
             }
         }
 
         btnRegistration.setOnClickListener {
-            val intent = Intent(this, RegistrationActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, RegistrationActivity::class.java))
         }
 
         btnForgotPassword.setOnClickListener {
-            val intent = Intent(this, ForgetPassActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, ForgetPassActivity::class.java))
         }
+
+        observeLoginState()
     }
 
-    private fun loginUser(email: String, password: String) {
-        btnLogin.isEnabled = false
+    private fun observeLoginState() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.loginState.collect { state ->
+                    when (state) {
+                        is UiState.Idle -> Unit
+                        is UiState.Loading -> btnLogin.isEnabled = false
+                        is UiState.Success -> {
+                            btnLogin.isEnabled = true
+                            val loginResponse = state.data
+                            val role = loginResponse.member?.role ?: "none"
+                            val userID = loginResponse.user?.id ?: 0
+                            val userEmail = loginResponse.user?.email
 
-        val request = LoginRequest(email, password)
+                            getSharedPreferences("user_prefs", Context.MODE_PRIVATE).edit()
+                                .putString("user_role", role)
+                                .putInt("userID", userID)
+                                .putString("userEmail", userEmail)
+                                .apply()
 
-        RetrofitClient.authService.login(request)
-            .enqueue(object : Callback<LoginResponse>{
-                override fun onResponse(
-                    call: Call<LoginResponse>,
-                    response: Response<LoginResponse>
-                ) {
-                    btnLogin.isEnabled = true
+                            Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT).show()
 
-                    if(response.isSuccessful){
-                        val loginResponse = response.body()
-                        val role = loginResponse?.member?.role ?: "none"
-                        val userID = loginResponse?.user?.id ?: 0
-                        val userEmail = loginResponse?.user?.email ?: null
-
-                        val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                        prefs.edit().putString("user_role", role).apply()
-                        prefs.edit().putInt("userID", userID).apply()
-                        prefs.edit().putString("userEmail", userEmail).apply()
-
-                        Toast.makeText(this@LoginActivity, "Login Successful", Toast.LENGTH_SHORT
-                        ).show()
-
-                        if(loginResponse?.member == null) {
-                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                            startActivity(intent)
+                            when {
+                                loginResponse.member == null -> startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
+                                role == "manager" -> {
+                                    Toast.makeText(this@LoginActivity, "Welcome Manager", Toast.LENGTH_LONG).show()
+                                    startActivity(Intent(this@LoginActivity, ManagerMainActivity::class.java))
+                                }
+                                else -> Toast.makeText(this@LoginActivity, "Welcome Member", Toast.LENGTH_LONG).show()
+                            }
                         }
-                        else if(role == "manager"){
-                            Toast.makeText(this@LoginActivity, "Welcome Manager", Toast.LENGTH_LONG).show()
-
-                            startActivity(Intent(this@LoginActivity, ManagerMainActivity::class.java))
-                        }
-                        else {
-                            Toast.makeText(this@LoginActivity, "Welcome Member", Toast.LENGTH_LONG).show()
-
-                            // startActivity(Intent(this@LoginActivity, MemberDashboardActivity::class.java))
+                        is UiState.Error -> {
+                            btnLogin.isEnabled = true
+                            Toast.makeText(this@LoginActivity, state.message, Toast.LENGTH_LONG).show()
                         }
                     }
-                    else {
-                        val errorMessage = getErrorMessage(response)
-                        Toast.makeText(this@LoginActivity, errorMessage, Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    btnLogin.isEnabled = true
-
-                    Toast.makeText(this@LoginActivity, "Failed to connect: ${t.message}",
-                        Toast.LENGTH_LONG).show()
-                }
-            })
-    }
-
-    private fun getErrorMessage(response: Response<LoginResponse>) : String {
-        return try {
-            val errorBody = response.errorBody()?.string()
-
-            if(errorBody.isNullOrEmpty()){
-                "Something went wrong"
-            } else{
-                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
-
-                when(val message = errorResponse.message){
-                    is String -> message
-                    is List<*> -> message.joinToString("\n")
-                    else -> errorResponse.error ?: "Something went wrong"
                 }
             }
-        } catch (e: Exception){
-            "Something went wrong"
         }
     }
 
-    private fun validation(email: String, password: String) : Boolean {
+    private fun validation(email: String, password: String): Boolean {
         val emailPattern = Regex("^[a-z0-9.]+@gmail\\.com$")
         val passwordPattern = Regex("^.*(?=[@#$&]).*$")
 
-        if (email.isEmpty()) {
-            etEmail.error = "Email is required"
-            return false
-        }
-        if (!email.matches(emailPattern)) {
-            etEmail.error = "Please enter a valid Gmail address"
-            return false
-        }
-        if (password.isEmpty()) {
-            etPassword.error = "Password is required"
-            return false
-        }
-        if (!password.matches(passwordPattern)) {
-            etPassword.error = "Password must contain at least one special character (@#$&)"
-            return false
-        }
-        if(password.length < 6) {
-            etPassword.error = "Password must be at least 6 characters long"
-            return false
-        }
-        else {
-            return true
-        }
+        if (email.isEmpty()) { etEmail.error = "Email is required"; return false }
+        if (!email.matches(emailPattern)) { etEmail.error = "Please enter a valid Gmail address"; return false }
+        if (password.isEmpty()) { etPassword.error = "Password is required"; return false }
+        if (!password.matches(passwordPattern)) { etPassword.error = "Password must contain at least one special character (@#\$&)"; return false }
+        if (password.length < 6) { etPassword.error = "Password must be at least 6 characters long"; return false }
+        return true
     }
 }

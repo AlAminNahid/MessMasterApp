@@ -12,22 +12,25 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
-import com.example.messmaster.managerdashboard.model.CurrentMessResponse
-import com.example.messmaster.managerdashboard.model.MessStatisticsResponse
-import com.example.messmaster.managerdashboard.model.UpdateUserProfileRequest
-import com.example.messmaster.model.ErrorResponse
+import com.example.messmaster.managerdashboard.viewmodel.ManagerProfileViewModel
+import com.example.messmaster.managerdashboard.viewmodel.ManagerSharedViewModel
 import com.example.messmaster.model.UserProfileResponse
-import com.example.messmaster.network.RetrofitClient
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.messmaster.util.UiState
+import kotlinx.coroutines.launch
 
 class FragmentProfile : Fragment() {
 
+    private val sharedViewModel: ManagerSharedViewModel by activityViewModels { ManagerSharedViewModel.Factory }
+    private val profileViewModel: ManagerProfileViewModel by viewModels { ManagerProfileViewModel.Factory }
+
     private var userID: Int = 0
-    private var currentProfile: UserProfileResponse? = null
+    private var editProfileDialog: AlertDialog? = null
 
     private lateinit var txtProfileName: TextView
     private lateinit var txtProfileEmail: TextView
@@ -44,11 +47,7 @@ class FragmentProfile : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(
-            R.layout.fragment_manager_profile,
-            container,
-            false
-        )
+        val view = inflater.inflate(R.layout.fragment_manager_profile, container, false)
 
         txtProfileName = view.findViewById(R.id.txtProfileName)
         txtProfileEmail = view.findViewById(R.id.txtProfileEmail)
@@ -68,39 +67,66 @@ class FragmentProfile : Fragment() {
             startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
 
-        loadUserProfile()
-        loadMessInfo()
-        loadMessStatistics()
+        if (userID != 0) profileViewModel.fetchProfile(userID)
 
+        observeStates()
         return view
     }
 
-    private fun loadUserProfile() {
-        if (userID == 0) {
-            Toast.makeText(requireContext(), "User ID not found.", Toast.LENGTH_SHORT).show()
-            return
-        }
+    private fun observeStates() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-        RetrofitClient.managerService.getUserById(userID)
-            .enqueue(object : Callback<UserProfileResponse> {
-                override fun onResponse(
-                    call: Call<UserProfileResponse>,
-                    response: Response<UserProfileResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        currentProfile = response.body()
-                        bindUserProfile(response.body()!!)
-                    } else {
-                        showError(response)
+                launch {
+                    sharedViewModel.currentMessState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                val info = state.data.messInfo
+                                txtProfileMessName.text = info.mess_name
+                                txtProfileMessAddress.text = info.mess_address
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
                     }
                 }
 
-                override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
-                    showNetworkError(t)
+                launch {
+                    sharedViewModel.messStatisticsState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> txtProfileTotalMembers.text = state.data.totalMembers.toString()
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
                 }
-            })
+
+                launch {
+                    profileViewModel.profileState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> bindUserProfile(state.data)
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    profileViewModel.updateProfileState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                bindUserProfile(state.data)
+                                editProfileDialog?.dismiss()
+                                editProfileDialog = null
+                                Toast.makeText(requireContext(), "Profile updated successfully.", Toast.LENGTH_LONG).show()
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun bindUserProfile(profile: UserProfileResponse) {
@@ -110,69 +136,19 @@ class FragmentProfile : Fragment() {
         txtProfileNid.text = profile.nid
     }
 
-    private fun loadMessInfo() {
-        RetrofitClient.managerService.getCurrentMess()
-            .enqueue(object : Callback<CurrentMessResponse> {
-                override fun onResponse(
-                    call: Call<CurrentMessResponse>,
-                    response: Response<CurrentMessResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        val messInfo = response.body()!!.messInfo
-                        txtProfileMessName.text = messInfo.mess_name
-                        txtProfileMessAddress.text = messInfo.mess_address
-                    } else {
-                        showError(response)
-                    }
-                }
-
-                override fun onFailure(call: Call<CurrentMessResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
-    }
-
-    private fun loadMessStatistics() {
-        RetrofitClient.managerService.getMessStatistics()
-            .enqueue(object : Callback<MessStatisticsResponse> {
-                override fun onResponse(
-                    call: Call<MessStatisticsResponse>,
-                    response: Response<MessStatisticsResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        txtProfileTotalMembers.text = response.body()!!.totalMembers.toString()
-                    } else {
-                        showError(response)
-                    }
-                }
-
-                override fun onFailure(call: Call<MessStatisticsResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
-    }
-
     private fun showEditProfileDialog() {
-        val profile = currentProfile
-        if (profile == null) {
-            Toast.makeText(requireContext(), "Profile is still loading.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         val dialogView = layoutInflater.inflate(R.layout.dialog_edit_profile, null)
         val inputName = dialogView.findViewById<EditText>(R.id.inputEditProfileName)
         val inputPhone = dialogView.findViewById<EditText>(R.id.inputEditProfilePhone)
         val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelEditProfile)
         val btnSave = dialogView.findViewById<Button>(R.id.btnSaveEditProfile)
 
-        inputName.setText(profile.name)
-        inputPhone.setText(profile.phone)
+        val currentName = txtProfileName.text.toString()
+        val currentPhone = txtProfilePhone.text.toString()
+        inputName.setText(currentName)
+        inputPhone.setText(currentPhone)
 
-        AlertDialog.Builder(requireContext())
+        editProfileDialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
             .create()
             .apply {
@@ -181,77 +157,14 @@ class FragmentProfile : Fragment() {
                 btnSave.setOnClickListener {
                     val name = inputName.text.toString().trim()
                     val phone = inputPhone.text.toString().trim()
-
                     when {
                         name.isEmpty() -> inputName.error = "Name is required"
                         phone.isEmpty() -> inputPhone.error = "Phone is required"
-                        else -> updateProfile(name, phone, this)
+                        else -> profileViewModel.updateProfile(name, phone)
                     }
                 }
-                show()
             }
-    }
 
-    private fun updateProfile(name: String, phone: String, dialog: AlertDialog) {
-        RetrofitClient.managerService.updateUserProfile(UpdateUserProfileRequest(name, phone))
-            .enqueue(object : Callback<UserProfileResponse> {
-                override fun onResponse(
-                    call: Call<UserProfileResponse>,
-                    response: Response<UserProfileResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        currentProfile = response.body()
-                        bindUserProfile(response.body()!!)
-                        dialog.dismiss()
-                        Toast.makeText(
-                            requireContext(),
-                            "Profile updated successfully.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } else {
-                        Toast.makeText(requireContext(), getErrorMessage(response), Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
-    }
-
-    private fun showError(response: Response<*>) {
-        Toast.makeText(requireContext(), getErrorMessage(response), Toast.LENGTH_LONG).show()
-    }
-
-    private fun getErrorMessage(response: Response<*>) : String {
-        return try {
-            val errorBody = response.errorBody()?.string()
-
-            if(errorBody.isNullOrEmpty()){
-                "Something went wrong"
-            } else{
-                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
-
-                when(val message = errorResponse.message){
-                    is String -> message
-                    is List<*> -> message.joinToString("\n")
-                    else -> errorResponse.error ?: "Something went wrong"
-                }
-            }
-        } catch (e: Exception){
-            "Something went wrong"
-        }
-    }
-
-    private fun showNetworkError(t: Throwable) {
-        if (!isAdded) return
-
-        Toast.makeText(
-            requireContext(),
-            "Network error: ${t.message}",
-            Toast.LENGTH_SHORT
-        ).show()
+        editProfileDialog?.show()
     }
 }

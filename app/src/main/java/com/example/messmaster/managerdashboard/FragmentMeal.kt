@@ -18,26 +18,22 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
 import com.example.messmaster.managerdashboard.model.CurrentMonthMeal
 import com.example.messmaster.managerdashboard.model.CurrentMonthMealExpense
-import com.example.messmaster.managerdashboard.model.CurrentMonthMealExpensesResponse
-import com.example.messmaster.managerdashboard.model.CurrentMonthMealsResponse
-import com.example.messmaster.managerdashboard.model.CurrentMessMembersResponse
-import com.example.messmaster.managerdashboard.model.CurrentMessResponse
 import com.example.messmaster.managerdashboard.model.InsertMealExpenseRequest
-import com.example.messmaster.managerdashboard.model.InsertMealExpenseResponse
 import com.example.messmaster.managerdashboard.model.InsertMealRequest
-import com.example.messmaster.managerdashboard.model.InsertMealResponse
-import com.example.messmaster.managerdashboard.model.MealRateResponse
 import com.example.messmaster.managerdashboard.model.MessMember
-import com.example.messmaster.model.ErrorResponse
-import com.example.messmaster.network.RetrofitClient
+import com.example.messmaster.managerdashboard.viewmodel.MealViewModel
+import com.example.messmaster.managerdashboard.viewmodel.ManagerSharedViewModel
+import com.example.messmaster.util.UiState
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -46,8 +42,12 @@ import java.util.TimeZone
 
 class FragmentMeal : Fragment() {
 
-    private var managerMemberID: Int = 0
+    private val sharedViewModel: ManagerSharedViewModel by activityViewModels { ManagerSharedViewModel.Factory }
+    private val mealViewModel: MealViewModel by viewModels { MealViewModel.Factory }
+
     private var members: List<MessMember> = emptyList()
+    private var editMealDialog: AlertDialog? = null
+    private var editExpenseDialog: AlertDialog? = null
 
     private lateinit var spinnerMealMember: Spinner
     private lateinit var spinnerMealExpenseMember: Spinner
@@ -68,12 +68,8 @@ class FragmentMeal : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) : View {
-        val view = inflater.inflate(
-            R.layout.fragment_manager_meal,
-            container,
-            false
-        )
+    ): View {
+        val view = inflater.inflate(R.layout.fragment_manager_meal, container, false)
 
         spinnerMealMember = view.findViewById(R.id.spinnerMealMember)
         spinnerMealExpenseMember = view.findViewById(R.id.spinnerMealExpenseMember)
@@ -93,93 +89,154 @@ class FragmentMeal : Fragment() {
         setupMealTypeSpinner()
         inputMealDate.setText(currentDate())
         inputMealExpenseDate.setText(currentDate())
-        inputMealDate.setOnClickListener { showMealDatePicker() }
+        inputMealDate.setOnClickListener { showDatePicker("Select meal date", inputMealDate) }
         inputMealExpenseDate.setOnClickListener { showDatePicker("Select bazar date", inputMealExpenseDate) }
         btnSubmitMeal.setOnClickListener { submitMealEntry() }
         btnSubmitMealExpense.setOnClickListener { submitMealExpense() }
-        btnViewCurrentMonthMeals.setOnClickListener { loadCurrentMonthMeals(showDialog = true) }
-        btnViewCurrentMonthExpenses.setOnClickListener { loadCurrentMonthExpenses(showDialog = true) }
+        btnViewCurrentMonthMeals.setOnClickListener { mealViewModel.loadCurrentMonthMeals() }
+        btnViewCurrentMonthExpenses.setOnClickListener { mealViewModel.loadCurrentMonthExpenses() }
 
-        loadCurrentMess()
-        loadCurrentMessMembers()
-        loadMonthlyMealSummary()
-
+        observeStates()
         return view
     }
 
     private fun setupMealTypeSpinner() {
-        val mealTypes = listOf("Select meal") +
-                requireContext().resources.getStringArray(R.array.manager_meal_types).toList()
-        val adapter = ArrayAdapter(
-            requireContext(),
-            R.layout.spinner_dropdown_item,
-            mealTypes
-        )
-
+        val mealTypes = listOf("Select meal") + requireContext().resources.getStringArray(R.array.manager_meal_types).toList()
+        val adapter = ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, mealTypes)
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerMealType.adapter = adapter
     }
 
-    private fun loadCurrentMess() {
-        RetrofitClient.managerService.getCurrentMess()
-            .enqueue(object : Callback<CurrentMessResponse> {
-                override fun onResponse(
-                    call: Call<CurrentMessResponse>,
-                    response: Response<CurrentMessResponse>
-                ) {
-                    if (!isAdded) return
+    private fun observeStates() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                    if (response.isSuccessful && response.body() != null) {
-                        managerMemberID = response.body()!!.messInfo.member_id
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getErrorMessage(response),
-                            Toast.LENGTH_LONG
-                        ).show()
+                launch {
+                    mealViewModel.membersState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                members = state.data
+                                val names = listOf("Select member") + members.map { it.name }
+                                val adapter = ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, names)
+                                adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+                                spinnerMealMember.adapter = adapter
+                                spinnerMealExpenseMember.adapter = adapter
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
                     }
                 }
 
-                override fun onFailure(call: Call<CurrentMessResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
-    }
-
-    private fun loadCurrentMessMembers() {
-        RetrofitClient.managerService.getCurrentMessMembers()
-            .enqueue(object : Callback<CurrentMessMembersResponse> {
-                override fun onResponse(
-                    call: Call<CurrentMessMembersResponse>,
-                    response: Response<CurrentMessMembersResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        members = response.body()!!.members
-                        val memberNames = listOf("Select member") + members.map { it.name }
-                        val adapter = ArrayAdapter(
-                            requireContext(),
-                            R.layout.spinner_dropdown_item,
-                            memberNames
-                        )
-
-                        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-                        spinnerMealMember.adapter = adapter
-                        spinnerMealExpenseMember.adapter = adapter
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getErrorMessage(response),
-                            Toast.LENGTH_LONG
-                        ).show()
+                launch {
+                    sharedViewModel.mealRateState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                txtMonthlyTotalMeals.text = state.data.totalMeals.toString()
+                                txtMonthlyMealRate.text = "৳${formatAmount(state.data.mealRate)}"
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
                     }
                 }
 
-                override fun onFailure(call: Call<CurrentMessMembersResponse>, t: Throwable) {
-                    showNetworkError(t)
+                launch {
+                    mealViewModel.insertMealState.collect { state ->
+                        when (state) {
+                            is UiState.Loading -> btnSubmitMeal.isEnabled = false
+                            is UiState.Success -> {
+                                btnSubmitMeal.isEnabled = true
+                                inputMealCount.text?.clear()
+                                Toast.makeText(requireContext(), state.data.message, Toast.LENGTH_LONG).show()
+                                sharedViewModel.loadMealRate()
+                            }
+                            is UiState.Error -> {
+                                btnSubmitMeal.isEnabled = true
+                                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            }
+                            else -> Unit
+                        }
+                    }
                 }
-            })
+
+                launch {
+                    mealViewModel.insertExpenseState.collect { state ->
+                        when (state) {
+                            is UiState.Loading -> btnSubmitMealExpense.isEnabled = false
+                            is UiState.Success -> {
+                                btnSubmitMealExpense.isEnabled = true
+                                inputMealExpenseAmount.text?.clear()
+                                mealExpenseDescription.text?.clear()
+                                Toast.makeText(requireContext(), state.data.message, Toast.LENGTH_LONG).show()
+                                sharedViewModel.loadMealRate()
+                            }
+                            is UiState.Error -> {
+                                btnSubmitMealExpense.isEnabled = true
+                                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            }
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    mealViewModel.updateMealState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                editMealDialog?.dismiss()
+                                editMealDialog = null
+                                Toast.makeText(requireContext(), "Meal entry updated.", Toast.LENGTH_SHORT).show()
+                                sharedViewModel.loadMealRate()
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    mealViewModel.updateExpenseState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                editExpenseDialog?.dismiss()
+                                editExpenseDialog = null
+                                Toast.makeText(requireContext(), "Bazar expense updated.", Toast.LENGTH_SHORT).show()
+                                sharedViewModel.loadMealRate()
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    mealViewModel.currentMonthMealsState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                mealViewModel.consumeCurrentMonthMeals()
+                                showMealsTable(state.data)
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    mealViewModel.currentMonthExpensesState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                mealViewModel.consumeCurrentMonthExpenses()
+                                showExpensesTable(state.data)
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun submitMealEntry() {
@@ -189,64 +246,20 @@ class FragmentMeal : Fragment() {
         val mealCount = inputMealCount.text.toString().trim().toIntOrNull()
 
         when {
-            selectedMember == null -> {
-                Toast.makeText(requireContext(), "Select a member before saving.", Toast.LENGTH_SHORT).show()
-                return
-            }
-            mealType == "Select meal" -> {
-                Toast.makeText(requireContext(), "Select a meal type before saving.", Toast.LENGTH_SHORT).show()
-                return
-            }
-            date.isEmpty() -> {
-                inputMealDate.error = "Date is required"
-                return
-            }
-            mealCount == null || mealCount <= 0 -> {
-                inputMealCount.error = "Enter a valid meal count"
-                return
-            }
+            selectedMember == null -> { Toast.makeText(requireContext(), "Select a member before saving.", Toast.LENGTH_SHORT).show(); return }
+            mealType == "Select meal" -> { Toast.makeText(requireContext(), "Select a meal type before saving.", Toast.LENGTH_SHORT).show(); return }
+            date.isEmpty() -> { inputMealDate.error = "Date is required"; return }
+            mealCount == null || mealCount <= 0 -> { inputMealCount.error = "Enter a valid meal count"; return }
         }
 
-        btnSubmitMeal.isEnabled = false
-        val request = InsertMealRequest(
-            meal_count = mealCount,
-            member_id = selectedMember.member_id,
-            meal_type = mealType,
-            date = date
+        mealViewModel.insertMeal(
+            InsertMealRequest(
+                meal_count = mealCount!!,
+                member_id = selectedMember!!.member_id,
+                meal_type = mealType,
+                date = date
+            )
         )
-
-        RetrofitClient.managerService.insertMeal(request)
-            .enqueue(object : Callback<InsertMealResponse> {
-                override fun onResponse(
-                    call: Call<InsertMealResponse>,
-                    response: Response<InsertMealResponse>
-                ) {
-                    if (!isAdded) return
-
-                    btnSubmitMeal.isEnabled = true
-                    if (response.isSuccessful && response.body() != null) {
-                        inputMealCount.text?.clear()
-                        Toast.makeText(
-                            requireContext(),
-                            "Meal entry saved: $mealType, $mealCount meal(s) for ${selectedMember.name}.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        loadMonthlyMealSummary()
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getErrorMessage(response),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<InsertMealResponse>, t: Throwable) {
-                    if (!isAdded) return
-                    btnSubmitMeal.isEnabled = true
-                    showNetworkError(t)
-                }
-            })
     }
 
     private fun submitMealExpense() {
@@ -256,117 +269,20 @@ class FragmentMeal : Fragment() {
         val date = inputMealExpenseDate.text.toString().trim()
 
         when {
-            selectedMember == null -> {
-                Toast.makeText(requireContext(), "Select who did the bazar.", Toast.LENGTH_SHORT).show()
-                return
-            }
-            date.isEmpty() -> {
-                inputMealExpenseDate.error = "Date is required"
-                return
-            }
-            amount == null || amount <= 0.0 -> {
-                inputMealExpenseAmount.error = "Enter a valid amount"
-                return
-            }
-            description.isEmpty() -> {
-                mealExpenseDescription.error = "Description is required"
-                return
-            }
+            selectedMember == null -> { Toast.makeText(requireContext(), "Select who did the bazar.", Toast.LENGTH_SHORT).show(); return }
+            date.isEmpty() -> { inputMealExpenseDate.error = "Date is required"; return }
+            amount == null || amount <= 0.0 -> { inputMealExpenseAmount.error = "Enter a valid amount"; return }
+            description.isEmpty() -> { mealExpenseDescription.error = "Description is required"; return }
         }
 
-        btnSubmitMealExpense.isEnabled = false
-        val request = InsertMealExpenseRequest(
-            amount = amount,
-            description = description,
-            member_id = selectedMember.member_id,
-            date = date
+        mealViewModel.insertExpense(
+            InsertMealExpenseRequest(
+                amount = amount!!,
+                description = description,
+                member_id = selectedMember!!.member_id,
+                date = date
+            )
         )
-
-        RetrofitClient.managerService.insertMealExpense(request)
-            .enqueue(object : Callback<InsertMealExpenseResponse> {
-                override fun onResponse(
-                    call: Call<InsertMealExpenseResponse>,
-                    response: Response<InsertMealExpenseResponse>
-                ) {
-                    if (!isAdded) return
-
-                    btnSubmitMealExpense.isEnabled = true
-                    if (response.isSuccessful && response.body() != null) {
-                        inputMealExpenseAmount.text?.clear()
-                        mealExpenseDescription.text?.clear()
-                        Toast.makeText(
-                            requireContext(),
-                            "Bazar saved: ${selectedMember.name} spent ৳${formatAmount(amount)}.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        loadMonthlyMealSummary()
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getErrorMessage(response),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<InsertMealExpenseResponse>, t: Throwable) {
-                    if (!isAdded) return
-                    btnSubmitMealExpense.isEnabled = true
-                    showNetworkError(t)
-                }
-            })
-    }
-
-    private fun loadMonthlyMealSummary() {
-        RetrofitClient.managerService.getMealRate()
-            .enqueue(object : Callback<MealRateResponse> {
-                override fun onResponse(
-                    call: Call<MealRateResponse>,
-                    response: Response<MealRateResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        val summary = response.body()!!
-                        txtMonthlyTotalMeals.text = summary.totalMeals.toString()
-                        txtMonthlyMealRate.text = "৳${formatAmount(summary.mealRate)}"
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getErrorMessage(response),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<MealRateResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
-    }
-
-    private fun loadCurrentMonthMeals(showDialog: Boolean = false) {
-        RetrofitClient.managerService.getCurrentMonthMeals()
-            .enqueue(object : Callback<CurrentMonthMealsResponse> {
-                override fun onResponse(
-                    call: Call<CurrentMonthMealsResponse>,
-                    response: Response<CurrentMonthMealsResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        if (showDialog) {
-                            showMealsTable(response.body()!!.meals)
-                        }
-                    } else {
-                        Toast.makeText(requireContext(), getErrorMessage(response), Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<CurrentMonthMealsResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
     }
 
     private fun showMealsTable(meals: List<CurrentMonthMeal>) {
@@ -375,12 +291,8 @@ class FragmentMeal : Fragment() {
             emptyMessage = "No meals added for this month yet.",
             items = meals,
             headers = listOf("Date", "Member", "Type", "Meals"),
-            rowValues = { meal ->
-                listOf(meal.date, meal.member_name, meal.meal_type, meal.meal_count.toString())
-            },
-            searchableText = { meal ->
-                "${meal.date} ${meal.member_name} ${meal.meal_type} ${meal.meal_count}"
-            },
+            rowValues = { meal -> listOf(meal.date, meal.member_name, meal.meal_type, meal.meal_count.toString()) },
+            searchableText = { meal -> "${meal.date} ${meal.member_name} ${meal.meal_type} ${meal.meal_count}" },
             onRowClick = { meal -> showEditMealDialog(meal) }
         )
     }
@@ -397,11 +309,7 @@ class FragmentMeal : Fragment() {
         val inputDate = dialogInput(meal.date, "Date")
         val inputCount = dialogInput(meal.meal_count.toString(), "Meal count")
 
-        val memberAdapter = ArrayAdapter(
-            requireContext(),
-            R.layout.spinner_dropdown_item,
-            members.map { it.name }
-        )
+        val memberAdapter = ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, members.map { it.name })
         memberAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         memberSpinner.adapter = memberAdapter
         memberSpinner.setSelection(members.indexOfFirst { it.member_id == meal.member_id }.coerceAtLeast(0))
@@ -422,85 +330,30 @@ class FragmentMeal : Fragment() {
         content.addView(dialogLabel("Count"))
         content.addView(inputCount)
 
-        val dialog = showFormDialog(
+        editMealDialog = showFormDialog(
             title = "Update Meal",
             subtitle = "Adjust the selected member meal record.",
             content = content
-        ) { dialog ->
+        ) {
             val selectedMember = members[memberSpinner.selectedItemPosition]
             val count = inputCount.text.toString().trim().toIntOrNull()
             val date = inputDate.text.toString().trim()
-            if (date.isEmpty()) {
-                inputDate.error = "Date is required"
-                return@showFormDialog
-            }
-            if (count == null || count <= 0) {
-                inputCount.error = "Enter a valid count"
-                return@showFormDialog
-            }
+            if (date.isEmpty()) { inputDate.error = "Date is required"; return@showFormDialog }
+            if (count == null || count <= 0) { inputCount.error = "Enter a valid count"; return@showFormDialog }
 
-            updateMealEntry(
+            mealViewModel.updateMeal(
                 meal.id,
                 InsertMealRequest(
                     meal_count = count,
                     member_id = selectedMember.member_id,
                     meal_type = mealTypeSpinner.selectedItem.toString(),
                     date = date
-                ),
-                dialog
+                )
             )
         }
 
-        dialog.show()
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-    }
-
-    private fun updateMealEntry(mealID: Int, request: InsertMealRequest, dialog: AlertDialog) {
-        RetrofitClient.managerService.updateMeal(mealID, request)
-            .enqueue(object : Callback<InsertMealResponse> {
-                override fun onResponse(
-                    call: Call<InsertMealResponse>,
-                    response: Response<InsertMealResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful) {
-                        dialog.dismiss()
-                        Toast.makeText(requireContext(), "Meal entry updated.", Toast.LENGTH_SHORT).show()
-                        loadMonthlyMealSummary()
-                    } else {
-                        Toast.makeText(requireContext(), getErrorMessage(response), Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<InsertMealResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
-    }
-
-    private fun loadCurrentMonthExpenses(showDialog: Boolean = false) {
-        RetrofitClient.managerService.getCurrentMonthMealExpenses()
-            .enqueue(object : Callback<CurrentMonthMealExpensesResponse> {
-                override fun onResponse(
-                    call: Call<CurrentMonthMealExpensesResponse>,
-                    response: Response<CurrentMonthMealExpensesResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful && response.body() != null) {
-                        if (showDialog) {
-                            showExpensesTable(response.body()!!.expenses)
-                        }
-                    } else {
-                        Toast.makeText(requireContext(), getErrorMessage(response), Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<CurrentMonthMealExpensesResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
+        editMealDialog?.show()
+        editMealDialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
     }
 
     private fun showExpensesTable(expenses: List<CurrentMonthMealExpense>) {
@@ -510,12 +363,7 @@ class FragmentMeal : Fragment() {
             items = expenses,
             headers = listOf("Date", "Member", "Amount", "Details"),
             rowValues = { expense ->
-                listOf(
-                    expense.date,
-                    expense.member_name,
-                    "৳${formatAmount(expense.amount)}",
-                    expense.description
-                )
+                listOf(expense.date, expense.member_name, "৳${formatAmount(expense.amount)}", expense.description)
             },
             searchableText = { expense ->
                 "${expense.date} ${expense.member_name} ${expense.amount} ${expense.description}"
@@ -551,77 +399,39 @@ class FragmentMeal : Fragment() {
         content.addView(dialogLabel("Description"))
         content.addView(inputDescription)
 
-        val dialog = showFormDialog(
+        editExpenseDialog = showFormDialog(
             title = "Update Bazar",
             subtitle = "Edit who spent the bazar amount and details.",
             content = content
-        ) { dialog ->
+        ) {
             val selectedMember = members[memberSpinner.selectedItemPosition]
             val amount = inputAmount.text.toString().trim().toDoubleOrNull()
             val date = inputDate.text.toString().trim()
             val description = inputDescription.text.toString().trim()
-            if (date.isEmpty()) {
-                inputDate.error = "Date is required"
-                return@showFormDialog
-            }
-            if (amount == null || amount <= 0.0) {
-                inputAmount.error = "Enter a valid amount"
-                return@showFormDialog
-            }
-            if (description.isEmpty()) {
-                inputDescription.error = "Description is required"
-                return@showFormDialog
-            }
+            if (date.isEmpty()) { inputDate.error = "Date is required"; return@showFormDialog }
+            if (amount == null || amount <= 0.0) { inputAmount.error = "Enter a valid amount"; return@showFormDialog }
+            if (description.isEmpty()) { inputDescription.error = "Description is required"; return@showFormDialog }
 
-            updateMealExpense(
+            mealViewModel.updateExpense(
                 expense.id,
                 InsertMealExpenseRequest(
                     amount = amount,
                     description = description,
                     member_id = selectedMember.member_id,
                     date = date
-                ),
-                dialog
+                )
             )
         }
 
-        dialog.show()
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-    }
-
-    private fun updateMealExpense(
-        expenseID: Int,
-        request: InsertMealExpenseRequest,
-        dialog: AlertDialog
-    ) {
-        RetrofitClient.managerService.updateMealExpense(expenseID, request)
-            .enqueue(object : Callback<InsertMealExpenseResponse> {
-                override fun onResponse(
-                    call: Call<InsertMealExpenseResponse>,
-                    response: Response<InsertMealExpenseResponse>
-                ) {
-                    if (!isAdded) return
-
-                    if (response.isSuccessful) {
-                        dialog.dismiss()
-                        Toast.makeText(requireContext(), "Bazar expense updated.", Toast.LENGTH_SHORT).show()
-                        loadMonthlyMealSummary()
-                    } else {
-                        Toast.makeText(requireContext(), getErrorMessage(response), Toast.LENGTH_LONG).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<InsertMealExpenseResponse>, t: Throwable) {
-                    showNetworkError(t)
-                }
-            })
+        editExpenseDialog?.show()
+        editExpenseDialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
     }
 
     private fun showFormDialog(
         title: String,
         subtitle: String,
         content: View,
-        onSave: (AlertDialog) -> Unit
+        onSave: () -> Unit
     ): AlertDialog {
         val dialogView = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.VERTICAL
@@ -651,23 +461,15 @@ class FragmentMeal : Fragment() {
         val cancelButton = Button(requireContext()).apply {
             text = "Cancel"
             setTextColor(requireContext().getColor(R.color.black))
-            backgroundTintList = android.content.res.ColorStateList.valueOf(
-                requireContext().getColor(R.color.white)
-            )
-            layoutParams = LinearLayout.LayoutParams(0, dp(52), 1f).apply {
-                marginEnd = dp(8)
-            }
+            backgroundTintList = android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.white))
+            layoutParams = LinearLayout.LayoutParams(0, dp(52), 1f).apply { marginEnd = dp(8) }
         }
         val saveButton = Button(requireContext()).apply {
             text = "Save"
             setTextColor(requireContext().getColor(R.color.white))
             setTypeface(typeface, android.graphics.Typeface.BOLD)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(
-                requireContext().getColor(R.color.black)
-            )
-            layoutParams = LinearLayout.LayoutParams(0, dp(52), 1f).apply {
-                marginStart = dp(8)
-            }
+            backgroundTintList = android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.black))
+            layoutParams = LinearLayout.LayoutParams(0, dp(52), 1f).apply { marginStart = dp(8) }
         }
         actions.addView(cancelButton)
         actions.addView(saveButton)
@@ -678,7 +480,7 @@ class FragmentMeal : Fragment() {
             .create()
 
         cancelButton.setOnClickListener { dialog.dismiss() }
-        saveButton.setOnClickListener { onSave(dialog) }
+        saveButton.setOnClickListener { onSave() }
         return dialog
     }
 
@@ -715,36 +517,21 @@ class FragmentMeal : Fragment() {
             setSingleLine(true)
             setPadding(dp(16), 0, dp(16), 0)
             setBackgroundResource(R.drawable.bg_input_manager)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(52)
-            )
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52))
         }
-        val rowsContainer = LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.VERTICAL
-        }
+        val rowsContainer = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
         val scrollView = ScrollView(requireContext()).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(360)
-            ).apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(360)).apply {
                 topMargin = dp(16)
             }
-            addView(HorizontalScrollView(requireContext()).apply {
-                addView(rowsContainer)
-            })
+            addView(HorizontalScrollView(requireContext()).apply { addView(rowsContainer) })
         }
         val closeButton = Button(requireContext()).apply {
             text = "Close"
             setTextColor(requireContext().getColor(R.color.white))
             setTypeface(typeface, android.graphics.Typeface.BOLD)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(
-                requireContext().getColor(R.color.black)
-            )
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(52)
-            ).apply {
+            backgroundTintList = android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.black))
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52)).apply {
                 topMargin = dp(18)
             }
         }
@@ -757,9 +544,7 @@ class FragmentMeal : Fragment() {
 
         fun render(query: String) {
             rowsContainer.removeAllViews()
-            val filtered = items.filter {
-                searchableText(it).contains(query, ignoreCase = true)
-            }
+            val filtered = items.filter { searchableText(it).contains(query, ignoreCase = true) }
 
             if (items.isEmpty()) {
                 rowsContainer.addView(tableMessage(emptyMessage))
@@ -782,9 +567,7 @@ class FragmentMeal : Fragment() {
 
         searchInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                render(s?.toString().orEmpty())
-            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { render(s?.toString().orEmpty()) }
             override fun afterTextChanged(s: Editable?) {}
         })
 
@@ -824,18 +607,6 @@ class FragmentMeal : Fragment() {
         }
     }
 
-    private fun dp(value: Int): Int {
-        return (value * resources.displayMetrics.density).toInt()
-    }
-
-    private fun currentDate(): String {
-        return SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
-    }
-
-    private fun showMealDatePicker() {
-        showDatePicker("Select meal date", inputMealDate)
-    }
-
     private fun showDatePicker(title: String, target: EditText) {
         val picker = MaterialDatePicker.Builder.datePicker()
             .setTitleText(title)
@@ -847,7 +618,7 @@ class FragmentMeal : Fragment() {
             target.error = null
         }
 
-        picker.show(childFragmentManager, "meal_date_picker")
+        picker.show(parentFragmentManager, "meal_date_picker")
     }
 
     private fun formatPickerDate(timestamp: Long): String {
@@ -857,9 +628,7 @@ class FragmentMeal : Fragment() {
     }
 
     private fun dialogContainer(): LinearLayout {
-        return LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.VERTICAL
-        }
+        return LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
     }
 
     private fun dialogLabel(text: String): TextView {
@@ -878,12 +647,11 @@ class FragmentMeal : Fragment() {
             setSingleLine(true)
             setBackgroundResource(R.drawable.bg_input_manager)
             setPadding(dp(16), 0, dp(16), 0)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(52)
-            )
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52))
         }
     }
+
+    private fun currentDate(): String = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
 
     private fun formatAmount(amount: Double): String {
         return NumberFormat.getNumberInstance(Locale.US).apply {
@@ -892,33 +660,5 @@ class FragmentMeal : Fragment() {
         }.format(amount)
     }
 
-    private fun getErrorMessage(response: Response<*>) : String {
-        return try {
-            val errorBody = response.errorBody()?.string()
-
-            if(errorBody.isNullOrEmpty()){
-                "Something went wrong"
-            } else{
-                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
-
-                when(val message = errorResponse.message){
-                    is String -> message
-                    is List<*> -> message.joinToString("\n")
-                    else -> errorResponse.error ?: "Something went wrong"
-                }
-            }
-        } catch (e: Exception){
-            "Something went wrong"
-        }
-    }
-
-    private fun showNetworkError(t: Throwable) {
-        if (!isAdded) return
-
-        Toast.makeText(
-            requireContext(),
-            "Network error: ${t.message}",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 }

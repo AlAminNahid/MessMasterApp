@@ -11,176 +11,117 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
-import com.example.messmaster.commondashboard.model.changePassword.ChangePassRequest
-import com.example.messmaster.commondashboard.model.changePassword.ChangePassResponse
-import com.example.messmaster.model.ErrorResponse
-import com.example.messmaster.network.RetrofitClient
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.messmaster.commondashboard.viewmodel.ChangePassViewModel
+import com.example.messmaster.util.UiState
+import kotlinx.coroutines.launch
 
 class ChangePassActivity : AppCompatActivity() {
 
-    lateinit var btnBack: ImageButton
-    lateinit var etOldPass: EditText
-    lateinit var etNewPass: EditText
-    lateinit var btnChangePass: Button
-    lateinit var btnEyeToggleNewPassword: ImageView
-    lateinit var btnEyeToggleConfirmPassword: ImageView
+    private lateinit var btnBack: ImageButton
+    private lateinit var etOldPass: EditText
+    private lateinit var etNewPass: EditText
+    private lateinit var btnChangePass: Button
+    private lateinit var btnEyeToggleNewPassword: ImageView
+    private lateinit var btnEyeToggleConfirmPassword: ImageView
     private var isNewPasswordVisible = false
     private var isConfirmPasswordVisible = false
 
-    override fun onCreate(savedInstanceState: Bundle?){
+    private val viewModel: ChangePassViewModel by viewModels { ChangePassViewModel.Factory }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_comm_dashboard_change_pass)
 
-        RetrofitClient.init(applicationContext)
+        btnBack = findViewById(R.id.btnBack)
+        etOldPass = findViewById(R.id.etOldPass)
+        etNewPass = findViewById(R.id.etNewPass)
+        btnChangePass = findViewById(R.id.btnChangePass)
+        btnEyeToggleNewPassword = findViewById(R.id.btnEyeToggleNewPassword)
+        btnEyeToggleConfirmPassword = findViewById(R.id.btnEyeToggleConfirmPassword)
 
-        btnBack = findViewById<ImageButton>(R.id.btnBack)
-        etOldPass = findViewById<EditText>(R.id.etOldPass)
-        etNewPass = findViewById<EditText>(R.id.etNewPass)
-        btnChangePass = findViewById<Button>(R.id.btnChangePass)
-        btnEyeToggleNewPassword = findViewById<ImageView>(R.id.btnEyeToggleNewPassword)
-        btnEyeToggleConfirmPassword = findViewById<ImageView>(R.id.btnEyeToggleConfirmPassword)
-
-        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val email = sharedPreferences.getString("userEmail", "")
+        val email = getSharedPreferences("user_prefs", Context.MODE_PRIVATE).getString("userEmail", "")
 
         btnBack.setOnClickListener {
-            val intent = Intent(this@ChangePassActivity, ProfileActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, ProfileActivity::class.java))
             finish()
         }
 
         btnEyeToggleNewPassword.setOnClickListener {
-            if(isNewPasswordVisible) {
+            if (isNewPasswordVisible) {
                 etOldPass.transformationMethod = PasswordTransformationMethod.getInstance()
                 btnEyeToggleNewPassword.setImageResource(R.drawable.eye_open)
                 isNewPasswordVisible = false
-            }
-            else{
+            } else {
                 etOldPass.transformationMethod = HideReturnsTransformationMethod.getInstance()
                 btnEyeToggleNewPassword.setImageResource(R.drawable.eye_close)
                 isNewPasswordVisible = true
             }
-
             etOldPass.setSelection(etOldPass.text.length)
         }
 
         btnEyeToggleConfirmPassword.setOnClickListener {
-            if(isConfirmPasswordVisible) {
+            if (isConfirmPasswordVisible) {
                 etNewPass.transformationMethod = PasswordTransformationMethod.getInstance()
                 btnEyeToggleConfirmPassword.setImageResource(R.drawable.eye_open)
                 isConfirmPasswordVisible = false
-            }
-            else {
+            } else {
                 etNewPass.transformationMethod = HideReturnsTransformationMethod.getInstance()
                 btnEyeToggleConfirmPassword.setImageResource(R.drawable.eye_close)
                 isConfirmPasswordVisible = true
             }
-
             etNewPass.setSelection(etNewPass.text.length)
         }
 
         btnChangePass.setOnClickListener {
             val oldPass = etOldPass.text.toString().trim()
             val newPass = etNewPass.text.toString().trim()
-
-            if(validation(oldPass, newPass)){
-                changePassword(email, oldPass, newPass)
+            if (validation(oldPass, newPass)) {
+                viewModel.changePassword(email, oldPass, newPass)
             }
         }
+
+        observeChangePassState()
     }
 
-    private fun changePassword(email: String?, oldPass: String, newPass: String){
-        btnChangePass.isEnabled = false
-
-        val request = ChangePassRequest(email, oldPass, newPass)
-
-        RetrofitClient.commMessService.changePassword(request)
-            .enqueue(object : Callback<ChangePassResponse>{
-                override fun onResponse(
-                    call: Call<ChangePassResponse>,
-                    response: Response<ChangePassResponse>
-                ) {
-                    btnChangePass.isEnabled = true
-
-                    if(response.isSuccessful){
-                        Toast.makeText(this@ChangePassActivity, "Password Change Successfully",
-                            Toast.LENGTH_LONG).show()
-
-                        startActivity(Intent(this@ChangePassActivity, ProfileActivity::class.java))
-                        finish()
-                    }
-                    else{
-                        val errorMessage = getErrorMessage(response)
-
-                        Toast.makeText(this@ChangePassActivity, errorMessage, Toast.LENGTH_LONG).show()
+    private fun observeChangePassState() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.changePassState.collect { state ->
+                    when (state) {
+                        is UiState.Idle -> Unit
+                        is UiState.Loading -> btnChangePass.isEnabled = false
+                        is UiState.Success -> {
+                            btnChangePass.isEnabled = true
+                            Toast.makeText(this@ChangePassActivity, "Password Changed Successfully", Toast.LENGTH_LONG).show()
+                            startActivity(Intent(this@ChangePassActivity, ProfileActivity::class.java))
+                            finish()
+                        }
+                        is UiState.Error -> {
+                            btnChangePass.isEnabled = true
+                            Toast.makeText(this@ChangePassActivity, state.message, Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
-
-                override fun onFailure(call: Call<ChangePassResponse>, t: Throwable){
-                    btnChangePass.isEnabled = true
-
-                    Toast.makeText(this@ChangePassActivity, "Failed to connect: ${t.message}", Toast.LENGTH_LONG).show()
-                }
-            })
-    }
-
-    private fun getErrorMessage(response: Response<ChangePassResponse>) : String{
-        return try {
-            val errorBody = response.errorBody()?.string()
-
-            if(errorBody.isNullOrEmpty()){
-                "Something went wrong"
             }
-            else {
-                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
-
-                when(val message = errorResponse.message){
-                    is String -> message
-                    is List<*> -> message.joinToString("\n")
-                    else -> errorResponse.error ?: "Something went wrong"
-                }
-            }
-        } catch (e: Exception){
-            "Something went wrong"
         }
     }
 
-    private fun validation(oldPass: String, newPass: String): Boolean{
-        val passwordPattern = Regex(""".*[@#$&].*""")
+    private fun validation(oldPass: String, newPass: String): Boolean {
+        val passwordPattern = Regex(""".*[@#${'$'}&].*""")
 
-        if(oldPass.isEmpty()){
-            etOldPass.error = "Password can't be empty"
-            return false
-        }
-        if(oldPass.length < 6) {
-            etOldPass.error = "Password must be at least 6 characters long"
-            return false
-        }
-        if (!oldPass.matches(passwordPattern)){
-            etOldPass.error = "Password must contain any of these special characters (@ or # or \$ or &)"
-            return false
-        }
-        if (newPass.isEmpty()){
-            etNewPass.error = "Password can't be empty"
-            return false
-        }
-        if(newPass.length < 6) {
-            etNewPass.error = "Password must be at least 6 characters long"
-            return false
-        }
-
-        if(!newPass.matches(passwordPattern)) {
-            etNewPass.error = "Password must contain any of these special characters (@ or # or \$ or &)"
-            return false
-        }
-
+        if (oldPass.isEmpty()) { etOldPass.error = "Password can't be empty"; return false }
+        if (oldPass.length < 6) { etOldPass.error = "Password must be at least 6 characters long"; return false }
+        if (!oldPass.matches(passwordPattern)) { etOldPass.error = "Password must contain any of these special characters (@ or # or \$ or &)"; return false }
+        if (newPass.isEmpty()) { etNewPass.error = "Password can't be empty"; return false }
+        if (newPass.length < 6) { etNewPass.error = "Password must be at least 6 characters long"; return false }
+        if (!newPass.matches(passwordPattern)) { etNewPass.error = "Password must contain any of these special characters (@ or # or \$ or &)"; return false }
         return true
     }
 }

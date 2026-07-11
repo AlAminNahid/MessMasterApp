@@ -8,7 +8,7 @@ import com.example.messmaster.commondashboard.model.createMess.CreateMessRespons
 import com.example.messmaster.commondashboard.model.joinMess.JoinMessRequest
 import com.example.messmaster.commondashboard.model.joinMess.JoinMessResponse
 import com.example.messmaster.model.UserProfileResponse
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -18,25 +18,17 @@ import retrofit2.http.Path
 interface ApiService {
 
     @POST("mess/createMess")
-    fun createMess(
-        @Body request: CreateMessRequest
-    ) : Call<CreateMessResponse>
+    suspend fun createMess(@Body request: CreateMessRequest): Response<CreateMessResponse>
 
     @GET("mess/allMesses")
-    fun getAllMesses() : Call<AllMessResponse>
+    suspend fun getAllMesses(): Response<AllMessResponse>
 
     @POST("mess/joinMess")
-    fun joinMess(
-        @Body request: JoinMessRequest
-    ) : Call<JoinMessResponse>
+    suspend fun joinMess(@Body request: JoinMessRequest): Response<JoinMessResponse>
 
     @GET("shared/userById/{userID}")
-    fun getUserById(
-        @Path("userID") userID: Int
-    ) : Call<UserProfileResponse>
+    suspend fun getUserById(@Path("userID") userID: Int): Response<UserProfileResponse>
 
     @PATCH("auth/change-password")
-    fun changePassword(
-        @Body request: ChangePassRequest
-    ) : Call<ChangePassResponse>
+    suspend fun changePassword(@Body request: ChangePassRequest): Response<ChangePassResponse>
 }
