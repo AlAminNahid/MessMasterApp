@@ -5,9 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -27,13 +30,21 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
+    private lateinit var emailFieldContainer: LinearLayout
+    private lateinit var passwordFieldContainer: LinearLayout
+    private lateinit var tvEmailError: TextView
+    private lateinit var tvPasswordError: TextView
     private lateinit var btnLogin: Button
+    private lateinit var progressLogin: ProgressBar
     private lateinit var btnForgotPassword: TextView
     private lateinit var btnRegistration: TextView
     private lateinit var btnEyeTogglePassword: ImageView
     private var isPasswordVisible = false
 
     private val viewModel: LoginViewModel by viewModels { LoginViewModel.Factory }
+
+    private val passwordHelperText =
+        "Must be 6+ characters and include a special character (@ # $ &)"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +53,12 @@ class LoginActivity : AppCompatActivity() {
 
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
+        emailFieldContainer = findViewById(R.id.emailFieldContainer)
+        passwordFieldContainer = findViewById(R.id.passwordFieldContainer)
+        tvEmailError = findViewById(R.id.tvEmailError)
+        tvPasswordError = findViewById(R.id.tvPasswordError)
         btnLogin = findViewById(R.id.btnLogin)
+        progressLogin = findViewById(R.id.progressLogin)
         btnForgotPassword = findViewById(R.id.btnForgotPassword)
         btnRegistration = findViewById(R.id.btnRegister)
         btnEyeTogglePassword = findViewById(R.id.eyeTogglePassword)
@@ -85,9 +101,15 @@ class LoginActivity : AppCompatActivity() {
                 viewModel.loginState.collect { state ->
                     when (state) {
                         is UiState.Idle -> Unit
-                        is UiState.Loading -> btnLogin.isEnabled = false
+                        is UiState.Loading -> {
+                            btnLogin.isEnabled = false
+                            btnLogin.text = ""
+                            progressLogin.visibility = View.VISIBLE
+                        }
                         is UiState.Success -> {
                             btnLogin.isEnabled = true
+                            btnLogin.text = "Login"
+                            progressLogin.visibility = View.GONE
                             val loginResponse = state.data
                             val role = loginResponse.member?.role ?: "none"
                             val userID = loginResponse.user?.id ?: 0
@@ -112,6 +134,8 @@ class LoginActivity : AppCompatActivity() {
                         }
                         is UiState.Error -> {
                             btnLogin.isEnabled = true
+                            btnLogin.text = "Login"
+                            progressLogin.visibility = View.GONE
                             Toast.makeText(this@LoginActivity, state.message, Toast.LENGTH_LONG).show()
                         }
                     }
@@ -124,11 +148,37 @@ class LoginActivity : AppCompatActivity() {
         val emailPattern = Regex("^[a-z0-9.]+@gmail\\.com$")
         val passwordPattern = Regex("^.*(?=[@#$&]).*$")
 
-        if (email.isEmpty()) { etEmail.error = "Email is required"; return false }
-        if (!email.matches(emailPattern)) { etEmail.error = "Please enter a valid Gmail address"; return false }
-        if (password.isEmpty()) { etPassword.error = "Password is required"; return false }
-        if (!password.matches(passwordPattern)) { etPassword.error = "Password must contain at least one special character (@#\$&)"; return false }
-        if (password.length < 6) { etPassword.error = "Password must be at least 6 characters long"; return false }
+        clearFieldError(emailFieldContainer, tvEmailError)
+        setPasswordHelper(isError = false)
+
+        if (email.isEmpty()) { showFieldError(emailFieldContainer, tvEmailError, "Email is required"); return false }
+        if (!email.matches(emailPattern)) { showFieldError(emailFieldContainer, tvEmailError, "Please enter a valid Gmail address"); return false }
+        if (password.isEmpty()) { setPasswordHelper(isError = true, message = "Password is required"); return false }
+        if (!password.matches(passwordPattern)) { setPasswordHelper(isError = true, message = "Password must contain at least one special character (@#\$&)"); return false }
+        if (password.length < 6) { setPasswordHelper(isError = true, message = "Password must be at least 6 characters long"); return false }
         return true
+    }
+
+    private fun showFieldError(container: LinearLayout, errorView: TextView, message: String) {
+        container.setBackgroundResource(R.drawable.bg_input_field_error)
+        errorView.text = message
+        errorView.visibility = View.VISIBLE
+    }
+
+    private fun clearFieldError(container: LinearLayout, errorView: TextView) {
+        container.setBackgroundResource(R.drawable.bg_input_field)
+        errorView.visibility = View.GONE
+    }
+
+    private fun setPasswordHelper(isError: Boolean, message: String = passwordHelperText) {
+        if (isError) {
+            passwordFieldContainer.setBackgroundResource(R.drawable.bg_input_field_error)
+            tvPasswordError.text = message
+            tvPasswordError.setTextColor(getColor(R.color.error))
+        } else {
+            passwordFieldContainer.setBackgroundResource(R.drawable.bg_input_field)
+            tvPasswordError.text = passwordHelperText
+            tvPasswordError.setTextColor(getColor(R.color.text_primary))
+        }
     }
 }

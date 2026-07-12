@@ -82,9 +82,20 @@
                 android:paddingHorizontal="16dp"
                 android:inputType="textPersonName"
                 android:singleLine="true"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="4dp"
                 android:autofillHints="name"
                 android:importantForAutofill="yes" />
+
+            <TextView
+                android:id="@+id/tvNameError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/error"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"
+                tools:text="Name can't be empty"
+                tools:visibility="visible"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -108,9 +119,20 @@
                 android:paddingHorizontal="16dp"
                 android:inputType="textEmailAddress"
                 android:singleLine="true"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="4dp"
                 android:autofillHints="emailAddress"
                 android:importantForAutofill="yes" />
+
+            <TextView
+                android:id="@+id/tvEmailError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/error"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"
+                tools:text="Email must contain @gmail.com at the end"
+                tools:visibility="visible"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -123,20 +145,21 @@
                 android:layout_marginBottom="6dp" />
 
             <LinearLayout
+                android:id="@+id/passwordFieldContainer"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:orientation="horizontal"
                 android:background="@drawable/bg_input_field"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="16sp"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="6dp">
 
                 <EditText
                     android:id="@+id/etPassword"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="54dp"
-                    android:hint="Min. 6 characters"
+                    android:hint="Enter password"
                     android:textColorHint="#999999"
                     android:textColor="#000000"
                     android:textSize="15sp"
@@ -155,6 +178,15 @@
                     android:contentDescription="Toggle Password"/>
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvPasswordError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Must be 6+ characters and include a special character (@ # $ &amp;)"
+                android:textSize="12sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="16dp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -178,7 +210,18 @@
                 android:paddingHorizontal="16dp"
                 android:inputType="number"
                 android:singleLine="true"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvNidError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/error"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"
+                tools:text="NID must contain 14 digits &amp; only numbers"
+                tools:visibility="visible"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -202,71 +245,48 @@
                 android:paddingHorizontal="16dp"
                 android:inputType="phone"
                 android:singleLine="true"
-                android:layout_marginBottom="28dp"
+                android:layout_marginBottom="4dp"
                 android:autofillHints="phoneNumber"
                 android:importantForAutofill="yes" />
 
-            <Button
-                android:id="@+id/btnCreateAccount"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="Create account"
-                android:textSize="16sp"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:backgroundTint="#000000"
-                android:stateListAnimator="@null"
-                style="@style/Widget.MaterialComponents.Button"
-                app:cornerRadius="12dp"
-                android:layout_marginBottom="20dp" />
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvPhoneError"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
+                android:textSize="12sp"
+                android:textColor="@color/error"
+                android:layout_marginBottom="24dp"
+                android:visibility="gone"
+                tools:text="Phone number should be only 11 digits"
+                tools:visibility="visible"/>
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="#DDDDDD" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="or"
-                    android:textSize="13sp"
-                    android:textColor="#AAAAAA"
-                    android:paddingHorizontal="12dp" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="#DDDDDD" />
-
-            </LinearLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnGoogleSignUp"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Sign up with Google"
-                android:textSize="15sp"
-                android:textColor="#333333"
-                android:backgroundTint="#FFFFFF"
-                android:stateListAnimator="@null"
-                android:layout_marginBottom="24dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                app:icon="@drawable/google_symbol"
-                app:iconGravity="textStart"
-                app:iconPadding="10dp"
-                app:iconTint="@null"
-                app:cornerRadius="12dp"
-                app:strokeColor="#DDDDDD"
-                app:strokeWidth="1dp"/>
+                android:layout_marginBottom="24dp">
+
+                <Button
+                    android:id="@+id/btnCreateAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Create account"
+                    android:textSize="16sp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:backgroundTint="#000000"
+                    android:stateListAnimator="@null"
+                    style="@style/Widget.MaterialComponents.Button"
+                    app:cornerRadius="12dp"/>
+
+                <ProgressBar
+                    android:id="@+id/progressCreateAccount"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="#FFFFFF"
+                    android:visibility="gone"/>
+
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"

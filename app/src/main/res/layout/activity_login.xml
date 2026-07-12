@@ -60,6 +60,7 @@
             android:layout_marginHorizontal="6dp"/>
 
         <LinearLayout
+            android:id="@+id/emailFieldContainer"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:orientation="horizontal"
@@ -91,6 +92,18 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tvEmailError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/error"
+            android:layout_marginTop="4dp"
+            android:layout_marginHorizontal="6dp"
+            android:visibility="gone"
+            tools:text="Please enter a valid Gmail address"
+            tools:visibility="visible"/>
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="20dp" />
@@ -106,6 +119,7 @@
             android:layout_marginHorizontal="6dp"/>
 
         <LinearLayout
+            android:id="@+id/passwordFieldContainer"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:orientation="horizontal"
@@ -147,6 +161,16 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tvPasswordError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Must be 6+ characters and include a special character (@ # $ &amp;)"
+            android:textSize="12sp"
+            android:textColor="@color/text_primary"
+            android:layout_marginTop="6dp"
+            android:layout_marginHorizontal="6dp"/>
+
+        <TextView
             android:id="@+id/btnForgotPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -165,67 +189,33 @@
             android:layout_width="match_parent"
             android:layout_height="50dp" />
 
-        <Button
-            android:id="@+id/btnLogin"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Login"
-            android:textSize="16sp"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:backgroundTint="#000000"
-            android:stateListAnimator="@null"
-            style="@style/Widget.MaterialComponents.Button"
-            app:cornerRadius="12dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="24dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Login"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:backgroundTint="#000000"
+                android:stateListAnimator="@null"
+                style="@style/Widget.MaterialComponents.Button"
+                app:cornerRadius="12dp"/>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="#DDDDDD" />
+            <ProgressBar
+                android:id="@+id/progressLogin"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:indeterminateTint="#FFFFFF"
+                android:visibility="gone"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="or"
-                android:textSize="13sp"
-                android:textColor="#AAAAAA"
-                android:paddingHorizontal="12dp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="#DDDDDD" />
-
-        </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGoogleLogin"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="Login with Google"
-            android:textSize="15sp"
-            android:textColor="#333333"
-            android:backgroundTint="#FFFFFF"
-            android:stateListAnimator="@null"
-            android:layout_marginBottom="24dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:icon="@drawable/google_symbol"
-            app:iconGravity="textStart"
-            app:iconPadding="10dp"
-            app:iconTint="@null"
-            app:cornerRadius="12dp"
-            app:strokeColor="#DDDDDD"
-            app:strokeWidth="1dp"/>
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
