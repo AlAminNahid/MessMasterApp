@@ -1,6 +1,9 @@
 package com.example.messmaster.managerdashboard
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -23,8 +25,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
+import com.example.messmaster.managerdashboard.model.MessMember
 import com.example.messmaster.managerdashboard.model.MonthlySheetDay
-import com.example.messmaster.managerdashboard.model.MonthlySheetResponse
 import com.example.messmaster.managerdashboard.viewmodel.HomeViewModel
 import com.example.messmaster.managerdashboard.viewmodel.ManagerSharedViewModel
 import com.example.messmaster.util.UiState
@@ -47,6 +49,7 @@ class FragmentHome : Fragment() {
     private lateinit var btnSettings: LinearLayout
     private lateinit var btnAddUtility: LinearLayout
     private lateinit var btnNotifcation: LinearLayout
+    private lateinit var btnMembers: LinearLayout
     private lateinit var btnMonthlySheet: LinearLayout
     private lateinit var txtTotalMealExpense: TextView
     private lateinit var txtMealRate: TextView
@@ -71,6 +74,7 @@ class FragmentHome : Fragment() {
         btnAddUtility = view.findViewById(R.id.btnAddUtility)
         btnSettings = view.findViewById(R.id.btnSettings)
         btnNotifcation = view.findViewById(R.id.btnNotifcation)
+        btnMembers = view.findViewById(R.id.btnMembers)
         btnMonthlySheet = view.findViewById(R.id.btnMonthlySheet)
 
         btnAddMeal.setOnClickListener {
@@ -88,6 +92,7 @@ class FragmentHome : Fragment() {
         btnSettings.setOnClickListener {
             startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
+        btnMembers.setOnClickListener { homeViewModel.loadMembers() }
         btnMonthlySheet.setOnClickListener { homeViewModel.loadMonthlySheet() }
 
         observeStates()
@@ -169,58 +174,35 @@ class FragmentHome : Fragment() {
                         }
                     }
                 }
+
+                launch {
+                    homeViewModel.membersState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                homeViewModel.consumeMembers()
+                                showMembersDialog(state.data)
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
             }
         }
     }
 
     private fun showMonthlySheetTable(days: List<MonthlySheetDay>) {
-        val dialogView = LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(24), dp(22), dp(24), dp(20))
-            setBackgroundResource(R.drawable.bg_dialog_rounded)
-        }
-        val titleView = TextView(requireContext()).apply {
-            text = "Day-Wise Monthly Sheet"
-            gravity = Gravity.CENTER
-            textSize = 20f
-            setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setTextColor(requireContext().getColor(R.color.black))
-        }
-        val subtitleView = TextView(requireContext()).apply {
-            text = "Search by date, member, meal count, or bazar amount."
-            gravity = Gravity.CENTER
-            textSize = 14f
-            setTextColor(requireContext().getColor(R.color.text_secondary))
-            setPadding(0, dp(6), 0, dp(18))
-        }
-        val searchInput = EditText(requireContext()).apply {
-            hint = "Search"
-            setSingleLine(true)
-            setPadding(dp(16), 0, dp(16), 0)
-            setBackgroundResource(R.drawable.bg_input_manager)
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52))
-        }
+        val dialogView = makeDialogShell()
         val rowsContainer = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
-        val scrollView = ScrollView(requireContext()).apply {
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(380)).apply {
-                topMargin = dp(16)
-            }
-            addView(HorizontalScrollView(requireContext()).apply { addView(rowsContainer) })
-        }
-        val closeButton = Button(requireContext()).apply {
-            text = "Close"
-            setTextColor(requireContext().getColor(R.color.white))
-            setTypeface(typeface, android.graphics.Typeface.BOLD)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.black))
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52)).apply {
-                topMargin = dp(18)
-            }
-        }
+        val searchInput = makeSearchInput("Search date, member, meals, or bazar")
+        val totalMeals = days.sumOf { it.totalMeals }
+        val totalBazar = days.sumOf { it.totalBazar }
 
-        dialogView.addView(titleView)
-        dialogView.addView(subtitleView)
+        dialogView.addView(makeDialogTitle("Monthly Sheet"))
+        dialogView.addView(makeDialogSubtitle("${days.size} active days • ${formatAmount(totalMeals)} meals • ৳${formatAmount(totalBazar)} bazar"))
         dialogView.addView(searchInput)
-        dialogView.addView(scrollView)
+        dialogView.addView(makeScrollContainer(rowsContainer))
+        val closeButton = makeCloseButton()
         dialogView.addView(closeButton)
 
         fun daySearchText(day: MonthlySheetDay): String {
@@ -234,26 +216,16 @@ class FragmentHome : Fragment() {
             val filtered = days.filter { daySearchText(it).contains(query, ignoreCase = true) }
 
             if (days.isEmpty()) {
-                rowsContainer.addView(tableMessage("No day-wise activity for this month yet."))
+                rowsContainer.addView(emptyMessage("No day-wise activity for this month yet."))
                 return
             }
             if (filtered.isEmpty()) {
-                rowsContainer.addView(tableMessage("No matching records found."))
+                rowsContainer.addView(emptyMessage("No matching records found."))
                 return
             }
 
-            rowsContainer.addView(tableRow(listOf("Date", "Meals", "Bazar", "Details"), true))
             filtered.forEach { day ->
-                val mealLine = if (day.meals.isEmpty()) "No meals"
-                else day.meals.joinToString(", ") { "${it.member_name}: ${formatAmount(it.total_meals)}" }
-                val bazarLine = if (day.bazar.isEmpty()) "No bazar"
-                else day.bazar.joinToString(", ") { "${it.member_name}: ৳${formatAmount(it.total_amount)}" }
-                rowsContainer.addView(
-                    tableRow(
-                        listOf(day.date, formatAmount(day.totalMeals), "৳${formatAmount(day.totalBazar)}", "$mealLine\n$bazarLine"),
-                        false
-                    )
-                )
+                rowsContainer.addView(monthlySheetCard(day))
             }
         }
 
@@ -271,32 +243,264 @@ class FragmentHome : Fragment() {
 
         closeButton.setOnClickListener { dialog.dismiss() }
         dialog.show()
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        styleDialogWindow(dialog)
     }
 
-    private fun tableRow(values: List<String>, isHeader: Boolean): LinearLayout {
-        return LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setPadding(0, dp(12), 0, dp(12))
-            values.forEach { value ->
-                addView(TextView(requireContext()).apply {
-                    text = value
-                    textSize = if (isHeader) 13f else 12f
-                    setTextColor(requireContext().getColor(if (isHeader) R.color.text_secondary else R.color.black))
-                    setTypeface(typeface, if (isHeader) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
-                    layoutParams = LinearLayout.LayoutParams(dp(118), LinearLayout.LayoutParams.WRAP_CONTENT)
-                })
+    private fun showMembersDialog(members: List<MessMember>) {
+        val dialogView = makeDialogShell()
+        val rowsContainer = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
+        val searchInput = makeSearchInput("Search name, email, phone, or role")
+
+        dialogView.addView(makeDialogTitle("Members"))
+        dialogView.addView(makeDialogSubtitle("${members.size} current members in this mess"))
+        dialogView.addView(searchInput)
+        dialogView.addView(makeScrollContainer(rowsContainer))
+        val closeButton = makeCloseButton()
+        dialogView.addView(closeButton)
+
+        fun memberSearchText(member: MessMember): String =
+            "${member.name} ${member.email} ${member.phone} ${member.role}"
+
+        fun render(query: String) {
+            rowsContainer.removeAllViews()
+            val filtered = members.filter { memberSearchText(it).contains(query, ignoreCase = true) }
+
+            if (members.isEmpty()) {
+                rowsContainer.addView(emptyMessage("No members are available in this mess yet."))
+                return
+            }
+            if (filtered.isEmpty()) {
+                rowsContainer.addView(emptyMessage("No matching members found."))
+                return
+            }
+
+            filtered.forEachIndexed { index, member ->
+                rowsContainer.addView(memberCard(member, index + 1))
             }
         }
+
+        searchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { render(s?.toString().orEmpty()) }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        render("")
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        closeButton.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+        styleDialogWindow(dialog)
     }
 
-    private fun tableMessage(message: String): TextView {
-        return TextView(requireContext()).apply {
-            text = message
-            textSize = 15f
-            setTextColor(requireContext().getColor(R.color.black))
-            setPadding(0, dp(24), 0, dp(18))
+    private fun monthlySheetCard(day: MonthlySheetDay): LinearLayout {
+        return makeCard().apply {
+            addView(LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                addView(TextView(requireContext()).apply {
+                    text = day.date
+                    textSize = 16f
+                    setTypeface(typeface, Typeface.BOLD)
+                    setTextColor(requireContext().getColor(R.color.black))
+                    layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                })
+                addView(makeChip("৳${formatAmount(day.totalBazar)}"))
+            })
+
+            addView(LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.HORIZONTAL
+                setPadding(0, dp(12), 0, dp(10))
+                addView(metricView("Meals", formatAmount(day.totalMeals)))
+                addView(metricView("Bazar", "৳${formatAmount(day.totalBazar)}"))
+            })
+
+            addView(sectionText("Meals"))
+            addView(detailText(if (day.meals.isEmpty()) "No meals recorded" else day.meals.joinToString("\n") {
+                "${it.member_name} - ${formatAmount(it.total_meals)} meals"
+            }))
+
+            addView(sectionText("Bazar"))
+            addView(detailText(if (day.bazar.isEmpty()) "No bazar recorded" else day.bazar.joinToString("\n") {
+                "${it.member_name} - ৳${formatAmount(it.total_amount)}"
+            }))
         }
+    }
+
+    private fun memberCard(member: MessMember, position: Int): LinearLayout {
+        return makeCard().apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+
+            addView(TextView(requireContext()).apply {
+                text = getInitials(member.name)
+                gravity = Gravity.CENTER
+                textSize = 14f
+                setTypeface(typeface, Typeface.BOLD)
+                setTextColor(requireContext().getColor(R.color.white))
+                background = roundedDrawable(requireContext().getColor(R.color.black), dp(18))
+                layoutParams = LinearLayout.LayoutParams(dp(46), dp(46)).apply {
+                    rightMargin = dp(14)
+                }
+            })
+
+            addView(LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+
+                addView(LinearLayout(requireContext()).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                    addView(TextView(requireContext()).apply {
+                        text = "$position. ${member.name}"
+                        textSize = 16f
+                        setTypeface(typeface, Typeface.BOLD)
+                        setTextColor(requireContext().getColor(R.color.black))
+                        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                    })
+                    addView(makeChip(member.role.replaceFirstChar { it.uppercase() }))
+                })
+
+                addView(detailText(member.email.ifBlank { "No email available" }))
+                addView(detailText(member.phone.ifBlank { "No phone available" }))
+            })
+        }
+    }
+
+    private fun makeDialogShell(): LinearLayout =
+        LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(22), dp(22), dp(22), dp(18))
+            background = roundedDrawable(Color.WHITE, dp(18))
+        }
+
+    private fun makeDialogTitle(title: String): TextView =
+        TextView(requireContext()).apply {
+            text = title
+            gravity = Gravity.CENTER
+            textSize = 21f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(requireContext().getColor(R.color.black))
+        }
+
+    private fun makeDialogSubtitle(subtitle: String): TextView =
+        TextView(requireContext()).apply {
+            text = subtitle
+            gravity = Gravity.CENTER
+            textSize = 14f
+            setTextColor(requireContext().getColor(R.color.text_secondary))
+            setPadding(0, dp(6), 0, dp(18))
+        }
+
+    private fun makeSearchInput(hintText: String): EditText =
+        EditText(requireContext()).apply {
+            hint = hintText
+            setSingleLine(true)
+            textSize = 14f
+            setPadding(dp(16), 0, dp(16), 0)
+            setBackgroundResource(R.drawable.bg_input_manager)
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52))
+        }
+
+    private fun makeScrollContainer(content: LinearLayout): ScrollView =
+        ScrollView(requireContext()).apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(430)).apply {
+                topMargin = dp(16)
+            }
+            addView(content)
+        }
+
+    private fun makeCloseButton(): Button =
+        Button(requireContext()).apply {
+            text = "Close"
+            setTextColor(requireContext().getColor(R.color.white))
+            setTypeface(typeface, Typeface.BOLD)
+            backgroundTintList = android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.black))
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52)).apply {
+                topMargin = dp(18)
+            }
+        }
+
+    private fun makeCard(): LinearLayout =
+        LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), dp(14), dp(16), dp(14))
+            background = roundedDrawable(Color.WHITE, dp(12), Color.parseColor("#E8E8E8"))
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                bottomMargin = dp(10)
+            }
+        }
+
+    private fun metricView(label: String, value: String): LinearLayout =
+        LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            background = roundedDrawable(Color.parseColor("#F6F6F6"), dp(10))
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                rightMargin = dp(8)
+            }
+            addView(TextView(requireContext()).apply {
+                text = label
+                textSize = 12f
+                setTextColor(requireContext().getColor(R.color.text_secondary))
+            })
+            addView(TextView(requireContext()).apply {
+                text = value
+                textSize = 16f
+                setTypeface(typeface, Typeface.BOLD)
+                setTextColor(requireContext().getColor(R.color.black))
+            })
+        }
+
+    private fun makeChip(textValue: String): TextView =
+        TextView(requireContext()).apply {
+            text = textValue
+            textSize = 12f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(requireContext().getColor(R.color.black))
+            setPadding(dp(10), dp(5), dp(10), dp(5))
+            background = roundedDrawable(Color.parseColor("#F2F2F2"), dp(14))
+        }
+
+    private fun sectionText(value: String): TextView =
+        TextView(requireContext()).apply {
+            text = value
+            textSize = 13f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(requireContext().getColor(R.color.black))
+            setPadding(0, dp(8), 0, dp(3))
+        }
+
+    private fun detailText(value: String): TextView =
+        TextView(requireContext()).apply {
+            text = value
+            textSize = 13f
+            setTextColor(requireContext().getColor(R.color.text_secondary))
+            setLineSpacing(2f, 1f)
+        }
+
+    private fun emptyMessage(message: String): TextView =
+        TextView(requireContext()).apply {
+            text = message
+            gravity = Gravity.CENTER
+            textSize = 15f
+            setTextColor(requireContext().getColor(R.color.text_secondary))
+            setPadding(dp(12), dp(36), dp(12), dp(36))
+        }
+
+    private fun roundedDrawable(color: Int, radius: Int, strokeColor: Int? = null): GradientDrawable =
+        GradientDrawable().apply {
+            setColor(color)
+            cornerRadius = radius.toFloat()
+            strokeColor?.let { setStroke(dp(1), it) }
+        }
+
+    private fun styleDialogWindow(dialog: AlertDialog) {
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.92).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     private fun getInitials(name: String): String {

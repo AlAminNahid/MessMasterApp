@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityBillsResponse
+import com.example.messmaster.managerdashboard.model.MessMember
 import com.example.messmaster.managerdashboard.model.MonthlySheetResponse
 import com.example.messmaster.managerdashboard.model.TotalMealExpenseResponse
 import com.example.messmaster.managerdashboard.repository.ManagerRepository
@@ -26,6 +27,9 @@ class HomeViewModel(private val repository: ManagerRepository) : ViewModel() {
 
     private val _monthlySheetState = MutableStateFlow<UiState<MonthlySheetResponse>>(UiState.Idle)
     val monthlySheetState: StateFlow<UiState<MonthlySheetResponse>> = _monthlySheetState.asStateFlow()
+
+    private val _membersState = MutableStateFlow<UiState<List<MessMember>>>(UiState.Idle)
+    val membersState: StateFlow<UiState<List<MessMember>>> = _membersState.asStateFlow()
 
     init {
         loadTotalMealExpense()
@@ -52,7 +56,15 @@ class HomeViewModel(private val repository: ManagerRepository) : ViewModel() {
         }
     }
 
+    fun loadMembers() {
+        viewModelScope.launch {
+            _membersState.value = UiState.Loading
+            _membersState.value = repository.getCurrentMessMembers()
+        }
+    }
+
     fun consumeMonthlySheet() { _monthlySheetState.value = UiState.Idle }
+    fun consumeMembers() { _membersState.value = UiState.Idle }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

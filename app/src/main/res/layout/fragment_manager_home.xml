@@ -358,7 +358,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/btnSettings"
+                android:id="@+id/btnMembers"
                 android:layout_width="0dp"
                 android:layout_height="128dp"
                 android:layout_columnWeight="1"
@@ -372,14 +372,14 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/settings_icon"/>
+                    android:src="@drawable/profile_icon"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
-                    android:text="Settings"
+                    android:text="Members"
                     android:textColor="#111111"
                     android:textSize="14sp"
                     android:textStyle="bold"/>
@@ -409,6 +409,35 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
                     android:text="Monthly Sheet"
+                    android:textColor="#111111"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnSettings"
+                android:layout_width="0dp"
+                android:layout_height="128dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_white_card"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/settings_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:text="Settings"
                     android:textColor="#111111"
                     android:textSize="14sp"
                     android:textStyle="bold"/>

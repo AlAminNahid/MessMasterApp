@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Spinner
@@ -102,7 +101,7 @@ class FragmentMeal : Fragment() {
 
     private fun setupMealTypeSpinner() {
         val mealTypes = listOf("Select meal") + requireContext().resources.getStringArray(R.array.manager_meal_types).toList()
-        val adapter = ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, mealTypes)
+        val adapter = ArrayAdapter(requireContext(), R.layout.spinner_selected_item, mealTypes)
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerMealType.adapter = adapter
     }
@@ -117,7 +116,7 @@ class FragmentMeal : Fragment() {
                             is UiState.Success -> {
                                 members = state.data
                                 val names = listOf("Select member") + members.map { it.name }
-                                val adapter = ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, names)
+                                val adapter = ArrayAdapter(requireContext(), R.layout.spinner_selected_item, names)
                                 adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
                                 spinnerMealMember.adapter = adapter
                                 spinnerMealExpenseMember.adapter = adapter
@@ -286,13 +285,14 @@ class FragmentMeal : Fragment() {
     }
 
     private fun showMealsTable(meals: List<CurrentMonthMeal>) {
-        showSearchableTable(
+        val totalMeals = meals.sumOf { it.meal_count }
+        showSearchableCards(
             title = "Current Month Meals",
+            subtitle = "${meals.size} records - $totalMeals meals - Tap a card to update",
             emptyMessage = "No meals added for this month yet.",
             items = meals,
-            headers = listOf("Date", "Member", "Type", "Meals"),
-            rowValues = { meal -> listOf(meal.date, meal.member_name, meal.meal_type, meal.meal_count.toString()) },
             searchableText = { meal -> "${meal.date} ${meal.member_name} ${meal.meal_type} ${meal.meal_count}" },
+            cardView = { meal -> mealRecordCard(meal) },
             onRowClick = { meal -> showEditMealDialog(meal) }
         )
     }
@@ -309,13 +309,13 @@ class FragmentMeal : Fragment() {
         val inputDate = dialogInput(meal.date, "Date")
         val inputCount = dialogInput(meal.meal_count.toString(), "Meal count")
 
-        val memberAdapter = ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, members.map { it.name })
+        val memberAdapter = ArrayAdapter(requireContext(), R.layout.spinner_selected_item, members.map { it.name })
         memberAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         memberSpinner.adapter = memberAdapter
         memberSpinner.setSelection(members.indexOfFirst { it.member_id == meal.member_id }.coerceAtLeast(0))
 
         val mealTypes = requireContext().resources.getStringArray(R.array.manager_meal_types).toList()
-        val typeAdapter = ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, mealTypes)
+        val typeAdapter = ArrayAdapter(requireContext(), R.layout.spinner_selected_item, mealTypes)
         typeAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         mealTypeSpinner.adapter = typeAdapter
         mealTypeSpinner.setSelection(mealTypes.indexOf(meal.meal_type).coerceAtLeast(0))
@@ -357,17 +357,16 @@ class FragmentMeal : Fragment() {
     }
 
     private fun showExpensesTable(expenses: List<CurrentMonthMealExpense>) {
-        showSearchableTable(
+        val totalAmount = expenses.sumOf { it.amount }
+        showSearchableCards(
             title = "Current Month Bazar",
+            subtitle = "${expenses.size} records - ৳${formatAmount(totalAmount)} total - Tap a card to update",
             emptyMessage = "No bazar expense added for this month yet.",
             items = expenses,
-            headers = listOf("Date", "Member", "Amount", "Details"),
-            rowValues = { expense ->
-                listOf(expense.date, expense.member_name, "৳${formatAmount(expense.amount)}", expense.description)
-            },
             searchableText = { expense ->
                 "${expense.date} ${expense.member_name} ${expense.amount} ${expense.description}"
             },
+            cardView = { expense -> expenseRecordCard(expense) },
             onRowClick = { expense -> showEditExpenseDialog(expense) }
         )
     }
@@ -384,7 +383,7 @@ class FragmentMeal : Fragment() {
         val inputAmount = dialogInput(expense.amount.toString(), "Amount")
         val inputDescription = dialogInput(expense.description, "Description")
 
-        val adapter = ArrayAdapter(requireContext(), R.layout.spinner_dropdown_item, members.map { it.name })
+        val adapter = ArrayAdapter(requireContext(), R.layout.spinner_selected_item, members.map { it.name })
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         memberSpinner.adapter = adapter
         memberSpinner.setSelection(members.indexOfFirst { it.member_id == expense.member_id }.coerceAtLeast(0))
@@ -484,13 +483,13 @@ class FragmentMeal : Fragment() {
         return dialog
     }
 
-    private fun <T> showSearchableTable(
+    private fun <T> showSearchableCards(
         title: String,
+        subtitle: String,
         emptyMessage: String,
         items: List<T>,
-        headers: List<String>,
-        rowValues: (T) -> List<String>,
         searchableText: (T) -> String,
+        cardView: (T) -> View,
         onRowClick: (T) -> Unit
     ) {
         val dialogView = LinearLayout(requireContext()).apply {
@@ -506,7 +505,7 @@ class FragmentMeal : Fragment() {
             setTextColor(requireContext().getColor(R.color.black))
         }
         val subtitleView = TextView(requireContext()).apply {
-            text = "Search records and tap a row to update it."
+            text = subtitle
             gravity = Gravity.CENTER
             textSize = 14f
             setTextColor(requireContext().getColor(R.color.text_secondary))
@@ -521,10 +520,10 @@ class FragmentMeal : Fragment() {
         }
         val rowsContainer = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
         val scrollView = ScrollView(requireContext()).apply {
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(360)).apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(430)).apply {
                 topMargin = dp(16)
             }
-            addView(HorizontalScrollView(requireContext()).apply { addView(rowsContainer) })
+            addView(rowsContainer)
         }
         val closeButton = Button(requireContext()).apply {
             text = "Close"
@@ -547,21 +546,20 @@ class FragmentMeal : Fragment() {
             val filtered = items.filter { searchableText(it).contains(query, ignoreCase = true) }
 
             if (items.isEmpty()) {
-                rowsContainer.addView(tableMessage(emptyMessage))
+                rowsContainer.addView(recordMessage(emptyMessage))
                 return
             }
             if (filtered.isEmpty()) {
-                rowsContainer.addView(tableMessage("No matching records found."))
+                rowsContainer.addView(recordMessage("No matching records found."))
                 return
             }
 
-            rowsContainer.addView(tableRow(headers, isHeader = true))
             filtered.forEach { item ->
-                rowsContainer.addView(
-                    tableRow(rowValues(item), isHeader = false).apply {
-                        setOnClickListener { onRowClick(item) }
-                    }
-                )
+                rowsContainer.addView(cardView(item).apply {
+                    setOnClickListener { onRowClick(item) }
+                    isClickable = true
+                    isFocusable = true
+                })
             }
         }
 
@@ -580,30 +578,136 @@ class FragmentMeal : Fragment() {
         closeButton.setOnClickListener { dialog.dismiss() }
         dialog.show()
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.92).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
-    private fun tableRow(values: List<String>, isHeader: Boolean): LinearLayout {
+    private fun mealRecordCard(meal: CurrentMonthMeal): LinearLayout {
+        return recordCard().apply {
+            addView(recordHeader(meal.member_name, meal.date, meal.meal_type))
+            addView(recordMetricRow("Meal count", meal.meal_count.toString(), "Meal type", meal.meal_type))
+            addView(recordHint("Tap to edit this meal entry"))
+        }
+    }
+
+    private fun expenseRecordCard(expense: CurrentMonthMealExpense): LinearLayout {
+        return recordCard().apply {
+            addView(recordHeader(expense.member_name, expense.date, "৳${formatAmount(expense.amount)}"))
+            addView(recordMetricRow("Amount", "৳${formatAmount(expense.amount)}", "Date", expense.date))
+            addView(recordSection("Description"))
+            addView(recordBody(expense.description))
+            addView(recordHint("Tap to edit this bazar entry"))
+        }
+    }
+
+    private fun recordCard(): LinearLayout {
         return LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setPadding(0, dp(12), 0, dp(12))
-            values.forEach { value ->
-                addView(TextView(requireContext()).apply {
-                    text = value
-                    textSize = if (isHeader) 13f else 12f
-                    setTextColor(requireContext().getColor(if (isHeader) R.color.text_secondary else R.color.black))
-                    setTypeface(typeface, if (isHeader) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
-                    layoutParams = LinearLayout.LayoutParams(dp(112), LinearLayout.LayoutParams.WRAP_CONTENT)
-                })
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), dp(14), dp(16), dp(14))
+            setBackgroundResource(R.drawable.bg_white_card)
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                bottomMargin = dp(10)
             }
         }
     }
 
-    private fun tableMessage(message: String): TextView {
+    private fun recordHeader(title: String, subtitle: String, chip: String): LinearLayout {
+        return LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            addView(LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                addView(TextView(requireContext()).apply {
+                    text = title
+                    textSize = 16f
+                    setTypeface(typeface, android.graphics.Typeface.BOLD)
+                    setTextColor(requireContext().getColor(R.color.black))
+                })
+                addView(TextView(requireContext()).apply {
+                    text = subtitle
+                    textSize = 13f
+                    setTextColor(requireContext().getColor(R.color.text_secondary))
+                    setPadding(0, dp(3), dp(10), 0)
+                })
+            })
+            addView(TextView(requireContext()).apply {
+                text = chip
+                textSize = 12f
+                setTypeface(typeface, android.graphics.Typeface.BOLD)
+                setTextColor(requireContext().getColor(R.color.black))
+                setPadding(dp(10), dp(5), dp(10), dp(5))
+                setBackgroundResource(R.drawable.bg_input_manager)
+            })
+        }
+    }
+
+    private fun recordMetricRow(firstLabel: String, firstValue: String, secondLabel: String, secondValue: String): LinearLayout {
+        return LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(0, dp(12), 0, dp(4))
+            addView(recordMetric(firstLabel, firstValue, true))
+            addView(recordMetric(secondLabel, secondValue, false))
+        }
+    }
+
+    private fun recordMetric(label: String, value: String, addEndMargin: Boolean): LinearLayout {
+        return LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            setBackgroundResource(R.drawable.bg_input_manager)
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                if (addEndMargin) marginEnd = dp(8)
+            }
+            addView(TextView(requireContext()).apply {
+                text = label
+                textSize = 12f
+                setTextColor(requireContext().getColor(R.color.text_secondary))
+            })
+            addView(TextView(requireContext()).apply {
+                text = value
+                textSize = 15f
+                setTypeface(typeface, android.graphics.Typeface.BOLD)
+                setTextColor(requireContext().getColor(R.color.black))
+            })
+        }
+    }
+
+    private fun recordSection(text: String): TextView {
+        return TextView(requireContext()).apply {
+            this.text = text
+            textSize = 13f
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setTextColor(requireContext().getColor(R.color.black))
+            setPadding(0, dp(10), 0, dp(3))
+        }
+    }
+
+    private fun recordBody(text: String): TextView {
+        return TextView(requireContext()).apply {
+            this.text = text
+            textSize = 13f
+            setTextColor(requireContext().getColor(R.color.text_secondary))
+            setLineSpacing(2f, 1f)
+        }
+    }
+
+    private fun recordHint(text: String): TextView {
+        return TextView(requireContext()).apply {
+            this.text = text
+            gravity = Gravity.END
+            textSize = 12f
+            setTextColor(requireContext().getColor(R.color.text_secondary))
+            setPadding(0, dp(8), 0, 0)
+        }
+    }
+
+    private fun recordMessage(message: String): TextView {
         return TextView(requireContext()).apply {
             text = message
+            gravity = Gravity.CENTER
             textSize = 15f
-            setTextColor(requireContext().getColor(R.color.black))
-            setPadding(0, dp(24), 0, dp(18))
+            setTextColor(requireContext().getColor(R.color.text_secondary))
+            setPadding(dp(12), dp(36), dp(12), dp(36))
         }
     }
 
