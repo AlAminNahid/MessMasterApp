@@ -90,19 +90,22 @@
                     android:layout_weight="1"
                     android:text="Name"
                     android:textColor="#8E8E8E"
-                    android:textSize="18sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
 
                 <TextView
                     android:id="@+id/txtProfileName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:maxLines="2"
                     android:text="Loading..."
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.08" />
+                    android:letterSpacing="0" />
 
             </LinearLayout>
 
@@ -119,19 +122,22 @@
                     android:layout_weight="1"
                     android:text="Email"
                     android:textColor="#8E8E8E"
-                    android:textSize="18sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
 
                 <TextView
                     android:id="@+id/txtProfileEmail"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:maxLines="2"
                     android:text="Loading..."
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.08" />
+                    android:letterSpacing="0" />
 
             </LinearLayout>
 
@@ -148,19 +154,22 @@
                     android:layout_weight="1"
                     android:text="Phone"
                     android:textColor="#8E8E8E"
-                    android:textSize="18sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
 
                 <TextView
                     android:id="@+id/txtProfilePhone"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:maxLines="2"
                     android:text="Loading..."
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.08" />
+                    android:letterSpacing="0" />
 
             </LinearLayout>
 
@@ -177,19 +186,22 @@
                     android:layout_weight="1"
                     android:text="NID"
                     android:textColor="#8E8E8E"
-                    android:textSize="18sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
 
                 <TextView
                     android:id="@+id/txtProfileNid"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:maxLines="2"
                     android:text="Loading..."
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.08" />
+                    android:letterSpacing="0" />
 
             </LinearLayout>
 
@@ -226,19 +238,22 @@
                     android:layout_weight="1"
                     android:text="Name"
                     android:textColor="#8E8E8E"
-                    android:textSize="18sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
 
                 <TextView
                     android:id="@+id/txtProfileMessName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:maxLines="2"
                     android:text="Loading..."
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.08" />
+                    android:letterSpacing="0" />
 
             </LinearLayout>
 
@@ -255,19 +270,22 @@
                     android:layout_weight="1"
                     android:text="Address"
                     android:textColor="#8E8E8E"
-                    android:textSize="18sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
 
                 <TextView
                     android:id="@+id/txtProfileMessAddress"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:maxLines="3"
                     android:text="Loading..."
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.08" />
+                    android:letterSpacing="0" />
 
             </LinearLayout>
 
@@ -284,19 +302,22 @@
                     android:layout_weight="1"
                     android:text="Total members"
                     android:textColor="#8E8E8E"
-                    android:textSize="18sp"
+                    android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
 
                 <TextView
                     android:id="@+id/txtProfileTotalMembers"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:maxLines="1"
                     android:text="Loading..."
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.08" />
+                    android:letterSpacing="0" />
 
             </LinearLayout>
 
@@ -312,23 +333,23 @@
                 android:id="@+id/btnEditProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="56dp"
-                android:backgroundTint="@color/text_secondary"
+                android:backgroundTint="@color/black"
                 android:layout_weight="1"
                 android:text="Edit profile"
-                android:textColor="#111111"
-                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btnOpenSettings"
                 android:layout_width="wrap_content"
                 android:layout_height="56dp"
-                android:backgroundTint="#000000"
+                android:backgroundTint="#DADCE2"
                 android:layout_weight="1"
                 android:text="Settings"
-                android:layout_marginLeft="5dp"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:layout_marginStart="10dp"
+                android:textColor="#111111"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
 
         </LinearLayout>

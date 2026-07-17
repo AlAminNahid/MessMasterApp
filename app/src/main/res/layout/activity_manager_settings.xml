@@ -17,11 +17,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="88dp"
             android:background="#000000"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingHorizontal="16dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="24dp">
 
             <ImageButton
                 android:id="@+id/btnBack"
@@ -36,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Settings"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:layout_marginStart="8dp" />
@@ -78,6 +80,7 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="8dp"
                 android:hint="Enter current password"
+                android:textColor="@color/black"
                 android:textColorHint="@color/text_secondary"
                 android:inputType="textPassword"/>
 
@@ -99,6 +102,7 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="8dp"
                 android:hint="Enter new password"
+                android:textColor="@color/black"
                 android:textColorHint="@color/text_secondary"
                 android:inputType="textPassword"/>
 
@@ -120,6 +124,7 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="8dp"
                 android:hint="Confirm new password"
+                android:textColor="@color/black"
                 android:textColorHint="@color/text_secondary"
                 android:inputType="textPassword"/>
 
@@ -143,7 +148,7 @@
             android:backgroundTint="#DADCE2"
             android:text="Log out"
             android:textColor="#B80000"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginTop="30dp"
             android:layout_marginHorizontal="24dp"/>

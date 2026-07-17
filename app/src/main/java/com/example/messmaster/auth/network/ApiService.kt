@@ -25,4 +25,7 @@ interface ApiService {
 
     @POST("auth/logout")
     suspend fun logout(): Response<LogoutResponse>
+
+    @POST("auth/refresh")
+    suspend fun refresh(): Response<LogoutResponse>
 }

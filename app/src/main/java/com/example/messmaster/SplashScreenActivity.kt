@@ -7,10 +7,12 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.messmaster.auth.LoginActivity
 import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.commondashboard.HomeActivity
 import com.example.messmaster.managerdashboard.ManagerMainActivity
+import kotlinx.coroutines.launch
 
 class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,23 +28,39 @@ class SplashScreenActivity : AppCompatActivity() {
     }
 
     private fun checkSessionAndNavigate() {
-        if (RetrofitClient.cookieJar.hasValidSession()) {
-            val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-            val role = prefs.getString("user_role", "none")
+        val cookieJar = RetrofitClient.cookieJar
 
-            val intent = when (role) {
-                "manager" -> {
-                    Intent(this, ManagerMainActivity::class.java)
+        when {
+            cookieJar.hasValidAccessToken() -> navigateToDashboard()
+            cookieJar.hasValidRefreshToken() -> lifecycleScope.launch {
+                val refreshed = try {
+                    RetrofitClient.authService.refresh().isSuccessful
+                } catch (e: Exception) {
+                    false
                 }
-                "member" -> {
-                    Intent(this, HomeActivity::class.java)
-                }
-                else -> Intent(this, HomeActivity::class.java)
+                if (refreshed) navigateToDashboard() else navigateToLogin()
             }
-            startActivity(intent)
-        } else {
-            startActivity(Intent(this, LoginActivity::class.java))
+            else -> navigateToLogin()
         }
+    }
+
+    private fun navigateToDashboard() {
+        val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val role = prefs.getString("user_role", "none")
+
+        val intent = when (role) {
+            "manager" -> Intent(this, ManagerMainActivity::class.java)
+            "member" -> Intent(this, HomeActivity::class.java)
+            else -> Intent(this, HomeActivity::class.java)
+        }
+        startActivity(intent)
+        finish()
+    }
+
+    private fun navigateToLogin() {
+        RetrofitClient.cookieJar.clear()
+        getSharedPreferences("user_prefs", Context.MODE_PRIVATE).edit().clear().apply()
+        startActivity(Intent(this, LoginActivity::class.java))
         finish()
     }
 }

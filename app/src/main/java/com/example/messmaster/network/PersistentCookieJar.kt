@@ -53,9 +53,15 @@ class PersistentCookieJar(context: Context) : CookieJar {
         return cookieCache.values.filter { it.matches(url) }
     }
 
-    fun hasValidSession(): Boolean {
+    fun hasValidAccessToken(): Boolean {
         return cookieCache.values.any { it.name == "access_token" && it.expiresAt > System.currentTimeMillis() }
     }
+
+    fun hasValidRefreshToken(): Boolean {
+        return cookieCache.values.any { it.name == "refresh_token" && it.expiresAt > System.currentTimeMillis() }
+    }
+
+    fun hasValidSession(): Boolean = hasValidAccessToken() || hasValidRefreshToken()
 
     fun clear() {
         cookieCache.clear()

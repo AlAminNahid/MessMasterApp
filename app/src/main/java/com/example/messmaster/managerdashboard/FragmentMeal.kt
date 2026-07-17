@@ -514,6 +514,8 @@ class FragmentMeal : Fragment() {
         val searchInput = EditText(requireContext()).apply {
             hint = "Search"
             setSingleLine(true)
+            setTextColor(requireContext().getColor(R.color.black))
+            setHintTextColor(requireContext().getColor(R.color.text_secondary))
             setPadding(dp(16), 0, dp(16), 0)
             setBackgroundResource(R.drawable.bg_input_manager)
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52))
@@ -749,6 +751,8 @@ class FragmentMeal : Fragment() {
             hint = hintText
             setText(value)
             setSingleLine(true)
+            setTextColor(requireContext().getColor(R.color.black))
+            setHintTextColor(requireContext().getColor(R.color.text_secondary))
             setBackgroundResource(R.drawable.bg_input_manager)
             setPadding(dp(16), 0, dp(16), 0)
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52))

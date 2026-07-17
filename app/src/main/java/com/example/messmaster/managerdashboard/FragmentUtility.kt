@@ -340,6 +340,8 @@ class FragmentUtility : Fragment() {
             hint = hintText
             setText(value)
             setSingleLine(true)
+            setTextColor(requireContext().getColor(R.color.black))
+            setHintTextColor(requireContext().getColor(R.color.text_secondary))
             inputType = android.text.InputType.TYPE_CLASS_NUMBER or
                     android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
             setBackgroundResource(R.drawable.bg_input_manager)

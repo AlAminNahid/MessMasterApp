@@ -25,107 +25,80 @@ import com.example.messmaster.managerdashboard.model.UpdateUserProfileRequest
 import com.example.messmaster.managerdashboard.network.ApiService
 import com.example.messmaster.model.UserProfileResponse
 import com.example.messmaster.util.UiState
-import com.example.messmaster.util.parseError
+import com.example.messmaster.util.safeApiCall
 
 class ManagerRepository(private val apiService: ApiService) {
 
-    suspend fun getCurrentMess(): UiState<CurrentMessResponse> = try {
-        val r = apiService.getCurrentMess()
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun getCurrentMess(): UiState<CurrentMessResponse> =
+        safeApiCall("ManagerRepository") { apiService.getCurrentMess() }
 
-    suspend fun getCurrentMessMembers(): UiState<List<MessMember>> = try {
-        val r = apiService.getCurrentMessMembers()
-        if (r.isSuccessful) UiState.Success(r.body()!!.members) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun getCurrentMessMembers(): UiState<List<MessMember>> =
+        safeApiCall("ManagerRepository") { apiService.getCurrentMessMembers() }
+            .let { state -> mapListState(state) { it.members } }
 
-    suspend fun updateUserProfile(request: UpdateUserProfileRequest): UiState<UserProfileResponse> = try {
-        val r = apiService.updateUserProfile(request)
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun updateUserProfile(request: UpdateUserProfileRequest): UiState<UserProfileResponse> =
+        safeApiCall("ManagerRepository") { apiService.updateUserProfile(request) }
 
-    suspend fun getMessStatistics(): UiState<MessStatisticsResponse> = try {
-        val r = apiService.getMessStatistics()
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun getMessStatistics(): UiState<MessStatisticsResponse> =
+        safeApiCall("ManagerRepository") { apiService.getMessStatistics() }
 
-    suspend fun getTotalMealExpense(): UiState<TotalMealExpenseResponse> = try {
-        val r = apiService.getTotalMealExpense()
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun getTotalMealExpense(): UiState<TotalMealExpenseResponse> =
+        safeApiCall("ManagerRepository") { apiService.getTotalMealExpense() }
 
-    suspend fun getTodayTotalMeals(): UiState<TodayTotalMealsResponse> = try {
-        val r = apiService.getTodayTotalMeals()
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun getTodayTotalMeals(): UiState<TodayTotalMealsResponse> =
+        safeApiCall("ManagerRepository") { apiService.getTodayTotalMeals() }
 
-    suspend fun getMealRate(): UiState<MealRateResponse> = try {
-        val r = apiService.getMealRate()
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun getMealRate(): UiState<MealRateResponse> =
+        safeApiCall("ManagerRepository") { apiService.getMealRate() }
 
-    suspend fun getMonthlySheet(): UiState<MonthlySheetResponse> = try {
-        val r = apiService.getMonthlySheet()
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun getMonthlySheet(): UiState<MonthlySheetResponse> =
+        safeApiCall("ManagerRepository") { apiService.getMonthlySheet() }
 
-    suspend fun getCurrentMonthMeals(): UiState<List<CurrentMonthMeal>> = try {
-        val r = apiService.getCurrentMonthMeals()
-        if (r.isSuccessful) UiState.Success(r.body()!!.meals) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun getCurrentMonthMeals(): UiState<List<CurrentMonthMeal>> =
+        safeApiCall("ManagerRepository") { apiService.getCurrentMonthMeals() }
+            .let { state -> mapListState(state) { it.meals } }
 
-    suspend fun getCurrentMonthMealExpenses(): UiState<List<CurrentMonthMealExpense>> = try {
-        val r = apiService.getCurrentMonthMealExpenses()
-        if (r.isSuccessful) UiState.Success(r.body()!!.expenses) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun getCurrentMonthMealExpenses(): UiState<List<CurrentMonthMealExpense>> =
+        safeApiCall("ManagerRepository") { apiService.getCurrentMonthMealExpenses() }
+            .let { state -> mapListState(state) { it.expenses } }
 
-    suspend fun getCurrentMonthUtilityBills(messID: Int): UiState<CurrentMonthUtilityBillsResponse> = try {
-        val r = apiService.getCurrentMonthUtilityBills(messID)
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun getCurrentMonthUtilityBills(messID: Int): UiState<CurrentMonthUtilityBillsResponse> =
+        safeApiCall("ManagerRepository") { apiService.getCurrentMonthUtilityBills(messID) }
 
-    suspend fun getCurrentMonthUtilityEntries(messID: Int): UiState<List<CurrentMonthUtilityEntry>> = try {
-        val r = apiService.getCurrentMonthUtilityEntries(messID)
-        if (r.isSuccessful) UiState.Success(r.body()!!.entries) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun getCurrentMonthUtilityEntries(messID: Int): UiState<List<CurrentMonthUtilityEntry>> =
+        safeApiCall("ManagerRepository") { apiService.getCurrentMonthUtilityEntries(messID) }
+            .let { state -> mapListState(state) { it.entries } }
 
-    suspend fun getNotices(messID: Int): UiState<List<NoticeItem>> = try {
-        val r = apiService.getNotices(messID)
-        if (r.isSuccessful) UiState.Success(r.body()!!.notices) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun getNotices(messID: Int): UiState<List<NoticeItem>> =
+        safeApiCall("ManagerRepository") { apiService.getNotices(messID) }
+            .let { state -> mapListState(state) { it.notices } }
 
-    suspend fun sendNotice(request: NoticeRequest): UiState<NoticeResponse> = try {
-        val r = apiService.sendNotice(request)
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun sendNotice(request: NoticeRequest): UiState<NoticeResponse> =
+        safeApiCall("ManagerRepository") { apiService.sendNotice(request) }
 
-    suspend fun insertMeal(request: InsertMealRequest): UiState<InsertMealResponse> = try {
-        val r = apiService.insertMeal(request)
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun insertMeal(request: InsertMealRequest): UiState<InsertMealResponse> =
+        safeApiCall("ManagerRepository") { apiService.insertMeal(request) }
 
-    suspend fun updateMeal(mealID: Int, request: InsertMealRequest): UiState<InsertMealResponse> = try {
-        val r = apiService.updateMeal(mealID, request)
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun updateMeal(mealID: Int, request: InsertMealRequest): UiState<InsertMealResponse> =
+        safeApiCall("ManagerRepository") { apiService.updateMeal(mealID, request) }
 
-    suspend fun insertMealExpense(request: InsertMealExpenseRequest): UiState<InsertMealExpenseResponse> = try {
-        val r = apiService.insertMealExpense(request)
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun insertMealExpense(request: InsertMealExpenseRequest): UiState<InsertMealExpenseResponse> =
+        safeApiCall("ManagerRepository") { apiService.insertMealExpense(request) }
 
-    suspend fun updateMealExpense(expenseID: Int, request: InsertMealExpenseRequest): UiState<InsertMealExpenseResponse> = try {
-        val r = apiService.updateMealExpense(expenseID, request)
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun updateMealExpense(expenseID: Int, request: InsertMealExpenseRequest): UiState<InsertMealExpenseResponse> =
+        safeApiCall("ManagerRepository") { apiService.updateMealExpense(expenseID, request) }
 
-    suspend fun insertUtilityCost(request: InsertUtilityCostRequest): UiState<InsertUtilityCostResponse> = try {
-        val r = apiService.insertUtilityCost(request)
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun insertUtilityCost(request: InsertUtilityCostRequest): UiState<InsertUtilityCostResponse> =
+        safeApiCall("ManagerRepository") { apiService.insertUtilityCost(request) }
 
-    suspend fun updateUtilityCost(utilityID: Int, request: InsertUtilityCostRequest): UiState<InsertUtilityCostResponse> = try {
-        val r = apiService.updateUtilityCost(utilityID, request)
-        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
-    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+    suspend fun updateUtilityCost(utilityID: Int, request: InsertUtilityCostRequest): UiState<InsertUtilityCostResponse> =
+        safeApiCall("ManagerRepository") { apiService.updateUtilityCost(utilityID, request) }
+
+    private inline fun <T, R> mapListState(state: UiState<T>, extract: (T) -> List<R>): UiState<List<R>> =
+        when (state) {
+            is UiState.Success -> UiState.Success(extract(state.data))
+            is UiState.Error -> state
+            is UiState.Loading -> UiState.Loading
+            is UiState.Idle -> UiState.Idle
+        }
 }
