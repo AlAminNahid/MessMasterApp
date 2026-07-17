@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_member_dashboard"
+    app:startDestination="@id/memberHomeFragment">
+
+    <fragment
+        android:id="@+id/memberHomeFragment"
+        android:name="com.example.messmaster.memberdashboard.MemberHomeFragment"
+        android:label="Home" />
+
+    <fragment
+        android:id="@+id/memberMealsFragment"
+        android:name="com.example.messmaster.memberdashboard.MemberMealsFragment"
+        android:label="Meals" />
+
+    <fragment
+        android:id="@+id/memberUtilityFragment"
+        android:name="com.example.messmaster.memberdashboard.MemberUtilityFragment"
+        android:label="Utility" />
+
+    <fragment
+        android:id="@+id/memberNoticeFragment"
+        android:name="com.example.messmaster.memberdashboard.MemberNoticeFragment"
+        android:label="Notice" />
+
+    <fragment
+        android:id="@+id/memberProfileFragment"
+        android:name="com.example.messmaster.managerdashboard.FragmentProfile"
+        android:label="Profile" />
+</navigation>

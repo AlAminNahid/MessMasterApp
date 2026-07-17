@@ -6,6 +6,10 @@ import com.example.messmaster.managerdashboard.model.CurrentMonthMealExpensesRes
 import com.example.messmaster.managerdashboard.model.CurrentMonthMealsResponse
 import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityBillsResponse
 import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityEntriesResponse
+import com.example.messmaster.managerdashboard.model.ChangeMessPasswordRequest
+import com.example.messmaster.managerdashboard.model.MessPasswordResponse
+import com.example.messmaster.managerdashboard.model.MessPasswordUpdateResponse
+import com.example.messmaster.managerdashboard.model.ViewMessPasswordRequest
 import com.example.messmaster.managerdashboard.model.InsertMealExpenseRequest
 import com.example.messmaster.managerdashboard.model.InsertMealExpenseResponse
 import com.example.messmaster.managerdashboard.model.InsertMealRequest
@@ -45,6 +49,12 @@ interface ApiService {
 
     @GET("mess/messStatistics")
     suspend fun getMessStatistics(): Response<MessStatisticsResponse>
+
+    @POST("mess/messPassword")
+    suspend fun viewMessPassword(@Body request: ViewMessPasswordRequest): Response<MessPasswordResponse>
+
+    @PATCH("mess/changeMessPassword")
+    suspend fun changeMessPassword(@Body request: ChangeMessPasswordRequest): Response<MessPasswordUpdateResponse>
 
     @GET("mess/totalMealExpense")
     suspend fun getTotalMealExpense(): Response<TotalMealExpenseResponse>

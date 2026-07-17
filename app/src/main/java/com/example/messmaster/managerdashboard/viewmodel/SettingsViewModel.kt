@@ -7,6 +7,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.messmaster.commondashboard.model.changePassword.ChangePassRequest
 import com.example.messmaster.commondashboard.model.changePassword.ChangePassResponse
+import com.example.messmaster.managerdashboard.model.MessPasswordUpdateResponse
+import com.example.messmaster.managerdashboard.repository.ManagerRepository
 import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.shared.repository.SharedRepository
 import com.example.messmaster.util.UiState
@@ -15,7 +17,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(private val sharedRepository: SharedRepository) : ViewModel() {
+class SettingsViewModel(
+    private val sharedRepository: SharedRepository,
+    private val managerRepository: ManagerRepository
+) : ViewModel() {
 
     private val _changePassState = MutableStateFlow<UiState<ChangePassResponse>>(UiState.Idle)
     val changePassState: StateFlow<UiState<ChangePassResponse>> = _changePassState.asStateFlow()
@@ -23,12 +28,22 @@ class SettingsViewModel(private val sharedRepository: SharedRepository) : ViewMo
     private val _logoutState = MutableStateFlow<UiState<Boolean>>(UiState.Idle)
     val logoutState: StateFlow<UiState<Boolean>> = _logoutState.asStateFlow()
 
+    private val _messPasswordState = MutableStateFlow<UiState<MessPasswordUpdateResponse>>(UiState.Idle)
+    val messPasswordState: StateFlow<UiState<MessPasswordUpdateResponse>> = _messPasswordState.asStateFlow()
+
     fun changePassword(email: String, oldPassword: String, newPassword: String) {
         viewModelScope.launch {
             _changePassState.value = UiState.Loading
             _changePassState.value = sharedRepository.changePassword(
                 ChangePassRequest(email = email, oldPassword = oldPassword, newPassword = newPassword)
             )
+        }
+    }
+
+    fun changeMessPassword(accountPassword: String, newMessPassword: String) {
+        viewModelScope.launch {
+            _messPasswordState.value = UiState.Loading
+            _messPasswordState.value = managerRepository.changeMessPassword(accountPassword, newMessPassword)
         }
     }
 
@@ -44,7 +59,8 @@ class SettingsViewModel(private val sharedRepository: SharedRepository) : ViewMo
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 SettingsViewModel(
-                    SharedRepository(RetrofitClient.commMessService, RetrofitClient.authService)
+                    SharedRepository(RetrofitClient.commMessService, RetrofitClient.authService),
+                    ManagerRepository(RetrofitClient.managerService)
                 )
             }
         }

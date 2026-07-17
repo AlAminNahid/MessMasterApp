@@ -1,0 +1,177 @@
+package com.example.messmaster.memberdashboard
+
+import android.content.res.ColorStateList
+import android.graphics.Typeface
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.example.messmaster.R
+import com.example.messmaster.managerdashboard.model.NoticeItem
+import com.example.messmaster.memberdashboard.viewmodel.MemberDashboardViewModel
+import com.example.messmaster.util.UiState
+import kotlinx.coroutines.launch
+
+class MemberNoticeFragment : Fragment() {
+    private val viewModel: MemberDashboardViewModel by activityViewModels { MemberDashboardViewModel.Factory }
+    private var messID = 0
+    private var selectedType = "Meal report"
+
+    private lateinit var btnTypeMealReport: Button
+    private lateinit var btnTypeBazarRequest: Button
+    private lateinit var btnTypeOffMeal: Button
+    private lateinit var btnTypeOther: Button
+    private lateinit var inputNoticeMessage: EditText
+    private lateinit var btnSendToManager: Button
+    private lateinit var layoutNoticesFromManager: LinearLayout
+    private lateinit var layoutMySentNotices: LinearLayout
+
+    private lateinit var typeButtons: Map<String, Button>
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val view = inflater.inflate(R.layout.fragment_member_notice, container, false)
+
+        btnTypeMealReport = view.findViewById(R.id.btnTypeMealReport)
+        btnTypeBazarRequest = view.findViewById(R.id.btnTypeBazarRequest)
+        btnTypeOffMeal = view.findViewById(R.id.btnTypeOffMeal)
+        btnTypeOther = view.findViewById(R.id.btnTypeOther)
+        inputNoticeMessage = view.findViewById(R.id.inputNoticeMessage)
+        btnSendToManager = view.findViewById(R.id.btnSendToManager)
+        layoutNoticesFromManager = view.findViewById(R.id.layoutNoticesFromManager)
+        layoutMySentNotices = view.findViewById(R.id.layoutMySentNotices)
+
+        typeButtons = mapOf(
+            "Meal report" to btnTypeMealReport,
+            "Bazar request" to btnTypeBazarRequest,
+            "Off meal" to btnTypeOffMeal,
+            "Other" to btnTypeOther,
+        )
+        typeButtons.forEach { (title, button) ->
+            button.setOnClickListener {
+                selectedType = title
+                updateTypeButtonStyles()
+            }
+        }
+        updateTypeButtonStyles()
+
+        btnSendToManager.setOnClickListener {
+            val body = inputNoticeMessage.text.toString().trim()
+            if (body.isEmpty()) {
+                inputNoticeMessage.error = "Message is required"
+            } else {
+                viewModel.sendNotice(selectedType, body)
+            }
+        }
+
+        observeStates()
+        return view
+    }
+
+    private fun updateTypeButtonStyles() {
+        typeButtons.forEach { (title, button) ->
+            val selected = title == selectedType
+            button.setTextColor(if (selected) 0xFFFFFFFF.toInt() else 0xFF555555.toInt())
+            button.backgroundTintList = ColorStateList.valueOf(if (selected) 0xFF000000.toInt() else 0xFFFFFFFF.toInt())
+        }
+    }
+
+    private fun observeStates() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.currentMessState.collect { state ->
+                        if (state is UiState.Success) {
+                            messID = state.data.messInfo.mess_id
+                            viewModel.loadNotices(messID)
+                        }
+                    }
+                }
+                launch {
+                    viewModel.noticesState.collect { state ->
+                        if (state is UiState.Success) {
+                            val sorted = state.data.sortedByDescending { it.posted_date }
+                            renderNoticeList(layoutNoticesFromManager, sorted.filter { it.member?.role == "manager" }, "No notices from the manager yet.")
+                            renderNoticeList(layoutMySentNotices, sorted.filter { it.member?.role == "member" }.take(4), "You haven't sent any notices yet.")
+                        } else if (state is UiState.Error) Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                    }
+                }
+                launch {
+                    viewModel.sendNoticeState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                viewModel.consumeSendNotice()
+                                inputNoticeMessage.text?.clear()
+                                Toast.makeText(requireContext(), state.data.message, Toast.LENGTH_LONG).show()
+                                if (messID != 0) viewModel.loadNotices(messID)
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun renderNoticeList(container: LinearLayout, items: List<NoticeItem>, emptyMessage: String) {
+        container.removeAllViews()
+        if (items.isEmpty()) {
+            container.addView(TextView(requireContext()).apply {
+                text = emptyMessage
+                textSize = 16f
+                setTextColor(0xFF777777.toInt())
+                setTypeface(typeface, Typeface.BOLD)
+            })
+            return
+        }
+        items.forEach { container.addView(noticeRow(it)) }
+    }
+
+    private fun noticeRow(notice: NoticeItem): LinearLayout =
+        LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = android.view.Gravity.CENTER_VERTICAL
+            setPadding(0, dp(10), 0, dp(10))
+            addView(TextView(requireContext()).apply {
+                text = "!"
+                gravity = android.view.Gravity.CENTER
+                textSize = 18f
+                setTextColor(0xFFFFFFFF.toInt())
+                setTypeface(typeface, Typeface.BOLD)
+                setBackgroundResource(R.drawable.bg_black_round)
+                layoutParams = LinearLayout.LayoutParams(dp(54), dp(54)).apply { marginEnd = dp(18) }
+            })
+            addView(LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.VERTICAL
+                addView(TextView(requireContext()).apply {
+                    text = notice.title
+                    textSize = 18f
+                    setTextColor(0xFF111111.toInt())
+                    setTypeface(typeface, Typeface.BOLD)
+                })
+                addView(TextView(requireContext()).apply {
+                    text = notice.description
+                    textSize = 15f
+                    setTextColor(0xFF777777.toInt())
+                })
+                addView(TextView(requireContext()).apply {
+                    text = notice.posted_date.take(10)
+                    textSize = 13f
+                    setTextColor(0xFFB0B0B0.toInt())
+                    setPadding(0, dp(5), 0, 0)
+                })
+            })
+        }
+
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
+}

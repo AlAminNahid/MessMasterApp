@@ -321,6 +321,17 @@
 
             </LinearLayout>
 
+            <Button
+                android:id="@+id/btnViewMessPassword"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#DADCE2"
+                android:text="View mess password"
+                android:textColor="#111111"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
         </LinearLayout>
 
         <LinearLayout

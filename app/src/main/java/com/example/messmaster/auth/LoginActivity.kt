@@ -23,6 +23,7 @@ import com.example.messmaster.R
 import com.example.messmaster.auth.viewmodel.LoginViewModel
 import com.example.messmaster.commondashboard.HomeActivity
 import com.example.messmaster.managerdashboard.ManagerMainActivity
+import com.example.messmaster.memberdashboard.MemberMainActivity
 import com.example.messmaster.util.UiState
 import kotlinx.coroutines.launch
 
@@ -129,8 +130,12 @@ class LoginActivity : AppCompatActivity() {
                                     Toast.makeText(this@LoginActivity, "Welcome Manager", Toast.LENGTH_LONG).show()
                                     startActivity(Intent(this@LoginActivity, ManagerMainActivity::class.java))
                                 }
-                                else -> Toast.makeText(this@LoginActivity, "Welcome Member", Toast.LENGTH_LONG).show()
+                                else -> {
+                                    Toast.makeText(this@LoginActivity, "Welcome Member", Toast.LENGTH_LONG).show()
+                                    startActivity(Intent(this@LoginActivity, MemberMainActivity::class.java))
+                                }
                             }
+                            finish()
                         }
                         is UiState.Error -> {
                             btnLogin.isEnabled = true

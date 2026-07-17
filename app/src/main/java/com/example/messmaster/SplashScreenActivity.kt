@@ -12,6 +12,7 @@ import com.example.messmaster.auth.LoginActivity
 import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.commondashboard.HomeActivity
 import com.example.messmaster.managerdashboard.ManagerMainActivity
+import com.example.messmaster.memberdashboard.MemberMainActivity
 import kotlinx.coroutines.launch
 
 class SplashScreenActivity : AppCompatActivity() {
@@ -50,7 +51,7 @@ class SplashScreenActivity : AppCompatActivity() {
 
         val intent = when (role) {
             "manager" -> Intent(this, ManagerMainActivity::class.java)
-            "member" -> Intent(this, HomeActivity::class.java)
+            "member" -> Intent(this, MemberMainActivity::class.java)
             else -> Intent(this, HomeActivity::class.java)
         }
         startActivity(intent)

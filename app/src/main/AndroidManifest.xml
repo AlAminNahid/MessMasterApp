@@ -34,6 +34,7 @@
         <activity android:name=".commondashboard.ChangePassActivity"/>
         <activity android:name=".managerdashboard.ManagerMainActivity"/>
         <activity android:name=".managerdashboard.SettingsActivity"/>
+        <activity android:name=".memberdashboard.MemberMainActivity"/>
     </application>
 
 </manifest>

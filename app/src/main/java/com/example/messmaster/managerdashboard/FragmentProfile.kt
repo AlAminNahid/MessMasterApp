@@ -31,6 +31,7 @@ class FragmentProfile : Fragment() {
 
     private var userID: Int = 0
     private var editProfileDialog: AlertDialog? = null
+    private var confirmMessPasswordDialog: AlertDialog? = null
 
     private lateinit var txtProfileName: TextView
     private lateinit var txtProfileEmail: TextView
@@ -39,6 +40,7 @@ class FragmentProfile : Fragment() {
     private lateinit var txtProfileMessName: TextView
     private lateinit var txtProfileMessAddress: TextView
     private lateinit var txtProfileTotalMembers: TextView
+    private lateinit var btnViewMessPassword: Button
     private lateinit var btnEditProfile: Button
     private lateinit var btnOpenSettings: Button
 
@@ -56,12 +58,14 @@ class FragmentProfile : Fragment() {
         txtProfileMessName = view.findViewById(R.id.txtProfileMessName)
         txtProfileMessAddress = view.findViewById(R.id.txtProfileMessAddress)
         txtProfileTotalMembers = view.findViewById(R.id.txtProfileTotalMembers)
+        btnViewMessPassword = view.findViewById(R.id.btnViewMessPassword)
         btnEditProfile = view.findViewById(R.id.btnEditProfile)
         btnOpenSettings = view.findViewById(R.id.btnOpenSettings)
 
         val prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         userID = prefs.getInt("userID", 0)
 
+        btnViewMessPassword.setOnClickListener { showConfirmMessPasswordDialog() }
         btnEditProfile.setOnClickListener { showEditProfileDialog() }
         btnOpenSettings.setOnClickListener {
             startActivity(Intent(requireContext(), SettingsActivity::class.java))
@@ -125,6 +129,28 @@ class FragmentProfile : Fragment() {
                         }
                     }
                 }
+
+                launch {
+                    profileViewModel.viewMessPasswordState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                confirmMessPasswordDialog?.dismiss()
+                                confirmMessPasswordDialog = null
+                                profileViewModel.consumeViewMessPassword()
+                                AlertDialog.Builder(requireContext())
+                                    .setTitle("Mess password")
+                                    .setMessage(state.data.mess_password)
+                                    .setPositiveButton("Close") { dialog, _ -> dialog.dismiss() }
+                                    .show()
+                            }
+                            is UiState.Error -> {
+                                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                                profileViewModel.consumeViewMessPassword()
+                            }
+                            else -> Unit
+                        }
+                    }
+                }
             }
         }
     }
@@ -166,5 +192,30 @@ class FragmentProfile : Fragment() {
             }
 
         editProfileDialog?.show()
+    }
+
+    private fun showConfirmMessPasswordDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_confirm_mess_password, null)
+        val inputPassword = dialogView.findViewById<EditText>(R.id.inputConfirmAccountPassword)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelConfirmMessPassword)
+        val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirmMessPassword)
+
+        confirmMessPasswordDialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+            .apply {
+                window?.setBackgroundDrawableResource(android.R.color.transparent)
+                btnCancel.setOnClickListener { dismiss() }
+                btnConfirm.setOnClickListener {
+                    val password = inputPassword.text.toString().trim()
+                    if (password.isEmpty()) {
+                        inputPassword.error = "Password is required"
+                    } else {
+                        profileViewModel.viewMessPassword(password)
+                    }
+                }
+            }
+
+        confirmMessPasswordDialog?.show()
     }
 }

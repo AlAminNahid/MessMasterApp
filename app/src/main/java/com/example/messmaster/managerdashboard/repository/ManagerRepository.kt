@@ -6,6 +6,10 @@ import com.example.messmaster.managerdashboard.model.CurrentMonthMealExpense
 import com.example.messmaster.managerdashboard.model.CurrentMonthMeal
 import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityBillsResponse
 import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityEntry
+import com.example.messmaster.managerdashboard.model.ChangeMessPasswordRequest
+import com.example.messmaster.managerdashboard.model.MessPasswordResponse
+import com.example.messmaster.managerdashboard.model.MessPasswordUpdateResponse
+import com.example.messmaster.managerdashboard.model.ViewMessPasswordRequest
 import com.example.messmaster.managerdashboard.model.InsertMealExpenseRequest
 import com.example.messmaster.managerdashboard.model.InsertMealExpenseResponse
 import com.example.messmaster.managerdashboard.model.InsertMealRequest
@@ -38,6 +42,12 @@ class ManagerRepository(private val apiService: ApiService) {
 
     suspend fun updateUserProfile(request: UpdateUserProfileRequest): UiState<UserProfileResponse> =
         safeApiCall("ManagerRepository") { apiService.updateUserProfile(request) }
+
+    suspend fun viewMessPassword(accountPassword: String): UiState<MessPasswordResponse> =
+        safeApiCall("ManagerRepository") { apiService.viewMessPassword(ViewMessPasswordRequest(accountPassword)) }
+
+    suspend fun changeMessPassword(accountPassword: String, newMessPassword: String): UiState<MessPasswordUpdateResponse> =
+        safeApiCall("ManagerRepository") { apiService.changeMessPassword(ChangeMessPasswordRequest(accountPassword, newMessPassword)) }
 
     suspend fun getMessStatistics(): UiState<MessStatisticsResponse> =
         safeApiCall("ManagerRepository") { apiService.getMessStatistics() }

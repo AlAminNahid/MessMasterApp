@@ -31,6 +31,10 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var etCurrentPassword: EditText
     private lateinit var etNewPassword: EditText
     private lateinit var etConfirmPassword: EditText
+    private lateinit var btnUpdateMessPassword: Button
+    private lateinit var etMessAccountPassword: EditText
+    private lateinit var etNewMessPassword: EditText
+    private lateinit var etConfirmNewMessPassword: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +47,15 @@ class SettingsActivity : AppCompatActivity() {
         etCurrentPassword = findViewById(R.id.etCurrentPassword)
         etNewPassword = findViewById(R.id.etNewPassword)
         etConfirmPassword = findViewById(R.id.etConfirmPassword)
+        btnUpdateMessPassword = findViewById(R.id.btnUpdateMessPassword)
+        etMessAccountPassword = findViewById(R.id.etMessAccountPassword)
+        etNewMessPassword = findViewById(R.id.etNewMessPassword)
+        etConfirmNewMessPassword = findViewById(R.id.etConfirmNewMessPassword)
 
         btnBack.setOnClickListener { finish() }
         btnLogOut.setOnClickListener { showLogoutDialog() }
         btnUpdatePassword.setOnClickListener { changePassword() }
+        btnUpdateMessPassword.setOnClickListener { changeMessPassword() }
 
         observeStates()
     }
@@ -83,6 +92,26 @@ class SettingsActivity : AppCompatActivity() {
                         }
                     }
                 }
+
+                launch {
+                    viewModel.messPasswordState.collect { state ->
+                        when (state) {
+                            is UiState.Loading -> btnUpdateMessPassword.isEnabled = false
+                            is UiState.Success -> {
+                                btnUpdateMessPassword.isEnabled = true
+                                etMessAccountPassword.text?.clear()
+                                etNewMessPassword.text?.clear()
+                                etConfirmNewMessPassword.text?.clear()
+                                Toast.makeText(this@SettingsActivity, state.data.message, Toast.LENGTH_LONG).show()
+                            }
+                            is UiState.Error -> {
+                                btnUpdateMessPassword.isEnabled = true
+                                Toast.makeText(this@SettingsActivity, state.message, Toast.LENGTH_LONG).show()
+                            }
+                            else -> Unit
+                        }
+                    }
+                }
             }
         }
     }
@@ -110,6 +139,25 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         viewModel.changePassword(email, currentPassword, newPassword)
+    }
+
+    private fun changeMessPassword() {
+        val accountPassword = etMessAccountPassword.text.toString().trim()
+        val newMessPassword = etNewMessPassword.text.toString().trim()
+        val confirmMessPassword = etConfirmNewMessPassword.text.toString().trim()
+
+        when {
+            accountPassword.isEmpty() -> { etMessAccountPassword.error = "Your account password is required"; return }
+            newMessPassword.isEmpty() -> { etNewMessPassword.error = "New mess password is required"; return }
+            confirmMessPassword.isEmpty() -> { etConfirmNewMessPassword.error = "Confirm mess password is required"; return }
+            newMessPassword != confirmMessPassword -> {
+                etConfirmNewMessPassword.error = "Passwords do not match"
+                Toast.makeText(this, "New mess password and confirm password must match.", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
+
+        viewModel.changeMessPassword(accountPassword, newMessPassword)
     }
 
     private fun showLogoutDialog() {

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.messmaster.managerdashboard.model.MessPasswordResponse
 import com.example.messmaster.managerdashboard.model.UpdateUserProfileRequest
 import com.example.messmaster.managerdashboard.repository.ManagerRepository
 import com.example.messmaster.model.UserProfileResponse
@@ -26,6 +27,20 @@ class ManagerProfileViewModel(
 
     private val _updateProfileState = MutableStateFlow<UiState<UserProfileResponse>>(UiState.Idle)
     val updateProfileState: StateFlow<UiState<UserProfileResponse>> = _updateProfileState.asStateFlow()
+
+    private val _viewMessPasswordState = MutableStateFlow<UiState<MessPasswordResponse>>(UiState.Idle)
+    val viewMessPasswordState: StateFlow<UiState<MessPasswordResponse>> = _viewMessPasswordState.asStateFlow()
+
+    fun viewMessPassword(accountPassword: String) {
+        viewModelScope.launch {
+            _viewMessPasswordState.value = UiState.Loading
+            _viewMessPasswordState.value = managerRepository.viewMessPassword(accountPassword)
+        }
+    }
+
+    fun consumeViewMessPassword() {
+        _viewMessPasswordState.value = UiState.Idle
+    }
 
     fun fetchProfile(userID: Int) {
         viewModelScope.launch {

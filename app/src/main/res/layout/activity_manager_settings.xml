@@ -141,6 +141,102 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:background="@drawable/bg_white_card"
+            android:padding="18dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MESS PASSWORD"
+                android:textColor="#777777"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="YOUR ACCOUNT PASSWORD"
+                android:textStyle="bold"
+                android:textColor="#555555"
+                android:textSize="14sp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etMessAccountPassword"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_manager"
+                android:paddingStart="16dp"
+                android:paddingEnd="8dp"
+                android:hint="Enter your account password"
+                android:textColor="@color/black"
+                android:textColorHint="@color/text_secondary"
+                android:inputType="textPassword"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NEW MESS PASSWORD"
+                android:textStyle="bold"
+                android:textColor="#555555"
+                android:textSize="14sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etNewMessPassword"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_manager"
+                android:paddingStart="16dp"
+                android:paddingEnd="8dp"
+                android:hint="Enter new mess password"
+                android:textColor="@color/black"
+                android:textColorHint="@color/text_secondary"
+                android:inputType="textPassword"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CONFIRM NEW MESS PASSWORD"
+                android:textStyle="bold"
+                android:textColor="#555555"
+                android:textSize="14sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etConfirmNewMessPassword"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_manager"
+                android:paddingStart="16dp"
+                android:paddingEnd="8dp"
+                android:hint="Confirm new mess password"
+                android:textColor="@color/black"
+                android:textColorHint="@color/text_secondary"
+                android:inputType="textPassword"/>
+
+            <Button
+                android:id="@+id/btnUpdateMessPassword"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/black"
+                android:text="Update Mess Password"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/btnLogOut"
             android:layout_width="match_parent"
