@@ -79,52 +79,52 @@
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            android:background="@drawable/bg_dark_card"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="16dp">
-
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_dark_card"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtBillEstimateLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="YOUR BILL ESTIMATE"
+                        android:textColor="#8E8E8E"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtBillEstimate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="৳ ..."
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/txtBillEstimateLabel"
+                    android:id="@+id/txtBillBreakdown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="YOUR BILL ESTIMATE"
+                    android:text="..."
                     android:textColor="#8E8E8E"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtBillEstimate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="৳ ..."
-                    android:textColor="@color/white"
-                    android:textSize="30sp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/txtBillBreakdown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="..."
-                android:textColor="#8E8E8E"
-                android:textSize="15sp"
-                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -132,6 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="24dp"
             android:orientation="horizontal">
 
             <LinearLayout
