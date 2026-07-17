@@ -1,30 +1,36 @@
 package com.example.messmaster.commondashboard
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.messmaster.R
-import com.example.messmaster.commondashboard.adapter.Messes
+import com.example.messmaster.auth.LoginActivity
 import com.example.messmaster.commondashboard.viewmodel.JoinMessViewModel
+import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.util.UiState
 import kotlinx.coroutines.launch
 
 class JoinMessActivity : AppCompatActivity() {
 
     private lateinit var btnBack: ImageButton
-    private lateinit var searchMess: EditText
-    private lateinit var availableMessRecyclerView: RecyclerView
-    private lateinit var messAdapter: Messes
+    private lateinit var etJoinMessName: EditText
+    private lateinit var etJoinMessPassword: EditText
+    private lateinit var btnEyeToggleJoinMessPassword: ImageView
+    private lateinit var btnJoinMess: Button
+    private var isPasswordVisible = false
 
     private val viewModel: JoinMessViewModel by viewModels { JoinMessViewModel.Factory }
 
@@ -34,21 +40,32 @@ class JoinMessActivity : AppCompatActivity() {
         setContentView(R.layout.activity_comm_dashboard_join_mess)
 
         btnBack = findViewById(R.id.btnBack)
-        searchMess = findViewById(R.id.searchMess)
-        availableMessRecyclerView = findViewById(R.id.availableMessRecyclerView)
-
-        messAdapter = Messes(
-            messes = mutableListOf(),
-            onJoinClick = { mess -> viewModel.joinMess(mess.id) }
-        )
-
-        availableMessRecyclerView.layoutManager = LinearLayoutManager(this)
-        availableMessRecyclerView.adapter = messAdapter
+        etJoinMessName = findViewById(R.id.etJoinMessName)
+        etJoinMessPassword = findViewById(R.id.etJoinMessPassword)
+        btnEyeToggleJoinMessPassword = findViewById(R.id.btnEyeToggleJoinMessPassword)
+        btnJoinMess = findViewById(R.id.btnJoinMess)
 
         btnBack.setOnClickListener { finish() }
 
-        searchMess.addTextChangedListener { text ->
-            viewModel.setSearchQuery(text?.toString() ?: "")
+        btnEyeToggleJoinMessPassword.setOnClickListener {
+            if (isPasswordVisible) {
+                etJoinMessPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                btnEyeToggleJoinMessPassword.setImageResource(R.drawable.eye_close)
+                isPasswordVisible = false
+            } else {
+                etJoinMessPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                btnEyeToggleJoinMessPassword.setImageResource(R.drawable.eye_open)
+                isPasswordVisible = true
+            }
+            etJoinMessPassword.setSelection(etJoinMessPassword.text.length)
+        }
+
+        btnJoinMess.setOnClickListener {
+            val messName = etJoinMessName.text.toString().trim()
+            val messPassword = etJoinMessPassword.text.toString().trim()
+            if (validation(messName, messPassword)) {
+                viewModel.joinMess(messName, messPassword)
+            }
         }
 
         observeStates()
@@ -57,38 +74,37 @@ class JoinMessActivity : AppCompatActivity() {
     private fun observeStates() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.filteredMesses.collect { messes ->
-                        messAdapter.updateList(messes)
-                    }
-                }
-                launch {
-                    viewModel.loadState.collect { state ->
-                        when (state) {
-                            is UiState.Success -> {
-                                if (viewModel.filteredMesses.value.isEmpty()) {
-                                    Toast.makeText(this@JoinMessActivity, "No Mess available", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                            is UiState.Error -> Toast.makeText(this@JoinMessActivity, state.message, Toast.LENGTH_SHORT).show()
-                            else -> Unit
-                        }
-                    }
-                }
-                launch {
-                    viewModel.joinMessState.collect { state ->
-                        when (state) {
-                            is UiState.Success -> Toast.makeText(
+                viewModel.joinMessState.collect { state ->
+                    when (state) {
+                        is UiState.Idle -> Unit
+                        is UiState.Loading -> btnJoinMess.isEnabled = false
+                        is UiState.Success -> {
+                            btnJoinMess.isEnabled = true
+                            Toast.makeText(
                                 this@JoinMessActivity,
-                                state.data.message ?: "Joined successfully",
-                                Toast.LENGTH_SHORT
+                                "Joined successfully. Please log in again.",
+                                Toast.LENGTH_LONG
                             ).show()
-                            is UiState.Error -> Toast.makeText(this@JoinMessActivity, state.message, Toast.LENGTH_SHORT).show()
-                            else -> Unit
+                            RetrofitClient.cookieJar.clear()
+                            getSharedPreferences("user_prefs", Context.MODE_PRIVATE).edit().clear().apply()
+                            val intent = Intent(this@JoinMessActivity, LoginActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        }
+                        is UiState.Error -> {
+                            btnJoinMess.isEnabled = true
+                            Toast.makeText(this@JoinMessActivity, state.message, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun validation(messName: String, messPassword: String): Boolean {
+        if (messName.isEmpty()) { etJoinMessName.error = "Mess name can't be empty"; return false }
+        if (messPassword.isEmpty()) { etJoinMessPassword.error = "Password can't be empty"; return false }
+        return true
     }
 }

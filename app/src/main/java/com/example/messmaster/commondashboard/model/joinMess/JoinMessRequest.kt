@@ -1,5 +1,6 @@
 package com.example.messmaster.commondashboard.model.joinMess
 
 data class JoinMessRequest(
-    val messID: Int
+    val name: String,
+    val password: String
 )

@@ -30,6 +30,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var userEmailText: TextView
     private lateinit var userPhoneText: TextView
     private lateinit var userNidText: TextView
+    private lateinit var tvAvatar: TextView
 
     private val viewModel: ProfileViewModel by viewModels { ProfileViewModel.Factory }
 
@@ -45,6 +46,7 @@ class ProfileActivity : AppCompatActivity() {
         userEmailText = findViewById(R.id.userEmailText)
         userPhoneText = findViewById(R.id.userPhoneText)
         userNidText = findViewById(R.id.userNidText)
+        tvAvatar = findViewById(R.id.tvAvatar)
 
         btnBack.setOnClickListener {
             startActivity(Intent(this, HomeActivity::class.java))
@@ -79,6 +81,14 @@ class ProfileActivity : AppCompatActivity() {
                                 userEmailText.text = user.email ?: "N/A"
                                 userPhoneText.text = user.phone ?: "N/A"
                                 userNidText.text = user.nid ?: "N/A"
+                                tvAvatar.text = user.name
+                                    ?.trim()
+                                    ?.split(" ")
+                                    ?.filter { it.isNotEmpty() }
+                                    ?.take(2)
+                                    ?.joinToString("") { it.first().uppercase() }
+                                    ?.ifEmpty { ".." }
+                                    ?: ".."
                             }
                             is UiState.Error -> Toast.makeText(this@ProfileActivity, state.message, Toast.LENGTH_LONG).show()
                             else -> Unit

@@ -6,4 +6,6 @@
     <color name="text_secondary">#73757D</color>
     <color name="border">#DADCE2</color>
     <color name="error">#D32F2F</color>
+    <color name="screen_background">#F5F5F5</color>
+    <color name="accent">#3A3A3A</color>
 </resources>

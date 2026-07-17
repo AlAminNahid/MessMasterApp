@@ -31,8 +31,6 @@ import com.example.messmaster.util.UiState
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class FragmentHome : Fragment() {
@@ -51,10 +49,8 @@ class FragmentHome : Fragment() {
     private lateinit var btnNotifcation: LinearLayout
     private lateinit var btnMonthlySheet: LinearLayout
     private lateinit var txtTotalMealExpense: TextView
-    private lateinit var txtTodaysMeals: TextView
     private lateinit var txtMealRate: TextView
     private lateinit var txtTotalUtility: TextView
-    private lateinit var txtTodayMemberNotices: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,10 +65,8 @@ class FragmentHome : Fragment() {
         txtTotalMembers = view.findViewById(R.id.txtTotalMembers)
         txtTotalMeals = view.findViewById(R.id.txtTotalMeals)
         txtTotalMealExpense = view.findViewById(R.id.txtTotalMealExpense)
-        txtTodaysMeals = view.findViewById(R.id.txtTodaysMeals)
         txtMealRate = view.findViewById(R.id.txtMealRate)
         txtTotalUtility = view.findViewById(R.id.txtTotalUtility)
-        txtTodayMemberNotices = view.findViewById(R.id.txtTodayMemberNotices)
         btnAddMeal = view.findViewById(R.id.btnAddMeal)
         btnAddUtility = view.findViewById(R.id.btnAddUtility)
         btnSettings = view.findViewById(R.id.btnSettings)
@@ -113,7 +107,6 @@ class FragmentHome : Fragment() {
                                 txtMessName.text = info.mess_name
                                 tvAvatar.text = getInitials(info.user_name)
                                 homeViewModel.loadUtilityBills(info.mess_id)
-                                homeViewModel.loadNotices(info.mess_id)
                             }
                             is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                             else -> Unit
@@ -155,33 +148,9 @@ class FragmentHome : Fragment() {
                 }
 
                 launch {
-                    homeViewModel.todayTotalMealsState.collect { state ->
-                        when (state) {
-                            is UiState.Success -> txtTodaysMeals.text = state.data.todayTotalMeals.toString()
-                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
-                            else -> Unit
-                        }
-                    }
-                }
-
-                launch {
                     homeViewModel.utilityBillsState.collect { state ->
                         when (state) {
                             is UiState.Success -> txtTotalUtility.text = "৳${formatAmount(state.data.totalUtilityBill)}"
-                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
-                            else -> Unit
-                        }
-                    }
-                }
-
-                launch {
-                    homeViewModel.noticesState.collect { state ->
-                        when (state) {
-                            is UiState.Success -> {
-                                val today = currentDate()
-                                val count = state.data.count { it.posted_date.take(10) == today }
-                                txtTodayMemberNotices.text = count.toString()
-                            }
                             is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                             else -> Unit
                         }
@@ -338,8 +307,6 @@ class FragmentHome : Fragment() {
             else -> "NA"
         }
     }
-
-    private fun currentDate(): String = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
 
     private fun formatMealRate(rate: Double): String =
         if (rate % 1.0 == 0.0) rate.toInt().toString() else String.format("%.2f", rate)

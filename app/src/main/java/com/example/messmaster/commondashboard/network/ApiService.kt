@@ -1,6 +1,5 @@
 package com.example.messmaster.commondashboard.network
 
-import com.example.messmaster.commondashboard.model.AllMessResponse
 import com.example.messmaster.commondashboard.model.changePassword.ChangePassRequest
 import com.example.messmaster.commondashboard.model.changePassword.ChangePassResponse
 import com.example.messmaster.commondashboard.model.createMess.CreateMessRequest
@@ -19,9 +18,6 @@ interface ApiService {
 
     @POST("mess/createMess")
     suspend fun createMess(@Body request: CreateMessRequest): Response<CreateMessResponse>
-
-    @GET("mess/allMesses")
-    suspend fun getAllMesses(): Response<AllMessResponse>
 
     @POST("mess/joinMess")
     suspend fun joinMess(@Body request: JoinMessRequest): Response<JoinMessResponse>

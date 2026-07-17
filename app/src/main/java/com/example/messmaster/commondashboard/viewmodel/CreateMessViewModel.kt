@@ -19,10 +19,10 @@ class CreateMessViewModel(private val repository: MessRepository) : ViewModel() 
     private val _createMessState = MutableStateFlow<UiState<CreateMessResponse>>(UiState.Idle)
     val createMessState: StateFlow<UiState<CreateMessResponse>> = _createMessState.asStateFlow()
 
-    fun createMess(name: String, address: String) {
+    fun createMess(name: String, address: String, password: String) {
         viewModelScope.launch {
             _createMessState.value = UiState.Loading
-            _createMessState.value = repository.createMess(name, address)
+            _createMessState.value = repository.createMess(name, address, password)
         }
     }
 
