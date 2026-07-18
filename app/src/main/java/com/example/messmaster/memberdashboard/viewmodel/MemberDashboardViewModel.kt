@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.messmaster.managerdashboard.model.CurrentMessMembersResponse
 import com.example.messmaster.managerdashboard.model.CurrentMessResponse
 import com.example.messmaster.managerdashboard.model.CurrentMonthMeal
 import com.example.messmaster.managerdashboard.model.CurrentMonthMealExpense
@@ -49,6 +50,9 @@ class MemberDashboardViewModel(private val repository: MemberRepository) : ViewM
 
     private val _sendNoticeState = MutableStateFlow<UiState<NoticeResponse>>(UiState.Idle)
     val sendNoticeState: StateFlow<UiState<NoticeResponse>> = _sendNoticeState.asStateFlow()
+
+    private val _membersState = MutableStateFlow<UiState<CurrentMessMembersResponse>>(UiState.Idle)
+    val membersState: StateFlow<UiState<CurrentMessMembersResponse>> = _membersState.asStateFlow()
 
     init {
         refreshCore()
@@ -107,6 +111,10 @@ class MemberDashboardViewModel(private val repository: MemberRepository) : ViewM
     }
 
     fun consumeSendNotice() { _sendNoticeState.value = UiState.Idle }
+
+    fun loadMembers() {
+        viewModelScope.launch { _membersState.value = repository.getCurrentMessMembers() }
+    }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

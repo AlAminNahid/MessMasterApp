@@ -26,6 +26,6 @@
 
     <fragment
         android:id="@+id/memberProfileFragment"
-        android:name="com.example.messmaster.managerdashboard.FragmentProfile"
+        android:name="com.example.messmaster.memberdashboard.MemberProfileFragment"
         android:label="Profile" />
 </navigation>

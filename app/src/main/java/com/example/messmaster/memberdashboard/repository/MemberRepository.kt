@@ -1,5 +1,6 @@
 package com.example.messmaster.memberdashboard.repository
 
+import com.example.messmaster.managerdashboard.model.CurrentMessMembersResponse
 import com.example.messmaster.managerdashboard.model.CurrentMessResponse
 import com.example.messmaster.managerdashboard.model.CurrentMonthMeal
 import com.example.messmaster.managerdashboard.model.CurrentMonthMealExpense
@@ -9,7 +10,9 @@ import com.example.messmaster.managerdashboard.model.MessStatisticsResponse
 import com.example.messmaster.managerdashboard.model.NoticeItem
 import com.example.messmaster.managerdashboard.model.NoticeRequest
 import com.example.messmaster.managerdashboard.model.NoticeResponse
+import com.example.messmaster.managerdashboard.model.UpdateUserProfileRequest
 import com.example.messmaster.memberdashboard.network.ApiService
+import com.example.messmaster.model.UserProfileResponse
 import com.example.messmaster.util.UiState
 import com.example.messmaster.util.parseError
 
@@ -56,6 +59,16 @@ class MemberRepository(private val apiService: ApiService) {
 
     suspend fun sendNotice(request: NoticeRequest): UiState<NoticeResponse> = try {
         val r = apiService.sendNotice(request)
+        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
+    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+
+    suspend fun getCurrentMessMembers(): UiState<CurrentMessMembersResponse> = try {
+        val r = apiService.getCurrentMessMembers()
+        if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
+    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+
+    suspend fun updateUserProfile(request: UpdateUserProfileRequest): UiState<UserProfileResponse> = try {
+        val r = apiService.updateUserProfile(request)
         if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
     } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
 }

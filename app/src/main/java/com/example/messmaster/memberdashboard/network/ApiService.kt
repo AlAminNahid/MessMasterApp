@@ -1,5 +1,6 @@
 package com.example.messmaster.memberdashboard.network
 
+import com.example.messmaster.managerdashboard.model.CurrentMessMembersResponse
 import com.example.messmaster.managerdashboard.model.CurrentMessResponse
 import com.example.messmaster.managerdashboard.model.CurrentMonthMealExpensesResponse
 import com.example.messmaster.managerdashboard.model.CurrentMonthMealsResponse
@@ -9,9 +10,12 @@ import com.example.messmaster.managerdashboard.model.MessStatisticsResponse
 import com.example.messmaster.managerdashboard.model.NoticeRequest
 import com.example.messmaster.managerdashboard.model.NoticeResponse
 import com.example.messmaster.managerdashboard.model.NoticesResponse
+import com.example.messmaster.managerdashboard.model.UpdateUserProfileRequest
+import com.example.messmaster.model.UserProfileResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -25,6 +29,12 @@ interface ApiService {
 
     @GET("mess/mealRate")
     suspend fun getMealRate(): Response<MealRateResponse>
+
+    @GET("mess/currentMessMembers")
+    suspend fun getCurrentMessMembers(): Response<CurrentMessMembersResponse>
+
+    @PATCH("shared/userProfile")
+    suspend fun updateUserProfile(@Body request: UpdateUserProfileRequest): Response<UserProfileResponse>
 
     @GET("meals/currentMonthMeals")
     suspend fun getCurrentMonthMeals(): Response<CurrentMonthMealsResponse>
