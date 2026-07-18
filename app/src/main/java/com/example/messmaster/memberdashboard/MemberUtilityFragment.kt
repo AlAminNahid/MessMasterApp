@@ -24,7 +24,6 @@ class MemberUtilityFragment : Fragment() {
     private val viewModel: MemberDashboardViewModel by activityViewModels { MemberDashboardViewModel.Factory }
     private var totalMembers = 0
     private var totalBill = 0.0
-    private var mealCost = 0.0
 
     private lateinit var txtUtilityShareLabel: TextView
     private lateinit var txtMyUtilityShare: TextView
@@ -34,7 +33,6 @@ class MemberUtilityFragment : Fragment() {
     private lateinit var txtGasShare: TextView
     private lateinit var txtInternetShare: TextView
     private lateinit var txtMaidShare: TextView
-    private lateinit var txtTotalEstimate: TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_member_utility, container, false)
@@ -47,7 +45,6 @@ class MemberUtilityFragment : Fragment() {
         txtGasShare = view.findViewById(R.id.txtGasShare)
         txtInternetShare = view.findViewById(R.id.txtInternetShare)
         txtMaidShare = view.findViewById(R.id.txtMaidShare)
-        txtTotalEstimate = view.findViewById(R.id.txtTotalEstimate)
 
         val month = currentMonthShort()
         txtUtilityShareLabel.text = "MY UTILITY SHARE ($month)"
@@ -74,19 +71,6 @@ class MemberUtilityFragment : Fragment() {
                     }
                 }
                 launch {
-                    viewModel.mealsState.collect { state ->
-                        if (state is UiState.Success) recomputeMealCost(state.data)
-                    }
-                }
-                launch {
-                    viewModel.mealRateState.collect { state ->
-                        if (state is UiState.Success) {
-                            val meals = (viewModel.mealsState.value as? UiState.Success)?.data ?: emptyList()
-                            recomputeMealCost(meals)
-                        }
-                    }
-                }
-                launch {
                     viewModel.utilityState.collect { state ->
                         if (state is UiState.Success) {
                             totalBill = state.data.totalUtilityBill
@@ -102,19 +86,10 @@ class MemberUtilityFragment : Fragment() {
         }
     }
 
-    private fun recomputeMealCost(meals: List<com.example.messmaster.managerdashboard.model.CurrentMonthMeal>) {
-        val memberID = (viewModel.currentMessState.value as? UiState.Success)?.data?.messInfo?.member_id ?: 0
-        val myMeals = meals.filter { it.member_id == memberID }.sumOf { it.meal_count }
-        val rate = (viewModel.mealRateState.value as? UiState.Success)?.data?.mealRate ?: 0.0
-        mealCost = myMeals * rate
-        renderShare()
-    }
-
     private fun renderShare() {
         val share = perPerson(totalBill)
         txtMyUtilityShare.text = money(share)
         txtUtilityTotalBill.text = money(totalBill)
-        txtTotalEstimate.text = "Meals ${money(mealCost)} + Utility ${money(share)} = ${money(mealCost + share)}"
     }
 
     private fun perPerson(amount: Double): Double = if (totalMembers > 0) amount / totalMembers else 0.0

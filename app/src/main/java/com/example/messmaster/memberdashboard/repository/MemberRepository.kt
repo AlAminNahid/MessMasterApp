@@ -34,6 +34,11 @@ class MemberRepository(private val apiService: ApiService) {
         if (r.isSuccessful) UiState.Success(r.body()!!.meals) else UiState.Error(parseError(r.errorBody()))
     } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
 
+    suspend fun getMonthlyMeals(period: String): UiState<List<CurrentMonthMeal>> = try {
+        val r = apiService.getMonthlyMeals(period)
+        if (r.isSuccessful) UiState.Success(r.body()!!.meals) else UiState.Error(parseError(r.errorBody()))
+    } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
+
     suspend fun getCurrentMonthMealExpenses(): UiState<List<CurrentMonthMealExpense>> = try {
         val r = apiService.getCurrentMonthMealExpenses()
         if (r.isSuccessful) UiState.Success(r.body()!!.expenses) else UiState.Error(parseError(r.errorBody()))

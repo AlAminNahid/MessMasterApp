@@ -1,6 +1,5 @@
 package com.example.messmaster.memberdashboard
 
-import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +10,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -80,8 +80,12 @@ class MemberNoticeFragment : Fragment() {
     private fun updateTypeButtonStyles() {
         typeButtons.forEach { (title, button) ->
             val selected = title == selectedType
-            button.setTextColor(if (selected) 0xFFFFFFFF.toInt() else 0xFF555555.toInt())
-            button.backgroundTintList = ColorStateList.valueOf(if (selected) 0xFF000000.toInt() else 0xFFFFFFFF.toInt())
+            button.setTextColor(if (selected) 0xFFFFFFFF.toInt() else 0xFF000000.toInt())
+            button.backgroundTintList = null
+            button.background = ContextCompat.getDrawable(
+                requireContext(),
+                if (selected) R.drawable.bg_join_button else R.drawable.bg_button_outline
+            )
         }
     }
 

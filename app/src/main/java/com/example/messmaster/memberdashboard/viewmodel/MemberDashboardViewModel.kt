@@ -35,6 +35,9 @@ class MemberDashboardViewModel(private val repository: MemberRepository) : ViewM
     private val _mealsState = MutableStateFlow<UiState<List<CurrentMonthMeal>>>(UiState.Idle)
     val mealsState: StateFlow<UiState<List<CurrentMonthMeal>>> = _mealsState.asStateFlow()
 
+    private val _mealHistoryState = MutableStateFlow<UiState<List<CurrentMonthMeal>>>(UiState.Idle)
+    val mealHistoryState: StateFlow<UiState<List<CurrentMonthMeal>>> = _mealHistoryState.asStateFlow()
+
     private val _expensesState = MutableStateFlow<UiState<List<CurrentMonthMealExpense>>>(UiState.Idle)
     val expensesState: StateFlow<UiState<List<CurrentMonthMealExpense>>> = _expensesState.asStateFlow()
 
@@ -73,6 +76,13 @@ class MemberDashboardViewModel(private val repository: MemberRepository) : ViewM
 
     fun loadMeals() {
         viewModelScope.launch { _mealsState.value = repository.getCurrentMonthMeals() }
+    }
+
+    fun loadMealHistory(period: String) {
+        viewModelScope.launch {
+            _mealHistoryState.value = UiState.Loading
+            _mealHistoryState.value = repository.getMonthlyMeals(period)
+        }
     }
 
     fun loadExpenses() {

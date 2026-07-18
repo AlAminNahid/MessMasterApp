@@ -6,9 +6,11 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -27,19 +29,53 @@ class MemberMealsFragment : Fragment() {
     private var memberID = 0
     private var myMeals: List<CurrentMonthMeal> = emptyList()
     private var totalMeals = 0
+    private var selectedPeriod = "current"
 
     private lateinit var txtTotalMeals: TextView
     private lateinit var txtMealCost: TextView
     private lateinit var layoutMealRows: LinearLayout
+    private lateinit var btnThisMonth: Button
+    private lateinit var btnLastMonth: Button
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.fragment_member_meals, container, false)
         txtTotalMeals = view.findViewById(R.id.txtTotalMeals)
         txtMealCost = view.findViewById(R.id.txtMealCost)
         layoutMealRows = view.findViewById(R.id.layoutMealRows)
+        btnThisMonth = view.findViewById(R.id.btnThisMonth)
+        btnLastMonth = view.findViewById(R.id.btnLastMonth)
+
+        btnThisMonth.setOnClickListener { selectPeriod("current") }
+        btnLastMonth.setOnClickListener { selectPeriod("last") }
+        updatePeriodButtons()
+
         renderRows()
         observe()
+        viewModel.loadMealHistory(selectedPeriod)
         return view
+    }
+
+    private fun selectPeriod(period: String) {
+        if (period == selectedPeriod) return
+        selectedPeriod = period
+        updatePeriodButtons()
+        viewModel.loadMealHistory(selectedPeriod)
+    }
+
+    private fun updatePeriodButtons() {
+        val thisMonthSelected = selectedPeriod == "current"
+        btnThisMonth.backgroundTintList = null
+        btnThisMonth.background = ContextCompat.getDrawable(
+            requireContext(),
+            if (thisMonthSelected) R.drawable.bg_join_button else R.drawable.bg_button_outline
+        )
+        btnThisMonth.setTextColor(if (thisMonthSelected) 0xFFFFFFFF.toInt() else 0xFF000000.toInt())
+        btnLastMonth.backgroundTintList = null
+        btnLastMonth.background = ContextCompat.getDrawable(
+            requireContext(),
+            if (!thisMonthSelected) R.drawable.bg_join_button else R.drawable.bg_button_outline
+        )
+        btnLastMonth.setTextColor(if (!thisMonthSelected) 0xFFFFFFFF.toInt() else 0xFF000000.toInt())
     }
 
     private fun observe() {
@@ -59,7 +95,7 @@ class MemberMealsFragment : Fragment() {
                     }
                 }
                 launch {
-                    viewModel.mealsState.collect { state ->
+                    viewModel.mealHistoryState.collect { state ->
                         if (state is UiState.Success) {
                             myMeals = state.data.filter { it.member_id == memberID }.sortedByDescending { it.date }
                             totalMeals = myMeals.sumOf { it.meal_count }
@@ -83,7 +119,10 @@ class MemberMealsFragment : Fragment() {
         val rows = myMeals.take(12)
         if (rows.isEmpty()) {
             layoutMealRows.addView(TextView(requireContext()).apply {
-                text = "No meals recorded for you this month yet."
+                text = if (selectedPeriod == "current")
+                    "No meals recorded for you this month yet."
+                else
+                    "No meals recorded for you last month."
                 textSize = 16f
                 setTextColor(0xFF777777.toInt())
                 setTypeface(typeface, Typeface.BOLD)

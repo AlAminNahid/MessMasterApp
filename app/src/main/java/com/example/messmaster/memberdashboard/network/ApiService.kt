@@ -14,6 +14,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     @GET("mess/currentMess")
@@ -27,6 +28,9 @@ interface ApiService {
 
     @GET("meals/currentMonthMeals")
     suspend fun getCurrentMonthMeals(): Response<CurrentMonthMealsResponse>
+
+    @GET("meals/monthlyMeals")
+    suspend fun getMonthlyMeals(@Query("period") period: String): Response<CurrentMonthMealsResponse>
 
     @GET("meal_expenses/currentMonthMealExpenses")
     suspend fun getCurrentMonthMealExpenses(): Response<CurrentMonthMealExpensesResponse>
