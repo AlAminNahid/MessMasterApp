@@ -38,6 +38,8 @@ class NoticeViewModel(private val repository: ManagerRepository) : ViewModel() {
         }
     }
 
+    fun consumeSendNoticeState() { _sendNoticeState.value = UiState.Idle }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

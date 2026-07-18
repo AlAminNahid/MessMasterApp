@@ -98,6 +98,10 @@ class MealViewModel(private val repository: ManagerRepository) : ViewModel() {
 
     fun consumeCurrentMonthMeals() { _currentMonthMealsState.value = UiState.Idle }
     fun consumeCurrentMonthExpenses() { _currentMonthExpensesState.value = UiState.Idle }
+    fun consumeInsertMealState() { _insertMealState.value = UiState.Idle }
+    fun consumeUpdateMealState() { _updateMealState.value = UiState.Idle }
+    fun consumeInsertExpenseState() { _insertExpenseState.value = UiState.Idle }
+    fun consumeUpdateExpenseState() { _updateExpenseState.value = UiState.Idle }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

@@ -18,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -38,10 +39,7 @@ class MemberHomeFragment : Fragment() {
     private lateinit var txtBillBreakdown: TextView
     private lateinit var txtMyMealsLabel: TextView
     private lateinit var txtMyMeals: TextView
-    private lateinit var txtTodayMeals: TextView
-    private lateinit var txtTodayMealsSubtitle: TextView
     private lateinit var txtHomeMealRate: TextView
-    private lateinit var txtHomeUtilityShare: TextView
     private lateinit var txtLatestNoticeTitle: TextView
     private lateinit var txtLatestNoticeDescription: TextView
     private lateinit var txtLatestNoticeDate: TextView
@@ -57,10 +55,7 @@ class MemberHomeFragment : Fragment() {
         txtBillBreakdown = view.findViewById(R.id.txtBillBreakdown)
         txtMyMealsLabel = view.findViewById(R.id.txtMyMealsLabel)
         txtMyMeals = view.findViewById(R.id.txtMyMeals)
-        txtTodayMeals = view.findViewById(R.id.txtTodayMeals)
-        txtTodayMealsSubtitle = view.findViewById(R.id.txtTodayMealsSubtitle)
         txtHomeMealRate = view.findViewById(R.id.txtHomeMealRate)
-        txtHomeUtilityShare = view.findViewById(R.id.txtHomeUtilityShare)
         txtLatestNoticeTitle = view.findViewById(R.id.txtLatestNoticeTitle)
         txtLatestNoticeDescription = view.findViewById(R.id.txtLatestNoticeDescription)
         txtLatestNoticeDate = view.findViewById(R.id.txtLatestNoticeDate)
@@ -116,10 +111,7 @@ class MemberHomeFragment : Fragment() {
                         if (state is UiState.Success) {
                             val mine = state.data.filter { it.member_id == memberID }
                             myMeals = mine.sumOf { it.meal_count }
-                            val todayMeals = mine.filter { it.date.take(10) == today() }.sumOf { it.meal_count }
                             txtMyMeals.text = myMeals.toString()
-                            txtTodayMeals.text = todayMeals.toString()
-                            txtTodayMealsSubtitle.text = if (todayMeals > 0) "Counted" else "No entry"
                             renderEstimate()
                         } else if (state is UiState.Error) toast(state.message)
                     }
@@ -128,7 +120,6 @@ class MemberHomeFragment : Fragment() {
                     viewModel.utilityState.collect { state ->
                         if (state is UiState.Success) {
                             utilityShare = if (totalMembers > 0) state.data.totalUtilityBill / totalMembers else 0.0
-                            txtHomeUtilityShare.text = money(utilityShare)
                             renderEstimate()
                         } else if (state is UiState.Error) toast(state.message)
                     }
@@ -136,11 +127,20 @@ class MemberHomeFragment : Fragment() {
                 launch {
                     viewModel.noticesState.collect { state ->
                         if (state is UiState.Success) {
-                            val managerNotice = state.data.lastOrNull { it.member?.role == "manager" } ?: state.data.lastOrNull()
-                            if (managerNotice != null) {
-                                txtLatestNoticeTitle.text = managerNotice.title
-                                txtLatestNoticeDescription.text = managerNotice.description
-                                txtLatestNoticeDate.text = managerNotice.posted_date.take(10)
+                            val recentDates = recentDates()
+                            val latestNotice = state.data
+                                .filter { it.member?.id != memberID }
+                                .filter { it.posted_date.take(10) in recentDates }
+                                .lastOrNull()
+                            if (latestNotice != null) {
+                                txtLatestNoticeTitle.text = latestNotice.title
+                                txtLatestNoticeDescription.text = latestNotice.description
+                                val author = latestNotice.member?.user?.name ?: "Member"
+                                txtLatestNoticeDate.text = "$author • ${latestNotice.posted_date.take(10)}"
+                            } else {
+                                txtLatestNoticeTitle.text = "No notices yet"
+                                txtLatestNoticeDescription.text = "Latest notices from your mess will appear here."
+                                txtLatestNoticeDate.text = ""
                             }
                         } else if (state is UiState.Error) toast(state.message)
                     }
@@ -159,6 +159,15 @@ class MemberHomeFragment : Fragment() {
 
     private fun currentMonthShort(): String = SimpleDateFormat("MMM", Locale.US).format(Date()).uppercase()
 
+    private fun recentDates(): Set<String> {
+        val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val calendar = Calendar.getInstance()
+        val today = fmt.format(calendar.time)
+        calendar.add(Calendar.DAY_OF_YEAR, -1)
+        val yesterday = fmt.format(calendar.time)
+        return setOf(today, yesterday)
+    }
+
     private fun initials(name: String): String {
         val words = name.trim().split("\\s+".toRegex()).filter { it.isNotEmpty() }
         return when {
@@ -174,6 +183,5 @@ class MemberHomeFragment : Fragment() {
             minimumFractionDigits = 0
         }.format(amount)}"
 
-    private fun today(): String = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
     private fun toast(message: String) = Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
 }

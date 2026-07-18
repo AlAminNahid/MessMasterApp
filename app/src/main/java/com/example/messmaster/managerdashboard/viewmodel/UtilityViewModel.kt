@@ -60,6 +60,8 @@ class UtilityViewModel(private val repository: ManagerRepository) : ViewModel() 
     }
 
     fun consumeUtilityEntries() { _utilityEntriesState.value = UiState.Idle }
+    fun consumeInsertState() { _insertState.value = UiState.Idle }
+    fun consumeUpdateState() { _updateState.value = UiState.Idle }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

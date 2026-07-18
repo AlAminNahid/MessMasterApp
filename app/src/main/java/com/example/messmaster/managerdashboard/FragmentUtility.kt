@@ -169,11 +169,13 @@ class FragmentUtility : Fragment() {
                                     "Utility bills saved for ${inputUtilityMonth.text}.",
                                     Toast.LENGTH_LONG
                                 ).show()
+                                utilityViewModel.consumeInsertState()
                                 utilityViewModel.loadUtilityBills(messID)
                             }
                             is UiState.Error -> {
                                 btnAddUtility.isEnabled = true
                                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                                utilityViewModel.consumeInsertState()
                             }
                             else -> Unit
                         }
@@ -187,9 +189,13 @@ class FragmentUtility : Fragment() {
                                 editUtilityDialog?.dismiss()
                                 editUtilityDialog = null
                                 Toast.makeText(requireContext(), "Utility entry updated.", Toast.LENGTH_SHORT).show()
+                                utilityViewModel.consumeUpdateState()
                                 utilityViewModel.loadUtilityBills(messID)
                             }
-                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            is UiState.Error -> {
+                                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                                utilityViewModel.consumeUpdateState()
+                            }
                             else -> Unit
                         }
                     }

@@ -113,11 +113,13 @@ class FragmentNotice : Fragment() {
                                     "Notice posted successfully: ${displayNoticeType(state.data.notice_type)}.",
                                     Toast.LENGTH_LONG
                                 ).show()
+                                noticeViewModel.consumeSendNoticeState()
                                 if (messID != 0) noticeViewModel.loadNotices(messID)
                             }
                             is UiState.Error -> {
                                 btnPostNotice.isEnabled = true
                                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                                noticeViewModel.consumeSendNoticeState()
                             }
                             else -> Unit
                         }

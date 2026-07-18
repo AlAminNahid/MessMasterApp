@@ -148,11 +148,13 @@ class FragmentMeal : Fragment() {
                                 btnSubmitMeal.isEnabled = true
                                 inputMealCount.text?.clear()
                                 Toast.makeText(requireContext(), state.data.message, Toast.LENGTH_LONG).show()
+                                mealViewModel.consumeInsertMealState()
                                 sharedViewModel.loadMealRate()
                             }
                             is UiState.Error -> {
                                 btnSubmitMeal.isEnabled = true
                                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                                mealViewModel.consumeInsertMealState()
                             }
                             else -> Unit
                         }
@@ -168,11 +170,13 @@ class FragmentMeal : Fragment() {
                                 inputMealExpenseAmount.text?.clear()
                                 mealExpenseDescription.text?.clear()
                                 Toast.makeText(requireContext(), state.data.message, Toast.LENGTH_LONG).show()
+                                mealViewModel.consumeInsertExpenseState()
                                 sharedViewModel.loadMealRate()
                             }
                             is UiState.Error -> {
                                 btnSubmitMealExpense.isEnabled = true
                                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                                mealViewModel.consumeInsertExpenseState()
                             }
                             else -> Unit
                         }
@@ -186,9 +190,13 @@ class FragmentMeal : Fragment() {
                                 editMealDialog?.dismiss()
                                 editMealDialog = null
                                 Toast.makeText(requireContext(), "Meal entry updated.", Toast.LENGTH_SHORT).show()
+                                mealViewModel.consumeUpdateMealState()
                                 sharedViewModel.loadMealRate()
                             }
-                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            is UiState.Error -> {
+                                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                                mealViewModel.consumeUpdateMealState()
+                            }
                             else -> Unit
                         }
                     }
@@ -201,9 +209,13 @@ class FragmentMeal : Fragment() {
                                 editExpenseDialog?.dismiss()
                                 editExpenseDialog = null
                                 Toast.makeText(requireContext(), "Bazar expense updated.", Toast.LENGTH_SHORT).show()
+                                mealViewModel.consumeUpdateExpenseState()
                                 sharedViewModel.loadMealRate()
                             }
-                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            is UiState.Error -> {
+                                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                                mealViewModel.consumeUpdateExpenseState()
+                            }
                             else -> Unit
                         }
                     }
