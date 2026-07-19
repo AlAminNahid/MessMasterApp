@@ -101,11 +101,11 @@ class MemberDashboardViewModel(private val repository: MemberRepository) : ViewM
         viewModelScope.launch { _noticesState.value = repository.getNotices(messID) }
     }
 
-    fun sendNotice(title: String, description: String) {
+    fun sendNotice(noticeType: String, description: String) {
         viewModelScope.launch {
             _sendNoticeState.value = UiState.Loading
             _sendNoticeState.value = repository.sendNotice(
-                NoticeRequest(title = title, description = description, notice_type = "shopping_request")
+                NoticeRequest(description = description, notice_type = noticeType)
             )
         }
     }

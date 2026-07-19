@@ -90,7 +90,7 @@ class FragmentNotice : Fragment() {
                         when (state) {
                             is UiState.Success -> {
                                 val memberRequests = state.data.filter {
-                                    it.notice_type == "shopping_request" && it.member?.role == "member"
+                                    it.member?.role == "member"
                                 }
                                 renderMemberNotices(memberRequests)
                             }
@@ -148,7 +148,7 @@ class FragmentNotice : Fragment() {
 
         if (notices.isEmpty()) {
             layoutMemberNotices.addView(
-                makeText(text = "No shopping requests from members yet.", textSize = 15f, color = 0xFF777777.toInt())
+                makeText(text = "No requests from members yet.", textSize = 15f, color = 0xFF777777.toInt())
             )
             return
         }
@@ -188,7 +188,10 @@ class FragmentNotice : Fragment() {
 
     private fun displayNoticeType(type: String): String = when (type) {
         "annoucement" -> "Announcement"
-        "shopping_request" -> "Shopping request"
+        "shopping_request" -> "Bazar request"
+        "meal_report" -> "Meal report"
+        "off_meal" -> "Off meal"
+        "other" -> "Other"
         else -> type
     }
 

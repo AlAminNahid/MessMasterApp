@@ -27,6 +27,13 @@ class MemberNoticeFragment : Fragment() {
     private var messID = 0
     private var selectedType = "Meal report"
 
+    private val noticeTypeValues = mapOf(
+        "Meal report" to "meal_report",
+        "Bazar request" to "shopping_request",
+        "Off meal" to "off_meal",
+        "Other" to "other",
+    )
+
     private lateinit var btnTypeMealReport: Button
     private lateinit var btnTypeBazarRequest: Button
     private lateinit var btnTypeOffMeal: Button
@@ -69,7 +76,8 @@ class MemberNoticeFragment : Fragment() {
             if (body.isEmpty()) {
                 inputNoticeMessage.error = "Message is required"
             } else {
-                viewModel.sendNotice(selectedType, body)
+                val noticeType = noticeTypeValues.getValue(selectedType)
+                viewModel.sendNotice(noticeType, body)
             }
         }
 
