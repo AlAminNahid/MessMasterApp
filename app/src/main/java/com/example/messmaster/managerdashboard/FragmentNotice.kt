@@ -9,9 +9,11 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -88,12 +90,7 @@ class FragmentNotice : Fragment() {
                 launch {
                     noticeViewModel.noticesState.collect { state ->
                         when (state) {
-                            is UiState.Success -> {
-                                val memberRequests = state.data.filter {
-                                    it.member?.role == "member"
-                                }
-                                renderMemberNotices(memberRequests)
-                            }
+                            is UiState.Success -> renderNoticesSection(state.data)
                             is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                             else -> Unit
                         }
@@ -143,21 +140,42 @@ class FragmentNotice : Fragment() {
         noticeViewModel.sendNotice(NoticeRequest(title = title, description = description, notice_type = noticeType))
     }
 
-    private fun renderMemberNotices(notices: List<NoticeItem>) {
+    private fun renderNoticesSection(notices: List<NoticeItem>) {
         layoutMemberNotices.removeAllViews()
 
         if (notices.isEmpty()) {
             layoutMemberNotices.addView(
-                makeText(text = "No requests from members yet.", textSize = 15f, color = 0xFF777777.toInt())
+                makeText(text = "No notices posted this month yet.", textSize = 15f, color = 0xFF777777.toInt())
             )
             return
         }
 
+        addNoticeRows(layoutMemberNotices, notices.take(3))
+
+        if (notices.size > 3) {
+            layoutMemberNotices.addView(Button(requireContext()).apply {
+                text = "View All (${notices.size})"
+                isAllCaps = false
+                textSize = 14f
+                setTypeface(typeface, Typeface.BOLD)
+                setTextColor(0xFF111111.toInt())
+                stateListAnimator = null
+                elevation = 0f
+                backgroundTintList = android.content.res.ColorStateList.valueOf(0xFFF2F2F2.toInt())
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(48)).apply {
+                    topMargin = dp(14)
+                }
+                setOnClickListener { showAllNoticesDialog(notices) }
+            })
+        }
+    }
+
+    private fun addNoticeRows(container: LinearLayout, notices: List<NoticeItem>) {
         notices.forEachIndexed { index, notice ->
             if (index > 0) {
                 val divider = View(requireContext())
                 divider.setBackgroundColor(0xFFEAEAEA.toInt())
-                layoutMemberNotices.addView(
+                container.addView(
                     divider,
                     LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(1)).apply {
                         topMargin = dp(14)
@@ -167,14 +185,55 @@ class FragmentNotice : Fragment() {
             }
 
             val sender = notice.member?.user?.name ?: "Member"
-            layoutMemberNotices.addView(makeText(text = notice.title, textSize = 17f, color = 0xFF111111.toInt(), style = Typeface.BOLD))
-            layoutMemberNotices.addView(makeText(text = "From $sender • ${formatNoticeDate(notice.posted_date)}", textSize = 13f, color = 0xFF777777.toInt()))
-            layoutMemberNotices.addView(
+            val senderLabel = if (notice.member?.role == "manager") "$sender (You)" else sender
+            container.addView(makeText(text = notice.title, textSize = 17f, color = 0xFF111111.toInt(), style = Typeface.BOLD))
+            container.addView(makeText(text = "From $senderLabel • ${formatNoticeDate(notice.posted_date)}", textSize = 13f, color = 0xFF777777.toInt()))
+            container.addView(
                 makeText(text = notice.description, textSize = 15f, color = 0xFF444444.toInt()).apply {
                     setPadding(0, dp(8), 0, 0)
                 }
             )
         }
+    }
+
+    private fun showAllNoticesDialog(notices: List<NoticeItem>) {
+        val dialogContainer = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(20), dp(20), dp(16))
+            background = android.graphics.drawable.GradientDrawable().apply {
+                setColor(0xFFFFFFFF.toInt())
+                cornerRadius = dp(16).toFloat()
+            }
+        }
+
+        dialogContainer.addView(makeText(text = "All Notices This Month", textSize = 19f, color = 0xFF111111.toInt(), style = Typeface.BOLD))
+        dialogContainer.addView(makeText(text = "${notices.size} notices", textSize = 13f, color = 0xFF777777.toInt()).apply {
+            setPadding(0, dp(4), 0, dp(16))
+        })
+
+        val rowsContainer = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
+        addNoticeRows(rowsContainer, notices)
+        dialogContainer.addView(ScrollView(requireContext()).apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(430))
+            addView(rowsContainer)
+        })
+
+        val closeButton = Button(requireContext()).apply {
+            text = "Close"
+            setTextColor(0xFFFFFFFF.toInt())
+            setTypeface(typeface, Typeface.BOLD)
+            backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF000000.toInt())
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52)).apply {
+                topMargin = dp(18)
+            }
+        }
+        dialogContainer.addView(closeButton)
+
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogContainer).create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        closeButton.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+        dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.92).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     private fun makeText(text: String, textSize: Float, color: Int, style: Int = Typeface.NORMAL): TextView {

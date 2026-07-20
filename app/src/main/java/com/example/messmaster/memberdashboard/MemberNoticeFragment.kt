@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -111,9 +113,10 @@ class MemberNoticeFragment : Fragment() {
                 launch {
                     viewModel.noticesState.collect { state ->
                         if (state is UiState.Success) {
-                            val sorted = state.data.sortedByDescending { it.posted_date }
-                            renderNoticeList(layoutNoticesFromManager, sorted.filter { it.member?.role == "manager" }, "No notices from the manager yet.")
-                            renderNoticeList(layoutMySentNotices, sorted.filter { it.member?.role == "member" }.take(4), "You haven't sent any notices yet.")
+                            val fromManager = state.data.filter { it.member?.role == "manager" }
+                            val mySent = state.data.filter { it.member?.role == "member" }
+                            renderNoticeSection(layoutNoticesFromManager, fromManager, "No notices from the manager yet.")
+                            renderNoticeSection(layoutMySentNotices, mySent, "You haven't sent any notices yet.")
                         } else if (state is UiState.Error) Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                     }
                 }
@@ -135,7 +138,7 @@ class MemberNoticeFragment : Fragment() {
         }
     }
 
-    private fun renderNoticeList(container: LinearLayout, items: List<NoticeItem>, emptyMessage: String) {
+    private fun renderNoticeSection(container: LinearLayout, items: List<NoticeItem>, emptyMessage: String) {
         container.removeAllViews()
         if (items.isEmpty()) {
             container.addView(TextView(requireContext()).apply {
@@ -146,7 +149,73 @@ class MemberNoticeFragment : Fragment() {
             })
             return
         }
-        items.forEach { container.addView(noticeRow(it)) }
+
+        items.take(3).forEach { container.addView(noticeRow(it)) }
+
+        if (items.size > 3) {
+            container.addView(Button(requireContext()).apply {
+                text = "View All (${items.size})"
+                isAllCaps = false
+                textSize = 14f
+                setTypeface(typeface, Typeface.BOLD)
+                setTextColor(0xFF111111.toInt())
+                stateListAnimator = null
+                elevation = 0f
+                backgroundTintList = android.content.res.ColorStateList.valueOf(0xFFF2F2F2.toInt())
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(48)).apply {
+                    topMargin = dp(10)
+                }
+                setOnClickListener { showAllNoticesDialog(items) }
+            })
+        }
+    }
+
+    private fun showAllNoticesDialog(notices: List<NoticeItem>) {
+        val dialogContainer = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(20), dp(20), dp(16))
+            background = android.graphics.drawable.GradientDrawable().apply {
+                setColor(0xFFFFFFFF.toInt())
+                cornerRadius = dp(16).toFloat()
+            }
+        }
+
+        dialogContainer.addView(TextView(requireContext()).apply {
+            text = "All Notices This Month"
+            textSize = 19f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(0xFF111111.toInt())
+        })
+        dialogContainer.addView(TextView(requireContext()).apply {
+            text = "${notices.size} notices"
+            textSize = 13f
+            setTextColor(0xFF777777.toInt())
+            setPadding(0, dp(4), 0, dp(16))
+        })
+
+        val rowsContainer = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
+        notices.forEach { rowsContainer.addView(noticeRow(it)) }
+        dialogContainer.addView(ScrollView(requireContext()).apply {
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(430))
+            addView(rowsContainer)
+        })
+
+        val closeButton = Button(requireContext()).apply {
+            text = "Close"
+            setTextColor(0xFFFFFFFF.toInt())
+            setTypeface(typeface, Typeface.BOLD)
+            backgroundTintList = android.content.res.ColorStateList.valueOf(0xFF000000.toInt())
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52)).apply {
+                topMargin = dp(18)
+            }
+        }
+        dialogContainer.addView(closeButton)
+
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogContainer).create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        closeButton.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+        dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.92).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     private fun noticeRow(notice: NoticeItem): LinearLayout =
