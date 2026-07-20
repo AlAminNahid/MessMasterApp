@@ -61,8 +61,8 @@ class ManagerRepository(private val apiService: ApiService) {
     suspend fun getMealRate(): UiState<MealRateResponse> =
         safeApiCall("ManagerRepository") { apiService.getMealRate() }
 
-    suspend fun getMonthlySheet(): UiState<MonthlySheetResponse> =
-        safeApiCall("ManagerRepository") { apiService.getMonthlySheet() }
+    suspend fun getMonthlySheet(period: String = "current"): UiState<MonthlySheetResponse> =
+        safeApiCall("ManagerRepository") { apiService.getMonthlySheet(period) }
 
     suspend fun getCurrentMonthMeals(): UiState<List<CurrentMonthMeal>> =
         safeApiCall("ManagerRepository") { apiService.getCurrentMonthMeals() }

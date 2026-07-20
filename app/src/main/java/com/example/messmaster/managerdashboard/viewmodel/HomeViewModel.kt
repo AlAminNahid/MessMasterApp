@@ -28,6 +28,9 @@ class HomeViewModel(private val repository: ManagerRepository) : ViewModel() {
     private val _monthlySheetState = MutableStateFlow<UiState<MonthlySheetResponse>>(UiState.Idle)
     val monthlySheetState: StateFlow<UiState<MonthlySheetResponse>> = _monthlySheetState.asStateFlow()
 
+    private val _monthlySheetPeriod = MutableStateFlow("current")
+    val monthlySheetPeriod: StateFlow<String> = _monthlySheetPeriod.asStateFlow()
+
     private val _membersState = MutableStateFlow<UiState<List<MessMember>>>(UiState.Idle)
     val membersState: StateFlow<UiState<List<MessMember>>> = _membersState.asStateFlow()
 
@@ -49,10 +52,11 @@ class HomeViewModel(private val repository: ManagerRepository) : ViewModel() {
         }
     }
 
-    fun loadMonthlySheet() {
+    fun loadMonthlySheet(period: String = "current") {
+        _monthlySheetPeriod.value = period
         viewModelScope.launch {
             _monthlySheetState.value = UiState.Loading
-            _monthlySheetState.value = repository.getMonthlySheet()
+            _monthlySheetState.value = repository.getMonthlySheet(period)
         }
     }
 

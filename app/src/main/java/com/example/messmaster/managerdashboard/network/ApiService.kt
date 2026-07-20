@@ -33,6 +33,7 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -66,7 +67,7 @@ interface ApiService {
     suspend fun getMealRate(): Response<MealRateResponse>
 
     @GET("mess/monthlySheet")
-    suspend fun getMonthlySheet(): Response<MonthlySheetResponse>
+    suspend fun getMonthlySheet(@Query("period") period: String? = null): Response<MonthlySheetResponse>
 
     @GET("meals/currentMonthMeals")
     suspend fun getCurrentMonthMeals(): Response<CurrentMonthMealsResponse>

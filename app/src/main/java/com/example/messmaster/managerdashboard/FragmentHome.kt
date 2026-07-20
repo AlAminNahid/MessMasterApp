@@ -26,7 +26,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
 import com.example.messmaster.managerdashboard.model.MessMember
-import com.example.messmaster.managerdashboard.model.MonthlySheetDay
+import com.example.messmaster.managerdashboard.model.MonthlySheetMember
+import com.example.messmaster.managerdashboard.model.MonthlySheetResponse
 import com.example.messmaster.managerdashboard.viewmodel.HomeViewModel
 import com.example.messmaster.managerdashboard.viewmodel.ManagerSharedViewModel
 import com.example.messmaster.util.UiState
@@ -93,7 +94,7 @@ class FragmentHome : Fragment() {
             startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
         btnMembers.setOnClickListener { homeViewModel.loadMembers() }
-        btnMonthlySheet.setOnClickListener { homeViewModel.loadMonthlySheet() }
+        btnMonthlySheet.setOnClickListener { homeViewModel.loadMonthlySheet("current") }
 
         observeStates()
         return view
@@ -167,7 +168,7 @@ class FragmentHome : Fragment() {
                         when (state) {
                             is UiState.Success -> {
                                 homeViewModel.consumeMonthlySheet()
-                                showMonthlySheetTable(state.data.days)
+                                showMonthlySheetTable(state.data, homeViewModel.monthlySheetPeriod.value)
                             }
                             is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                             else -> Unit
@@ -191,41 +192,36 @@ class FragmentHome : Fragment() {
         }
     }
 
-    private fun showMonthlySheetTable(days: List<MonthlySheetDay>) {
+    private fun showMonthlySheetTable(sheet: MonthlySheetResponse, period: String) {
         val dialogView = makeDialogShell()
         val rowsContainer = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
-        val searchInput = makeSearchInput("Search date, member, meals, or bazar")
-        val totalMeals = days.sumOf { it.totalMeals }
-        val totalBazar = days.sumOf { it.totalBazar }
+        val searchInput = makeSearchInput("Search member")
+        val members = sheet.members
 
-        dialogView.addView(makeDialogTitle("Monthly Sheet"))
-        dialogView.addView(makeDialogSubtitle("${days.size} active days • ${formatAmount(totalMeals)} meals • ৳${formatAmount(totalBazar)} bazar"))
+        dialogView.addView(makeDialogTitle(if (period == "last") "Monthly Sheet (Last Month)" else "Monthly Sheet"))
+        dialogView.addView(makeDialogSubtitle("${members.size} members • ${formatAmount(sheet.totalMeals)} meals • ৳${formatAmount(sheet.totalBazar)} bazar"))
         dialogView.addView(searchInput)
         dialogView.addView(makeScrollContainer(rowsContainer))
+        val togglePeriodButton = makeSecondaryButton(if (period == "last") "View Current Month" else "View Last Month")
+        dialogView.addView(togglePeriodButton)
         val closeButton = makeCloseButton()
         dialogView.addView(closeButton)
 
-        fun daySearchText(day: MonthlySheetDay): String {
-            val meals = day.meals.joinToString(" ") { "${it.member_name} ${it.total_meals}" }
-            val bazar = day.bazar.joinToString(" ") { "${it.member_name} ${it.total_amount}" }
-            return "${day.date} ${day.totalMeals} ${day.totalBazar} $meals $bazar"
-        }
-
         fun render(query: String) {
             rowsContainer.removeAllViews()
-            val filtered = days.filter { daySearchText(it).contains(query, ignoreCase = true) }
+            val filtered = members.filter { it.member_name.contains(query, ignoreCase = true) }
 
-            if (days.isEmpty()) {
-                rowsContainer.addView(emptyMessage("No day-wise activity for this month yet."))
+            if (members.isEmpty()) {
+                rowsContainer.addView(emptyMessage("No members are available in this mess yet."))
                 return
             }
             if (filtered.isEmpty()) {
-                rowsContainer.addView(emptyMessage("No matching records found."))
+                rowsContainer.addView(emptyMessage("No matching members found."))
                 return
             }
 
-            filtered.forEach { day ->
-                rowsContainer.addView(monthlySheetCard(day))
+            filtered.forEach { member ->
+                rowsContainer.addView(monthlySheetCard(member))
             }
         }
 
@@ -242,6 +238,10 @@ class FragmentHome : Fragment() {
             .create()
 
         closeButton.setOnClickListener { dialog.dismiss() }
+        togglePeriodButton.setOnClickListener {
+            dialog.dismiss()
+            homeViewModel.loadMonthlySheet(if (period == "last") "current" else "last")
+        }
         dialog.show()
         styleDialogWindow(dialog)
     }
@@ -296,37 +296,27 @@ class FragmentHome : Fragment() {
         styleDialogWindow(dialog)
     }
 
-    private fun monthlySheetCard(day: MonthlySheetDay): LinearLayout {
+    private fun monthlySheetCard(member: MonthlySheetMember): LinearLayout {
         return makeCard().apply {
             addView(LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
                 addView(TextView(requireContext()).apply {
-                    text = day.date
+                    text = member.member_name
                     textSize = 16f
                     setTypeface(typeface, Typeface.BOLD)
                     setTextColor(requireContext().getColor(R.color.black))
                     layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                 })
-                addView(makeChip("৳${formatAmount(day.totalBazar)}"))
+                addView(makeChip("৳${formatAmount(member.total_bazar)}"))
             })
 
             addView(LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.HORIZONTAL
-                setPadding(0, dp(12), 0, dp(10))
-                addView(metricView("Meals", formatAmount(day.totalMeals)))
-                addView(metricView("Bazar", "৳${formatAmount(day.totalBazar)}"))
+                setPadding(0, dp(12), 0, dp(2))
+                addView(metricView("Total Meals", formatAmount(member.total_meals)))
+                addView(metricView("Total Bazar", "৳${formatAmount(member.total_bazar)}"))
             })
-
-            addView(sectionText("Meals"))
-            addView(detailText(if (day.meals.isEmpty()) "No meals recorded" else day.meals.joinToString("\n") {
-                "${it.member_name} - ${formatAmount(it.total_meals)} meals"
-            }))
-
-            addView(sectionText("Bazar"))
-            addView(detailText(if (day.bazar.isEmpty()) "No bazar recorded" else day.bazar.joinToString("\n") {
-                "${it.member_name} - ৳${formatAmount(it.total_amount)}"
-            }))
         }
     }
 
@@ -413,6 +403,17 @@ class FragmentHome : Fragment() {
                 topMargin = dp(16)
             }
             addView(content)
+        }
+
+    private fun makeSecondaryButton(text: String): Button =
+        Button(requireContext()).apply {
+            this.text = text
+            setTextColor(requireContext().getColor(R.color.black))
+            setTypeface(typeface, Typeface.BOLD)
+            backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#F2F2F2"))
+            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52)).apply {
+                topMargin = dp(12)
+            }
         }
 
     private fun makeCloseButton(): Button =

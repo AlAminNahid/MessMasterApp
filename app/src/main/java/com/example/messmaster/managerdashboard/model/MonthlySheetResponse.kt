@@ -3,25 +3,14 @@ package com.example.messmaster.managerdashboard.model
 data class MonthlySheetResponse(
     val messID: Int,
     val messName: String,
-    val days: List<MonthlySheetDay>
-)
-
-data class MonthlySheetDay(
-    val date: String,
     val totalMeals: Double,
     val totalBazar: Double,
-    val meals: List<MonthlySheetMeal>,
-    val bazar: List<MonthlySheetBazar>
+    val members: List<MonthlySheetMember>
 )
 
-data class MonthlySheetMeal(
+data class MonthlySheetMember(
     val member_id: Int,
     val member_name: String,
-    val total_meals: Double
-)
-
-data class MonthlySheetBazar(
-    val member_id: Int,
-    val member_name: String,
-    val total_amount: Double
+    val total_meals: Double,
+    val total_bazar: Double
 )
