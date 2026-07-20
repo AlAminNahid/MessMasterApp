@@ -1,6 +1,5 @@
 package com.example.messmaster.managerdashboard
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,7 +28,6 @@ class FragmentProfile : Fragment() {
     private val sharedViewModel: ManagerSharedViewModel by activityViewModels { ManagerSharedViewModel.Factory }
     private val profileViewModel: ManagerProfileViewModel by viewModels { ManagerProfileViewModel.Factory }
 
-    private var userID: Int = 0
     private var editProfileDialog: AlertDialog? = null
     private var confirmMessPasswordDialog: AlertDialog? = null
 
@@ -62,16 +60,13 @@ class FragmentProfile : Fragment() {
         btnEditProfile = view.findViewById(R.id.btnEditProfile)
         btnOpenSettings = view.findViewById(R.id.btnOpenSettings)
 
-        val prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        userID = prefs.getInt("userID", 0)
-
         btnViewMessPassword.setOnClickListener { showConfirmMessPasswordDialog() }
         btnEditProfile.setOnClickListener { showEditProfileDialog() }
         btnOpenSettings.setOnClickListener {
             startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
 
-        if (userID != 0) profileViewModel.fetchProfile(userID)
+        profileViewModel.fetchProfile()
 
         observeStates()
         return view

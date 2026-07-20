@@ -12,7 +12,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.Path
 
 interface ApiService {
 
@@ -22,8 +21,8 @@ interface ApiService {
     @POST("mess/joinMess")
     suspend fun joinMess(@Body request: JoinMessRequest): Response<JoinMessResponse>
 
-    @GET("shared/userById/{userID}")
-    suspend fun getUserById(@Path("userID") userID: Int): Response<UserProfileResponse>
+    @GET("shared/userById")
+    suspend fun getUserById(): Response<UserProfileResponse>
 
     @PATCH("auth/change-password")
     suspend fun changePassword(@Body request: ChangePassRequest): Response<ChangePassResponse>

@@ -23,10 +23,10 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
     private val _logoutState = MutableStateFlow<UiState<Boolean>>(UiState.Idle)
     val logoutState: StateFlow<UiState<Boolean>> = _logoutState.asStateFlow()
 
-    fun fetchProfile(userID: Int) {
+    fun fetchProfile() {
         viewModelScope.launch {
             _profileState.value = UiState.Loading
-            _profileState.value = repository.getUserById(userID)
+            _profileState.value = repository.getUserById()
         }
     }
 

@@ -1,6 +1,5 @@
 package com.example.messmaster.memberdashboard
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
@@ -35,7 +34,6 @@ class MemberProfileFragment : Fragment() {
     private val sharedViewModel: MemberDashboardViewModel by activityViewModels { MemberDashboardViewModel.Factory }
     private val profileViewModel: MemberProfileViewModel by viewModels { MemberProfileViewModel.Factory }
 
-    private var userID: Int = 0
     private var editProfileDialog: AlertDialog? = null
 
     private lateinit var txtProfileName: TextView
@@ -67,15 +65,12 @@ class MemberProfileFragment : Fragment() {
         btnEditProfile = view.findViewById(R.id.btnEditProfile)
         btnOpenSettings = view.findViewById(R.id.btnOpenSettings)
 
-        val prefs = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        userID = prefs.getInt("userID", 0)
-
         btnEditProfile.setOnClickListener { showEditProfileDialog() }
         btnOpenSettings.setOnClickListener {
             startActivity(Intent(requireContext(), MemberSettingsActivity::class.java))
         }
 
-        if (userID != 0) profileViewModel.fetchProfile(userID)
+        profileViewModel.fetchProfile()
         sharedViewModel.loadMembers()
 
         observeStates()

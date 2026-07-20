@@ -27,10 +27,10 @@ class MemberProfileViewModel(
     private val _updateProfileState = MutableStateFlow<UiState<UserProfileResponse>>(UiState.Idle)
     val updateProfileState: StateFlow<UiState<UserProfileResponse>> = _updateProfileState.asStateFlow()
 
-    fun fetchProfile(userID: Int) {
+    fun fetchProfile() {
         viewModelScope.launch {
             _profileState.value = UiState.Loading
-            _profileState.value = sharedRepository.getUserById(userID)
+            _profileState.value = sharedRepository.getUserById()
         }
     }
 

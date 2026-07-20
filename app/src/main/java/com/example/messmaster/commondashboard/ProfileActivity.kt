@@ -59,12 +59,7 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(Intent(this, ChangePassActivity::class.java))
         }
 
-        val userID = getSharedPreferences("user_prefs", Context.MODE_PRIVATE).getInt("userID", 0)
-        if (userID == 0) {
-            Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show()
-        } else {
-            viewModel.fetchProfile(userID)
-        }
+        viewModel.fetchProfile()
 
         observeStates()
     }

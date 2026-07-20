@@ -12,8 +12,8 @@ class SharedRepository(
     private val commApiService: CommApiService,
     private val authApiService: AuthApiService
 ) {
-    suspend fun getUserById(userID: Int): UiState<UserProfileResponse> =
-        safeApiCall("SharedRepository") { commApiService.getUserById(userID) }
+    suspend fun getUserById(): UiState<UserProfileResponse> =
+        safeApiCall("SharedRepository") { commApiService.getUserById() }
 
     suspend fun changePassword(request: ChangePassRequest): UiState<ChangePassResponse> =
         safeApiCall("SharedRepository") { commApiService.changePassword(request) }

@@ -42,10 +42,10 @@ class ManagerProfileViewModel(
         _viewMessPasswordState.value = UiState.Idle
     }
 
-    fun fetchProfile(userID: Int) {
+    fun fetchProfile() {
         viewModelScope.launch {
             _profileState.value = UiState.Loading
-            _profileState.value = sharedRepository.getUserById(userID)
+            _profileState.value = sharedRepository.getUserById()
         }
     }
 
