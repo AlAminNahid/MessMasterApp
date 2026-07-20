@@ -22,6 +22,10 @@ import com.example.messmaster.managerdashboard.model.MonthlySheetResponse
 import com.example.messmaster.managerdashboard.model.NoticeRequest
 import com.example.messmaster.managerdashboard.model.NoticeResponse
 import com.example.messmaster.managerdashboard.model.NoticesResponse
+import com.example.messmaster.managerdashboard.model.RemoveMemberRequest
+import com.example.messmaster.managerdashboard.model.RemoveMemberResponse
+import com.example.messmaster.managerdashboard.model.TransferOwnershipRequest
+import com.example.messmaster.managerdashboard.model.TransferOwnershipResponse
 import com.example.messmaster.managerdashboard.model.TodayTotalMealsResponse
 import com.example.messmaster.managerdashboard.model.TotalMealExpenseResponse
 import com.example.messmaster.managerdashboard.model.UpdateUserProfileRequest
@@ -113,4 +117,10 @@ interface ApiService {
         @Path("utilityCostID") utilityCostID: Int,
         @Body request: InsertUtilityCostRequest
     ): Response<InsertUtilityCostResponse>
+
+    @PATCH("mess/transferOwnership")
+    suspend fun transferOwnership(@Body request: TransferOwnershipRequest): Response<TransferOwnershipResponse>
+
+    @PATCH("mess/removeMember")
+    suspend fun removeMember(@Body request: RemoveMemberRequest): Response<RemoveMemberResponse>
 }

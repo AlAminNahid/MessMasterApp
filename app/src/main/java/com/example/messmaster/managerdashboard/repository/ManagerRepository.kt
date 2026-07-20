@@ -23,6 +23,10 @@ import com.example.messmaster.managerdashboard.model.MonthlySheetResponse
 import com.example.messmaster.managerdashboard.model.NoticeItem
 import com.example.messmaster.managerdashboard.model.NoticeRequest
 import com.example.messmaster.managerdashboard.model.NoticeResponse
+import com.example.messmaster.managerdashboard.model.RemoveMemberRequest
+import com.example.messmaster.managerdashboard.model.RemoveMemberResponse
+import com.example.messmaster.managerdashboard.model.TransferOwnershipRequest
+import com.example.messmaster.managerdashboard.model.TransferOwnershipResponse
 import com.example.messmaster.managerdashboard.model.TodayTotalMealsResponse
 import com.example.messmaster.managerdashboard.model.TotalMealExpenseResponse
 import com.example.messmaster.managerdashboard.model.UpdateUserProfileRequest
@@ -103,6 +107,12 @@ class ManagerRepository(private val apiService: ApiService) {
 
     suspend fun updateUtilityCost(utilityID: Int, request: InsertUtilityCostRequest): UiState<InsertUtilityCostResponse> =
         safeApiCall("ManagerRepository") { apiService.updateUtilityCost(utilityID, request) }
+
+    suspend fun transferOwnership(targetMemberId: Int): UiState<TransferOwnershipResponse> =
+        safeApiCall("ManagerRepository") { apiService.transferOwnership(TransferOwnershipRequest(targetMemberId)) }
+
+    suspend fun removeMember(memberId: Int): UiState<RemoveMemberResponse> =
+        safeApiCall("ManagerRepository") { apiService.removeMember(RemoveMemberRequest(memberId)) }
 
     private inline fun <T, R> mapListState(state: UiState<T>, extract: (T) -> List<R>): UiState<List<R>> =
         when (state) {

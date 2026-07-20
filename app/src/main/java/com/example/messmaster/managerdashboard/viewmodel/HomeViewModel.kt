@@ -8,7 +8,9 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityBillsResponse
 import com.example.messmaster.managerdashboard.model.MessMember
 import com.example.messmaster.managerdashboard.model.MonthlySheetResponse
+import com.example.messmaster.managerdashboard.model.RemoveMemberResponse
 import com.example.messmaster.managerdashboard.model.TotalMealExpenseResponse
+import com.example.messmaster.managerdashboard.model.TransferOwnershipResponse
 import com.example.messmaster.managerdashboard.repository.ManagerRepository
 import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.util.UiState
@@ -33,6 +35,12 @@ class HomeViewModel(private val repository: ManagerRepository) : ViewModel() {
 
     private val _membersState = MutableStateFlow<UiState<List<MessMember>>>(UiState.Idle)
     val membersState: StateFlow<UiState<List<MessMember>>> = _membersState.asStateFlow()
+
+    private val _transferOwnershipState = MutableStateFlow<UiState<TransferOwnershipResponse>>(UiState.Idle)
+    val transferOwnershipState: StateFlow<UiState<TransferOwnershipResponse>> = _transferOwnershipState.asStateFlow()
+
+    private val _removeMemberState = MutableStateFlow<UiState<RemoveMemberResponse>>(UiState.Idle)
+    val removeMemberState: StateFlow<UiState<RemoveMemberResponse>> = _removeMemberState.asStateFlow()
 
     init {
         loadTotalMealExpense()
@@ -67,8 +75,24 @@ class HomeViewModel(private val repository: ManagerRepository) : ViewModel() {
         }
     }
 
+    fun transferOwnership(targetMemberId: Int) {
+        viewModelScope.launch {
+            _transferOwnershipState.value = UiState.Loading
+            _transferOwnershipState.value = repository.transferOwnership(targetMemberId)
+        }
+    }
+
+    fun removeMember(memberId: Int) {
+        viewModelScope.launch {
+            _removeMemberState.value = UiState.Loading
+            _removeMemberState.value = repository.removeMember(memberId)
+        }
+    }
+
     fun consumeMonthlySheet() { _monthlySheetState.value = UiState.Idle }
     fun consumeMembers() { _membersState.value = UiState.Idle }
+    fun consumeTransferOwnership() { _transferOwnershipState.value = UiState.Idle }
+    fun consumeRemoveMember() { _removeMemberState.value = UiState.Idle }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

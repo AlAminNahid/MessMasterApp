@@ -11,6 +11,15 @@ import okhttp3.Route
 private const val TAG = "TokenAuthenticator"
 private const val MAX_RETRIES = 1
 
+// Endpoints that don't require an existing session — a 401 here means the
+// submitted credentials were wrong, not that a session expired, so refresh/
+// force-logout must not run for them.
+private val UNAUTHENTICATED_AUTH_PATHS = listOf(
+    "/auth/login",
+    "/auth/registration",
+    "/auth/forget-password",
+)
+
 class TokenAuthenticator(
     private val cookieJar: PersistentCookieJar,
     private val baseUrl: String,
@@ -22,7 +31,13 @@ class TokenAuthenticator(
     }
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        if (response.request.url.encodedPath.endsWith("/auth/refresh")) {
+        val path = response.request.url.encodedPath
+
+        if (UNAUTHENTICATED_AUTH_PATHS.any { path.endsWith(it) }) {
+            return null
+        }
+
+        if (path.endsWith("/auth/refresh")) {
             sessionManager.forceLogout("Session expired. Please log in again.")
             return null
         }

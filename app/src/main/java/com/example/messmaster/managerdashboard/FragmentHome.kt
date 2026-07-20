@@ -30,6 +30,7 @@ import com.example.messmaster.managerdashboard.model.MonthlySheetMember
 import com.example.messmaster.managerdashboard.model.MonthlySheetResponse
 import com.example.messmaster.managerdashboard.viewmodel.HomeViewModel
 import com.example.messmaster.managerdashboard.viewmodel.ManagerSharedViewModel
+import com.example.messmaster.memberdashboard.MemberMainActivity
 import com.example.messmaster.util.UiState
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
@@ -55,6 +56,7 @@ class FragmentHome : Fragment() {
     private lateinit var txtTotalMealExpense: TextView
     private lateinit var txtMealRate: TextView
     private lateinit var txtTotalUtility: TextView
+    private var membersDialog: AlertDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -188,6 +190,39 @@ class FragmentHome : Fragment() {
                         }
                     }
                 }
+
+                launch {
+                    homeViewModel.transferOwnershipState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                homeViewModel.consumeTransferOwnership()
+                                Toast.makeText(requireContext(), state.data.message, Toast.LENGTH_LONG).show()
+                                membersDialog?.dismiss()
+                                requireContext().getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+                                    .edit().putString("user_role", "member").apply()
+                                startActivity(Intent(requireContext(), MemberMainActivity::class.java))
+                                requireActivity().finish()
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    homeViewModel.removeMemberState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                homeViewModel.consumeRemoveMember()
+                                Toast.makeText(requireContext(), state.data.message, Toast.LENGTH_LONG).show()
+                                membersDialog?.dismiss()
+                                homeViewModel.loadMembers()
+                            }
+                            is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
             }
         }
     }
@@ -292,6 +327,8 @@ class FragmentHome : Fragment() {
             .create()
 
         closeButton.setOnClickListener { dialog.dismiss() }
+        dialog.setOnDismissListener { membersDialog = null }
+        membersDialog = dialog
         dialog.show()
         styleDialogWindow(dialog)
     }
@@ -318,6 +355,38 @@ class FragmentHome : Fragment() {
                 addView(metricView("Total Bazar", "৳${formatAmount(member.total_bazar)}"))
             })
         }
+    }
+
+    private fun showTransferOwnershipDialog(member: MessMember) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_transfer_ownership, null)
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialogView.findViewById<TextView>(R.id.txtTransferOwnershipMessage).text =
+            "Make ${member.name} the manager of this mess? You will become a regular member."
+        dialogView.findViewById<Button>(R.id.btnCancelTransferOwnership).setOnClickListener { dialog.dismiss() }
+        dialogView.findViewById<Button>(R.id.btnConfirmTransferOwnership).setOnClickListener {
+            dialog.dismiss()
+            homeViewModel.transferOwnership(member.member_id)
+        }
+
+        dialog.show()
+    }
+
+    private fun showRemoveMemberDialog(member: MessMember) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_remove_member, null)
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialogView.findViewById<TextView>(R.id.txtRemoveMemberMessage).text =
+            "Remove ${member.name} from this mess?"
+        dialogView.findViewById<Button>(R.id.btnCancelRemoveMember).setOnClickListener { dialog.dismiss() }
+        dialogView.findViewById<Button>(R.id.btnConfirmRemoveMember).setOnClickListener {
+            dialog.dismiss()
+            homeViewModel.removeMember(member.member_id)
+        }
+
+        dialog.show()
     }
 
     private fun memberCard(member: MessMember, position: Int): LinearLayout {
@@ -356,6 +425,23 @@ class FragmentHome : Fragment() {
 
                 addView(detailText(member.email.ifBlank { "No email available" }))
                 addView(detailText(member.phone.ifBlank { "No phone available" }))
+
+                if (member.role != "manager") {
+                    addView(LinearLayout(requireContext()).apply {
+                        orientation = LinearLayout.HORIZONTAL
+                        setPadding(0, dp(12), 0, 0)
+
+                        addView(makeMemberActionButton("Make Manager", destructive = false).apply {
+                            layoutParams = LinearLayout.LayoutParams(0, dp(40), 1f).apply { rightMargin = dp(6) }
+                            setOnClickListener { showTransferOwnershipDialog(member) }
+                        })
+
+                        addView(makeMemberActionButton("Remove", destructive = true).apply {
+                            layoutParams = LinearLayout.LayoutParams(0, dp(40), 1f).apply { leftMargin = dp(6) }
+                            setOnClickListener { showRemoveMemberDialog(member) }
+                        })
+                    })
+                }
             })
         }
     }
@@ -403,6 +489,28 @@ class FragmentHome : Fragment() {
                 topMargin = dp(16)
             }
             addView(content)
+        }
+
+    private fun makeMemberActionButton(text: String, destructive: Boolean): Button =
+        Button(requireContext()).apply {
+            this.text = text
+            isAllCaps = false
+            textSize = 13f
+            setTypeface(typeface, Typeface.BOLD)
+            setPadding(0, 0, 0, 0)
+            minWidth = 0
+            minimumWidth = 0
+            minHeight = 0
+            minimumHeight = 0
+            stateListAnimator = null
+            elevation = 0f
+            if (destructive) {
+                setTextColor(requireContext().getColor(R.color.error))
+                background = roundedDrawable(Color.parseColor("#FDECEA"), dp(8))
+            } else {
+                setTextColor(requireContext().getColor(R.color.black))
+                background = roundedDrawable(Color.WHITE, dp(8), requireContext().getColor(R.color.border))
+            }
         }
 
     private fun makeSecondaryButton(text: String): Button =
