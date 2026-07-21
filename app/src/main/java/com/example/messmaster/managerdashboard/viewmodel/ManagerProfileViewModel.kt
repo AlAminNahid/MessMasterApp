@@ -60,8 +60,8 @@ class ManagerProfileViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 ManagerProfileViewModel(
-                    ManagerRepository(RetrofitClient.managerService),
-                    SharedRepository(RetrofitClient.commMessService, RetrofitClient.authService)
+                    ManagerRepository(RetrofitClient.apiService),
+                    SharedRepository(RetrofitClient.apiService)
                 )
             }
         }

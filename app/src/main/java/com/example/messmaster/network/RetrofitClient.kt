@@ -43,19 +43,7 @@ object RetrofitClient {
             .build()
     }
 
-    val authService: com.example.messmaster.auth.network.ApiService by lazy {
-        retrofit.create(com.example.messmaster.auth.network.ApiService::class.java)
-    }
-
-    val commMessService: com.example.messmaster.commondashboard.network.ApiService by lazy {
-        retrofit.create(com.example.messmaster.commondashboard.network.ApiService::class.java)
-    }
-
-    val managerService: com.example.messmaster.managerdashboard.network.ApiService by lazy {
-        retrofit.create(com.example.messmaster.managerdashboard.network.ApiService::class.java)
-    }
-
-    val memberService: com.example.messmaster.memberdashboard.network.ApiService by lazy {
-        retrofit.create(com.example.messmaster.memberdashboard.network.ApiService::class.java)
+    val apiService: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
     }
 }

@@ -30,7 +30,7 @@ import com.example.messmaster.managerdashboard.model.TransferOwnershipResponse
 import com.example.messmaster.managerdashboard.model.TodayTotalMealsResponse
 import com.example.messmaster.managerdashboard.model.TotalMealExpenseResponse
 import com.example.messmaster.managerdashboard.model.UpdateUserProfileRequest
-import com.example.messmaster.managerdashboard.network.ApiService
+import com.example.messmaster.network.ApiService
 import com.example.messmaster.model.UserProfileResponse
 import com.example.messmaster.util.UiState
 import com.example.messmaster.util.safeApiCall

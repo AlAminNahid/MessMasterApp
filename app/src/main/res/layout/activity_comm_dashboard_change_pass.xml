@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:fitsSystemWindows="true"
     android:fillViewport="true">
 
@@ -15,7 +15,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="#000000"
+            android:background="@color/black"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:paddingHorizontal="16dp">
@@ -25,7 +25,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/back_arrow"
-                app:tint="#FFFFFF"
+                app:tint="@color/white"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Back" />
 
@@ -35,7 +35,7 @@
                 android:text="Change Password"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
                 android:layout_marginStart="8dp" />
 
         </LinearLayout>
@@ -90,7 +90,7 @@
                 android:text="OLD PASSWORD"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="@color/label_dark"
                 android:letterSpacing="0.08"
                 android:layout_marginTop="44dp"
                 android:layout_marginBottom="6dp" />
@@ -109,8 +109,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:hint="Old password"
-                    android:textColorHint="#999999"
-                    android:textColor="#000000"
+                    android:textColorHint="@color/hint_gray"
+                    android:textColor="@color/black"
                     android:textSize="15sp"
                     android:background="@null"
                     android:inputType="textPassword"
@@ -134,7 +134,7 @@
                 android:text="NEW PASSWORD"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="@color/label_dark"
                 android:letterSpacing="0.08"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="6dp" />
@@ -154,8 +154,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:hint="New password"
-                    android:textColorHint="#999999"
-                    android:textColor="#000000"
+                    android:textColorHint="@color/hint_gray"
+                    android:textColor="@color/black"
                     android:textSize="15sp"
                     android:background="@null"
                     android:inputType="textPassword"
@@ -179,9 +179,9 @@
                 android:layout_height="56dp"
                 android:text="Change Password"
                 android:textSize="16sp"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
                 android:textStyle="bold"
-                android:backgroundTint="#000000"
+                android:backgroundTint="@color/black"
                 android:stateListAnimator="@null"
                 style="@style/Widget.MaterialComponents.Button"
                 app:cornerRadius="12dp" />

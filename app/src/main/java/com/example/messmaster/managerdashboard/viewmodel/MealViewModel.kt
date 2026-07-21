@@ -106,7 +106,7 @@ class MealViewModel(private val repository: ManagerRepository) : ViewModel() {
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                MealViewModel(ManagerRepository(RetrofitClient.managerService))
+                MealViewModel(ManagerRepository(RetrofitClient.apiService))
             }
         }
     }

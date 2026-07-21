@@ -29,7 +29,7 @@ class CreateMessViewModel(private val repository: MessRepository) : ViewModel() 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                CreateMessViewModel(MessRepository(RetrofitClient.commMessService))
+                CreateMessViewModel(MessRepository(RetrofitClient.apiService))
             }
         }
     }

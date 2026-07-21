@@ -617,7 +617,7 @@ class FragmentMeal : Fragment() {
         return LinearLayout(requireContext()).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(14), dp(16), dp(14))
-            setBackgroundResource(R.drawable.bg_white_card)
+            setBackgroundResource(R.drawable.bg_record_card)
             layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 bottomMargin = dp(10)
             }

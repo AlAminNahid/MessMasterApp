@@ -66,7 +66,7 @@ class UtilityViewModel(private val repository: ManagerRepository) : ViewModel() 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                UtilityViewModel(ManagerRepository(RetrofitClient.managerService))
+                UtilityViewModel(ManagerRepository(RetrofitClient.apiService))
             }
         }
     }

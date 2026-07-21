@@ -1,11 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Fixed brand constants: never themed, used for text/icons on the
+         permanently-dark header & buttons regardless of day/night mode. -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="text_primary">#888888</color>
     <color name="text_secondary">#73757D</color>
-    <color name="border">#DADCE2</color>
     <color name="error">#D32F2F</color>
-    <color name="screen_background">#F5F5F5</color>
+    <color name="error_dark">#B80000</color>
+    <color name="error_background">#FDECEA</color>
     <color name="accent">#3A3A3A</color>
+    <color name="label_on_dark">#8E8E8E</color>
+    <color name="card_surface_dark">#151515</color>
+    <color name="card_surface_dark_border">#333333</color>
+
+    <!-- Themed roles: overridden in values-night/colors.xml -->
+    <color name="screen_background">#F5F5F5</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_border">#D9D9D9</color>
+    <color name="border">#DADCE2</color>
+    <color name="input_background">#D3D3D3</color>
+    <color name="text_strong">#111111</color>
+    <color name="text_muted">#777777</color>
+    <color name="text_faint">#B0B0B0</color>
+    <color name="label_dark">#333333</color>
+    <color name="label_muted">#555555</color>
+    <color name="hint_gray">#999999</color>
+    <color name="divider">#E8E8E8</color>
 </resources>

@@ -57,7 +57,7 @@ class ManagerSharedViewModel(private val repository: ManagerRepository) : ViewMo
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                ManagerSharedViewModel(ManagerRepository(RetrofitClient.managerService))
+                ManagerSharedViewModel(ManagerRepository(RetrofitClient.apiService))
             }
         }
     }

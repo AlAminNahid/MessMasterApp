@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:fitsSystemWindows="true">
 
     <androidx.fragment.app.FragmentContainerView
@@ -21,13 +21,16 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/managerBottomNav"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:background="#FFFFFF"
-        app:elevation="8dp"
-        app:itemIconTint="@color/nav_item_color_selector"
-        app:itemTextColor="@color/nav_item_color_selector"
+        android:layout_height="86dp"
+        android:background="@drawable/bg_bottom_nav"
+        android:paddingTop="10dp"
+        app:elevation="16dp"
+        app:itemIconSize="25dp"
+        app:itemIconTint="@color/nav_icon_color_selector"
+        app:itemTextColor="@color/nav_text_color_selector"
         app:itemTextAppearanceActive="@style/BottomNavTextStyle.Selected"
         app:itemTextAppearanceInactive="@style/BottomNavTextStyle"
+        app:itemRippleColor="@color/border"
         app:labelVisibilityMode="labeled"
         app:itemActiveIndicatorStyle="@style/CustomIndicator"
         app:menu="@menu/menu_manager_bottom_nav" />

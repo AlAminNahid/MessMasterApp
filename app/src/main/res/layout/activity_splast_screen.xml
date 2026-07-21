@@ -3,11 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="32dp"
-    tools:context=".SplashScreenActivity">
+    tools:context=".splash.SplashScreenActivity">
 
     <ImageView
         android:layout_width="140dp"
@@ -19,9 +19,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="MessMaster"
-        android:textSize="36sp"
+        android:textSize="38sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
+        android:fontFamily="serif"
+        android:textColor="@color/text_strong"
         android:layout_marginTop="20dp"/>
 
     <TextView
@@ -31,7 +32,7 @@
         android:gravity="center"
         android:textAlignment="center"
         android:text="A specialized system designed to simplify\nmeal tracking, automate utility expense\ncalculations, and streamline communication\nbetween roommates."
-        android:textColor="#7A7A7A"
+        android:textColor="@color/text_faint"
         android:textSize="15sp"
         android:lineSpacingExtra="4dp"
         android:fontFamily="sans-serif-light" />

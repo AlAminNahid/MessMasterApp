@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     tools:context=".managerdashboard.FragmentMeal">
@@ -40,7 +40,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="MANAGER"
-                        android:textColor="#8E8E8E"
+                        android:textColor="@color/label_on_dark"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.08" />
@@ -81,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TOTAL MEAL THIS MONTH"
-                    android:textColor="#8E8E8E"
+                    android:textColor="@color/label_on_dark"
                     android:textSize="12sp"
                     android:textStyle="bold"/>
 
@@ -110,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="MEAL RATE"
-                    android:textColor="#8E8E8E"
+                    android:textColor="@color/label_on_dark"
                     android:textSize="12sp"
                     android:textStyle="bold"/>
 
@@ -131,6 +131,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
             android:background="@drawable/bg_white_card"
+            android:elevation="6dp"
             android:padding="18dp"
             android:orientation="vertical">
 
@@ -138,7 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="INSERT MEAL ENTRY"
-                android:textColor="#777777"
+                android:textColor="@color/text_muted"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"/>
@@ -161,7 +162,7 @@
                         android:layout_height="wrap_content"
                         android:text="MEMBER"
                         android:textStyle="bold"
-                        android:textColor="#555555"
+                        android:textColor="@color/label_muted"
                         android:textSize="14sp"
                         android:layout_marginBottom="6dp"/>
 
@@ -188,7 +189,7 @@
                         android:layout_height="wrap_content"
                         android:text="DATE"
                         android:textStyle="bold"
-                        android:textColor="#555555"
+                        android:textColor="@color/label_muted"
                         android:textSize="14sp"
                         android:layout_marginBottom="6dp"/>
 
@@ -220,7 +221,7 @@
                         android:layout_height="wrap_content"
                         android:text="MEAL TYPE"
                         android:textStyle="bold"
-                        android:textColor="#555555"
+                        android:textColor="@color/label_muted"
                         android:textSize="14sp"
                         android:layout_marginBottom="6dp"/>
 
@@ -246,7 +247,7 @@
                         android:layout_height="wrap_content"
                         android:text="COUNT"
                         android:textStyle="bold"
-                        android:textColor="#555555"
+                        android:textColor="@color/label_muted"
                         android:textSize="14sp"
                         android:layout_marginBottom="6dp"/>
 
@@ -283,6 +284,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:background="@drawable/bg_white_card"
+            android:elevation="6dp"
             android:padding="18dp"
             android:orientation="vertical">
 
@@ -290,7 +292,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="INSERT MEAL EXPENSE"
-                android:textColor="#777777"
+                android:textColor="@color/text_muted"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"/>
@@ -306,7 +308,7 @@
                     android:layout_height="wrap_content"
                     android:text="BAZAR DONE BY"
                     android:textStyle="bold"
-                    android:textColor="#555555"
+                    android:textColor="@color/label_muted"
                     android:textSize="14sp"
                     android:layout_marginBottom="6dp"/>
 
@@ -332,7 +334,7 @@
                     android:layout_height="wrap_content"
                     android:text="BAZAR DATE"
                     android:textStyle="bold"
-                    android:textColor="#555555"
+                    android:textColor="@color/label_muted"
                     android:textSize="14sp"
                     android:layout_marginBottom="6dp"/>
 
@@ -363,7 +365,7 @@
                     android:layout_height="wrap_content"
                     android:text="MEAL AMOUNT"
                     android:textStyle="bold"
-                    android:textColor="#555555"
+                    android:textColor="@color/label_muted"
                     android:textSize="14sp"
                     android:layout_marginBottom="6dp"/>
 
@@ -392,7 +394,7 @@
                     android:layout_height="wrap_content"
                     android:text="DESCRIPTION"
                     android:textStyle="bold"
-                    android:textColor="#555555"
+                    android:textColor="@color/label_muted"
                     android:textSize="14sp"
                     android:layout_marginBottom="6dp"/>
 
@@ -429,7 +431,7 @@
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="24dp"
             android:text="MONTHLY VIEW"
-            android:textColor="#777777"
+            android:textColor="@color/text_muted"
             android:textSize="18sp"
             android:textStyle="bold"
             android:letterSpacing="0.08"/>
@@ -448,6 +450,7 @@
                 android:layout_columnWeight="1"
                 android:layout_margin="5dp"
                 android:background="@drawable/bg_white_card"
+            android:elevation="6dp"
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:orientation="vertical">
@@ -464,7 +467,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
                     android:text="Meals Table"
-                    android:textColor="#111111"
+                    android:textColor="@color/text_strong"
                     android:textSize="14sp"
                     android:textStyle="bold"/>
 
@@ -477,6 +480,7 @@
                 android:layout_columnWeight="1"
                 android:layout_margin="5dp"
                 android:background="@drawable/bg_white_card"
+            android:elevation="6dp"
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:orientation="vertical">
@@ -485,7 +489,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/meal_icon"/>
+                    android:src="@drawable/receipt_icon"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -493,7 +497,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
                     android:text="Bazar Table"
-                    android:textColor="#111111"
+                    android:textColor="@color/text_strong"
                     android:textSize="14sp"
                     android:textStyle="bold"/>
 

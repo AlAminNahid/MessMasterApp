@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     tools:context=".managerdashboard.FragmentHome">
@@ -40,7 +41,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="MANAGER"
-                        android:textColor="#8E8E8E"
+                        android:textColor="@color/label_on_dark"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.08" />
@@ -51,7 +52,8 @@
                         android:layout_height="wrap_content"
                         android:text="..."
                         android:textColor="@color/white"
-                        android:textSize="25sp"
+                        android:textSize="26sp"
+                        android:fontFamily="serif"
                         android:textStyle="bold" />
 
                     <TextView
@@ -59,7 +61,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="..."
-                        android:textColor="#979797"
+                        android:textColor="@color/label_on_dark"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -72,7 +74,7 @@
                     android:background="@drawable/bg_avatar_circle"
                     android:gravity="center"
                     android:text=".."
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -84,180 +86,256 @@
                 android:layout_marginTop="24dp"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="72dp"
-                    android:background="@drawable/bg_dark_card"
-                    android:orientation="vertical"
-                    android:gravity="center_vertical"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:layout_marginEnd="6dp">
+                    android:layout_marginEnd="6dp"
+                    app:cardBackgroundColor="@color/card_surface_dark"
+                    app:strokeColor="@color/card_surface_dark_border"
+                    app:strokeWidth="1dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="0dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="MEMBERS"
-                        android:textColor="#8E8E8E"
-                        android:textSize="12sp"
-                        android:textStyle="bold"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp">
 
-                    <TextView
-                        android:id="@+id/txtTotalMembers"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="..."
-                        android:textColor="@color/white"
-                        android:textSize="19sp"
-                        android:textStyle="bold"/>
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MEMBERS"
+                            android:textColor="@color/label_on_dark"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
 
-                <LinearLayout
+                        <TextView
+                            android:id="@+id/txtTotalMembers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="..."
+                            android:textColor="@color/white"
+                            android:textSize="19sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="72dp"
-                    android:background="@drawable/bg_dark_card"
-                    android:orientation="vertical"
-                    android:gravity="center_vertical"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:layout_marginEnd="6dp">
+                    android:layout_marginEnd="6dp"
+                    app:cardBackgroundColor="@color/card_surface_dark"
+                    app:strokeColor="@color/card_surface_dark_border"
+                    app:strokeWidth="1dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="0dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="THIS MONTH MEALS"
-                        android:textColor="#8E8E8E"
-                        android:textSize="12sp"
-                        android:textStyle="bold"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp">
 
-                    <TextView
-                        android:id="@+id/txtTotalMeals"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="..."
-                        android:textColor="@color/white"
-                        android:textSize="19sp"
-                        android:textStyle="bold"/>
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="THIS MONTH MEALS"
+                            android:textColor="@color/label_on_dark"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
 
-                <LinearLayout
+                        <TextView
+                            android:id="@+id/txtTotalMeals"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="..."
+                            android:textColor="@color/white"
+                            android:textSize="19sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="72dp"
-                    android:background="@drawable/bg_dark_card"
-                    android:orientation="vertical"
-                    android:gravity="center_vertical"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp">
+                    app:cardBackgroundColor="@color/card_surface_dark"
+                    app:strokeColor="@color/card_surface_dark_border"
+                    app:strokeWidth="1dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="0dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="MEAL RATE"
-                        android:textColor="#8E8E8E"
-                        android:textSize="12sp"
-                        android:textStyle="bold"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp">
 
-                    <TextView
-                        android:id="@+id/txtMealRate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="৳ ..."
-                        android:textColor="@color/white"
-                        android:textSize="19sp"
-                        android:textStyle="bold"/>
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MEAL RATE"
+                            android:textColor="@color/label_on_dark"
+                            android:textSize="12sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtMealRate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="৳ ..."
+                            android:textColor="@color/white"
+                            android:textSize="19sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 
         </LinearLayout>
 
-        <GridLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:padding="18dp"
-            android:rowCount="1">
+            android:orientation="horizontal"
+            android:padding="13dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="132dp"
+                android:layout_weight="1.4"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:padding="18dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Meal Expense"
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp"/>
+
+                    <TextView
+                        android:id="@+id/txtTotalMealExpense"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="৳ ..."
+                        android:textColor="@color/text_strong"
+                        android:fontFamily="serif"
+                        android:textSize="28sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="This month"
+                        android:textColor="@color/text_faint"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="132dp"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="6dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Utilities"
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp"/>
+
+                    <TextView
+                        android:id="@+id/txtTotalUtility"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="৳ ..."
+                        android:textColor="@color/text_strong"
+                        android:textSize="22sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="This month"
+                        android:textColor="@color/text_faint"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btnMonthlySheet"
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:rippleColor="@color/border">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="128dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="5dp"
-                android:background="@drawable/bg_white_card"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:padding="16dp"
-                android:orientation="vertical">
+                android:paddingHorizontal="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/calendar_icon"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Utilities"
-                    android:textColor="#777777"
-                    android:textSize="13sp"/>
-
-                <TextView
-                    android:id="@+id/txtTotalUtility"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="৳ ..."
-                    android:textColor="#111111"
-                    android:textSize="25sp"
+                    android:layout_marginStart="14dp"
+                    android:text="Monthly Sheet"
+                    android:textColor="@color/text_strong"
+                    android:textSize="14sp"
                     android:textStyle="bold"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="This month"
-                    android:textColor="#9A9A9A"
-                    android:textSize="13sp" />
-
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="128dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="5dp"
-                android:background="@drawable/bg_white_card"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Total Meal Expense"
-                    android:textColor="#777777"
-                    android:textSize="13sp"/>
-
-                <TextView
-                    android:id="@+id/txtTotalMealExpense"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="৳ ..."
-                    android:textColor="#111111"
-                    android:textSize="25sp"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="This month"
-                    android:textColor="#9A9A9A"
-                    android:textSize="13sp" />
-
-            </LinearLayout>
-
-        </GridLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="QUICK ACTIONS"
-            android:textColor="#777777"
+            android:textColor="@color/text_muted"
             android:textSize="18sp"
             android:textStyle="bold"
             android:letterSpacing="0.06"
@@ -266,183 +344,199 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:padding="18dp"
-            android:rowCount="3">
+            android:columnCount="3"
+            android:padding="13dp">
 
-            <LinearLayout
+            <!-- Row 0: three equal tiles -->
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btnAddMeal"
                 android:layout_width="0dp"
-                android:layout_height="128dp"
+                android:layout_height="112dp"
+                android:layout_row="0"
+                android:layout_column="0"
                 android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
                 android:layout_margin="5dp"
-                android:background="@drawable/bg_white_card"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:orientation="vertical">
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:rippleColor="@color/border">
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/add_icon"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:text="Add Meal"
-                    android:textColor="#111111"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/add_icon"/>
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Add Meal"
+                        android:textColor="@color/text_strong"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
 
-            <LinearLayout
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btnAddUtility"
                 android:layout_width="0dp"
-                android:layout_height="128dp"
+                android:layout_height="112dp"
+                android:layout_row="0"
+                android:layout_column="1"
                 android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
                 android:layout_margin="5dp"
-                android:background="@drawable/bg_white_card"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:orientation="vertical">
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:rippleColor="@color/border">
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/utility_icon"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:text="Add Utility"
-                    android:textColor="#111111"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/utility_icon"/>
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Utility"
+                        android:textColor="@color/text_strong"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
 
-            <LinearLayout
-                android:id="@+id/btnNotifcation"
-                android:layout_width="0dp"
-                android:layout_height="128dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="5dp"
-                android:background="@drawable/bg_white_card"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:orientation="vertical">
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/notification_icon"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:text="Notices"
-                    android:textColor="#111111"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
-
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btnMembers"
                 android:layout_width="0dp"
-                android:layout_height="128dp"
+                android:layout_height="112dp"
+                android:layout_row="0"
+                android:layout_column="2"
                 android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
                 android:layout_margin="5dp"
-                android:background="@drawable/bg_white_card"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:orientation="vertical">
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:rippleColor="@color/border">
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/profile_icon"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:text="Members"
-                    android:textColor="#111111"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/profile_icon"/>
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Members"
+                        android:textColor="@color/text_strong"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
 
-            <LinearLayout
-                android:id="@+id/btnMonthlySheet"
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnNotifcation"
                 android:layout_width="0dp"
-                android:layout_height="128dp"
+                android:layout_height="112dp"
+                android:layout_row="1"
+                android:layout_column="0"
                 android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
                 android:layout_margin="5dp"
-                android:background="@drawable/bg_white_card"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:orientation="vertical">
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:rippleColor="@color/border">
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/meal_icon"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:text="Monthly Sheet"
-                    android:textColor="#111111"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/notification_icon"/>
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Notices"
+                        android:textColor="@color/text_strong"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
 
-            <LinearLayout
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btnSettings"
                 android:layout_width="0dp"
-                android:layout_height="128dp"
+                android:layout_height="112dp"
+                android:layout_row="1"
+                android:layout_column="1"
                 android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
                 android:layout_margin="5dp"
-                android:background="@drawable/bg_white_card"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:orientation="vertical">
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:rippleColor="@color/border">
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/settings_icon"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:text="Settings"
-                    android:textColor="#111111"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/settings_icon"/>
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Settings"
+                        android:textColor="@color/text_strong"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </GridLayout>
 

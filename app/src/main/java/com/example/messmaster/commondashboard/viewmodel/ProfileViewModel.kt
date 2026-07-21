@@ -42,7 +42,7 @@ class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 ProfileViewModel(
-                    UserRepository(RetrofitClient.commMessService, RetrofitClient.authService)
+                    UserRepository(RetrofitClient.apiService)
                 )
             }
         }

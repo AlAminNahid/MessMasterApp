@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     tools:context=".memberdashboard.MemberHomeFragment">
@@ -40,7 +41,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="MEMBER"
-                        android:textColor="#8E8E8E"
+                        android:textColor="@color/label_on_dark"
                         android:textSize="13sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.08" />
@@ -52,6 +53,7 @@
                         android:text="..."
                         android:textColor="@color/white"
                         android:textSize="30sp"
+                        android:fontFamily="serif"
                         android:textStyle="bold" />
 
                     <TextView
@@ -60,7 +62,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:text="..."
-                        android:textColor="#8E8E8E"
+                        android:textColor="@color/label_on_dark"
                         android:textSize="17sp"
                         android:textStyle="bold" />
 
@@ -73,58 +75,67 @@
                     android:background="@drawable/bg_avater_dark"
                     android:gravity="center"
                     android:text=".."
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:background="@drawable/bg_dark_card"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp">
+                app:cardBackgroundColor="@color/card_surface_dark"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/card_surface_dark_border"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtBillEstimateLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="YOUR BILL ESTIMATE"
+                            android:textColor="@color/label_on_dark"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/txtBillEstimate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="৳ ..."
+                            android:textColor="@color/white"
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
 
                     <TextView
-                        android:id="@+id/txtBillEstimateLabel"
+                        android:id="@+id/txtBillBreakdown"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="YOUR BILL ESTIMATE"
-                        android:textColor="#8E8E8E"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/txtBillEstimate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="৳ ..."
-                        android:textColor="@color/white"
-                        android:textSize="30sp"
+                        android:text="..."
+                        android:textColor="@color/label_on_dark"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/txtBillBreakdown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="..."
-                    android:textColor="#8E8E8E"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
@@ -135,82 +146,96 @@
             android:layout_marginTop="24dp"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="150dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="14dp"
-                android:background="@drawable/bg_white_card"
-                android:orientation="vertical"
-                android:padding="16dp">
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
 
-                <TextView
-                    android:id="@+id/txtMyMealsLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="My meals"
-                    android:textColor="#8E8E8E"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/txtMyMeals"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="..."
-                    android:textColor="#111111"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/txtMyMealsLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="My meals"
+                        android:textColor="@color/label_on_dark"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Total meals"
-                    android:textColor="#8E8E8E"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/txtMyMeals"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="..."
+                        android:textColor="@color/text_strong"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total meals"
+                        android:textColor="@color/label_on_dark"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
-            <LinearLayout
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="150dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="14dp"
-                android:background="@drawable/bg_white_card"
-                android:orientation="vertical"
-                android:padding="16dp">
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Meal rate"
-                    android:textColor="#8E8E8E"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/txtHomeMealRate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="৳ ..."
-                    android:textColor="#111111"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Meal rate"
+                        android:textColor="@color/label_on_dark"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Per meal"
-                    android:textColor="#8E8E8E"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/txtHomeMealRate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="৳ ..."
+                        android:textColor="@color/text_strong"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Per meal"
+                        android:textColor="@color/label_on_dark"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
@@ -220,66 +245,73 @@
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="10dp"
             android:text="LATEST NOTICE"
-            android:textColor="#777777"
+            android:textColor="@color/text_muted"
             android:textSize="18sp"
             android:textStyle="bold"
             android:letterSpacing="0.06" />
 
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="18dp"
-            android:background="@drawable/bg_white_card"
-            android:padding="16dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_marginEnd="18dp"
-                android:background="@drawable/bg_black_round"
-                android:gravity="center"
-                android:text="!"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+            app:cardBackgroundColor="@color/surface"
+            app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:padding="16dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/txtLatestNoticeTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No notices yet"
-                    android:textColor="#111111"
-                    android:textSize="18sp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginEnd="18dp"
+                    android:background="@drawable/bg_black_round"
+                    android:gravity="center"
+                    android:text="!"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/txtLatestNoticeDescription"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Latest notices from your mess will appear here."
-                    android:textColor="#777777"
-                    android:textSize="15sp" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txtLatestNoticeDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text=""
-                    android:textColor="#B0B0B0"
-                    android:textSize="13sp" />
+                    <TextView
+                        android:id="@+id/txtLatestNoticeTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No notices yet"
+                        android:textColor="@color/text_strong"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtLatestNoticeDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Latest notices from your mess will appear here."
+                        android:textColor="@color/text_muted"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/txtLatestNoticeDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text=""
+                        android:textColor="@color/text_faint"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
-
-        </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <Button
             android:id="@+id/btnSendNoticeToManager"

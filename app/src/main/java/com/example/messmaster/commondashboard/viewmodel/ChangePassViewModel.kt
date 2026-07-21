@@ -33,7 +33,7 @@ class ChangePassViewModel(private val repository: UserRepository) : ViewModel() 
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 ChangePassViewModel(
-                    UserRepository(RetrofitClient.commMessService, RetrofitClient.authService)
+                    UserRepository(RetrofitClient.apiService)
                 )
             }
         }

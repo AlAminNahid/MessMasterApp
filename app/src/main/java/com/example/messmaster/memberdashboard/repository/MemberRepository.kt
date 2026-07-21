@@ -11,8 +11,8 @@ import com.example.messmaster.managerdashboard.model.NoticeItem
 import com.example.messmaster.managerdashboard.model.NoticeRequest
 import com.example.messmaster.managerdashboard.model.NoticeResponse
 import com.example.messmaster.managerdashboard.model.UpdateUserProfileRequest
-import com.example.messmaster.memberdashboard.network.ApiService
 import com.example.messmaster.model.UserProfileResponse
+import com.example.messmaster.network.ApiService
 import com.example.messmaster.util.UiState
 import com.example.messmaster.util.parseError
 
@@ -53,12 +53,12 @@ class MemberRepository(private val apiService: ApiService) {
     } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
 
     suspend fun getNotices(messID: Int): UiState<List<NoticeItem>> = try {
-        val r = apiService.getNotices(messID)
+        val r = apiService.getMemberNotices(messID)
         if (r.isSuccessful) UiState.Success(r.body()!!.notices) else UiState.Error(parseError(r.errorBody()))
     } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
 
     suspend fun sendNotice(request: NoticeRequest): UiState<NoticeResponse> = try {
-        val r = apiService.sendNotice(request)
+        val r = apiService.sendMemberNotice(request)
         if (r.isSuccessful) UiState.Success(r.body()!!) else UiState.Error(parseError(r.errorBody()))
     } catch (e: Exception) { UiState.Error("Failed to connect: ${e.message}") }
 

@@ -6,7 +6,7 @@ import com.example.messmaster.auth.model.login.LoginRequest
 import com.example.messmaster.auth.model.login.LoginResponse
 import com.example.messmaster.auth.model.registration.RegistrationRequest
 import com.example.messmaster.auth.model.registration.RegistrationResponse
-import com.example.messmaster.auth.network.ApiService
+import com.example.messmaster.network.ApiService
 import com.example.messmaster.util.UiState
 import com.example.messmaster.util.safeApiCall
 

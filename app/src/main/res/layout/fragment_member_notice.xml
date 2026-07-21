@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     tools:context=".memberdashboard.MemberNoticeFragment">
@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="NOTICES &amp;"
-                android:textColor="#8E8E8E"
+                android:textColor="@color/label_on_dark"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08" />
@@ -48,6 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
             android:background="@drawable/bg_white_card"
+            android:elevation="6dp"
             android:padding="18dp"
             android:orientation="vertical">
 
@@ -55,7 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="SEND TO MANAGER"
-                android:textColor="#777777"
+                android:textColor="@color/text_muted"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08" />
@@ -180,7 +181,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:text="FROM MANAGER"
-            android:textColor="#777777"
+            android:textColor="@color/text_muted"
             android:textSize="18sp"
             android:textStyle="bold"
             android:letterSpacing="0.08" />
@@ -191,6 +192,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="18dp"
             android:background="@drawable/bg_white_card"
+            android:elevation="6dp"
             android:padding="18dp"
             android:orientation="vertical" />
 
@@ -199,7 +201,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:text="MY SENT NOTICES"
-            android:textColor="#777777"
+            android:textColor="@color/text_muted"
             android:textSize="18sp"
             android:textStyle="bold"
             android:letterSpacing="0.08" />
@@ -210,6 +212,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="18dp"
             android:background="@drawable/bg_white_card"
+            android:elevation="6dp"
             android:padding="18dp"
             android:orientation="vertical" />
 

@@ -11,6 +11,8 @@ suspend fun <T> safeApiCall(
     val response = call()
     if (response.isSuccessful) {
         UiState.Success(response.body()!!)
+    } else if (response.code() == 403) {
+        UiState.Error("You don't have permission to view this yet.")
     } else {
         UiState.Error(parseError(response.errorBody()))
     }

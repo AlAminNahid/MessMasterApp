@@ -45,8 +45,8 @@ class MemberProfileViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 MemberProfileViewModel(
-                    MemberRepository(RetrofitClient.memberService),
-                    SharedRepository(RetrofitClient.commMessService, RetrofitClient.authService)
+                    MemberRepository(RetrofitClient.apiService),
+                    SharedRepository(RetrofitClient.apiService)
                 )
             }
         }

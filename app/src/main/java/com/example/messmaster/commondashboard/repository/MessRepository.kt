@@ -4,7 +4,7 @@ import com.example.messmaster.commondashboard.model.createMess.CreateMessRequest
 import com.example.messmaster.commondashboard.model.createMess.CreateMessResponse
 import com.example.messmaster.commondashboard.model.joinMess.JoinMessRequest
 import com.example.messmaster.commondashboard.model.joinMess.JoinMessResponse
-import com.example.messmaster.commondashboard.network.ApiService
+import com.example.messmaster.network.ApiService
 import com.example.messmaster.util.UiState
 import com.example.messmaster.util.safeApiCall
 

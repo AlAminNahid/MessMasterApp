@@ -1,29 +1,35 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.MessMaster" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.MessMaster" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_strong</item>
+        <item name="colorSurfaceVariant">@color/screen_background</item>
+        <item name="colorOnSurfaceVariant">@color/text_muted</item>
+        <item name="colorOutline">@color/border</item>
+        <item name="android:windowBackground">@color/screen_background</item>
     </style>
 
     <style name="Theme.MessMaster" parent="Base.Theme.MessMaster" />
 
     <style name="CustomIndicator">
-        <item name="indicatorColor">#E0E0E0</item>
+        <item name="indicatorColor">@color/screen_background</item>
         <item name="shapeAppearance">@style/IndicatorShape</item>
     </style>
 
     <style name="IndicatorShape">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
+        <item name="cornerSize">20dp</item>
     </style>
 
     <style name="BottomNavTextStyle">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">11sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <style name="BottomNavTextStyle.Selected">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">bold</item>
     </style>
 </resources>

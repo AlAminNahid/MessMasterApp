@@ -30,7 +30,7 @@ class LoginViewModel(private val repository: AuthRepository) : ViewModel() {
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                LoginViewModel(AuthRepository(RetrofitClient.authService))
+                LoginViewModel(AuthRepository(RetrofitClient.apiService))
             }
         }
     }

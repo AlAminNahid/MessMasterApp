@@ -33,6 +33,7 @@ import com.example.messmaster.managerdashboard.viewmodel.ManagerSharedViewModel
 import com.example.messmaster.memberdashboard.MemberMainActivity
 import com.example.messmaster.util.UiState
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
@@ -47,12 +48,12 @@ class FragmentHome : Fragment() {
     private lateinit var tvAvatar: TextView
     private lateinit var txtTotalMembers: TextView
     private lateinit var txtTotalMeals: TextView
-    private lateinit var btnAddMeal: LinearLayout
-    private lateinit var btnSettings: LinearLayout
-    private lateinit var btnAddUtility: LinearLayout
-    private lateinit var btnNotifcation: LinearLayout
-    private lateinit var btnMembers: LinearLayout
-    private lateinit var btnMonthlySheet: LinearLayout
+    private lateinit var btnAddMeal: MaterialCardView
+    private lateinit var btnSettings: MaterialCardView
+    private lateinit var btnAddUtility: MaterialCardView
+    private lateinit var btnNotifcation: MaterialCardView
+    private lateinit var btnMembers: MaterialCardView
+    private lateinit var btnMonthlySheet: MaterialCardView
     private lateinit var txtTotalMealExpense: TextView
     private lateinit var txtMealRate: TextView
     private lateinit var txtTotalUtility: TextView

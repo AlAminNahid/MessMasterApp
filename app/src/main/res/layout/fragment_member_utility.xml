@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     tools:context=".memberdashboard.MemberUtilityFragment">
@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MY"
-                android:textColor="#8E8E8E"
+                android:textColor="@color/label_on_dark"
                 android:textSize="13sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08" />
@@ -62,7 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="MY UTILITY SHARE"
-                    android:textColor="#8E8E8E"
+                    android:textColor="@color/label_on_dark"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -87,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TOTAL BILL"
-                    android:textColor="#8E8E8E"
+                    android:textColor="@color/label_on_dark"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -110,7 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:text="MY SHARE"
-            android:textColor="#777777"
+            android:textColor="@color/text_muted"
             android:textSize="18sp"
             android:textStyle="bold"
             android:letterSpacing="0.08" />
@@ -120,6 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="18dp"
             android:background="@drawable/bg_white_card"
+            android:elevation="6dp"
             android:padding="18dp"
             android:orientation="vertical">
 
@@ -139,7 +140,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Electricity"
-                        android:textColor="#111111"
+                        android:textColor="@color/text_strong"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -147,7 +148,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="My share"
-                        android:textColor="#8E8E8E"
+                        android:textColor="@color/label_on_dark"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -157,7 +158,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="৳ ..."
-                    android:textColor="#111111"
+                    android:textColor="@color/text_strong"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -180,7 +181,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Gas"
-                        android:textColor="#111111"
+                        android:textColor="@color/text_strong"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -188,7 +189,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="My share"
-                        android:textColor="#8E8E8E"
+                        android:textColor="@color/label_on_dark"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -198,7 +199,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="৳ ..."
-                    android:textColor="#111111"
+                    android:textColor="@color/text_strong"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -221,7 +222,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Internet"
-                        android:textColor="#111111"
+                        android:textColor="@color/text_strong"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -229,7 +230,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="My share"
-                        android:textColor="#8E8E8E"
+                        android:textColor="@color/label_on_dark"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -239,7 +240,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="৳ ..."
-                    android:textColor="#111111"
+                    android:textColor="@color/text_strong"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -262,7 +263,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Maid"
-                        android:textColor="#111111"
+                        android:textColor="@color/text_strong"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -270,7 +271,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="My share"
-                        android:textColor="#8E8E8E"
+                        android:textColor="@color/label_on_dark"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -280,7 +281,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="৳ ..."
-                    android:textColor="#111111"
+                    android:textColor="@color/text_strong"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 

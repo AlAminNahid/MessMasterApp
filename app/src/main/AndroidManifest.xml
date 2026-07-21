@@ -16,7 +16,7 @@
         android:theme="@style/Theme.MessMaster"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".SplashScreenActivity"
+            android:name=".splash.SplashScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,9 +32,13 @@
         <activity android:name=".commondashboard.JoinMessActivity"/>
         <activity android:name=".commondashboard.ProfileActivity"/>
         <activity android:name=".commondashboard.ChangePassActivity"/>
-        <activity android:name=".managerdashboard.ManagerMainActivity"/>
+        <activity
+            android:name=".managerdashboard.ManagerMainActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".managerdashboard.SettingsActivity"/>
-        <activity android:name=".memberdashboard.MemberMainActivity"/>
+        <activity
+            android:name=".memberdashboard.MemberMainActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".memberdashboard.MemberSettingsActivity"/>
     </application>
 

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     tools:context=".managerdashboard.SettingsActivity">
@@ -18,7 +18,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="88dp"
-            android:background="#000000"
+            android:background="@color/black"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:paddingStart="16dp"
@@ -30,7 +30,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/back_arrow"
-                app:tint="#FFFFFF"
+                app:tint="@color/white"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Back" />
 
@@ -40,7 +40,7 @@
                 android:text="Settings"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
                 android:layout_marginStart="8dp" />
 
         </LinearLayout>
@@ -50,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="24dp"
             android:background="@drawable/bg_white_card"
+            android:elevation="6dp"
             android:padding="18dp"
             android:orientation="vertical">
 
@@ -57,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="CHANGE PASSWORD"
-                android:textColor="#777777"
+                android:textColor="@color/text_muted"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"/>
@@ -67,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:text="CURRENT PASSWORD"
                 android:textStyle="bold"
-                android:textColor="#555555"
+                android:textColor="@color/label_muted"
                 android:textSize="14sp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="8dp"/>
@@ -89,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:text="NEW PASSWORD"
                 android:textStyle="bold"
-                android:textColor="#555555"
+                android:textColor="@color/label_muted"
                 android:textSize="14sp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="8dp"/>
@@ -111,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:text="CONFIRM PASSWORD"
                 android:textStyle="bold"
-                android:textColor="#555555"
+                android:textColor="@color/label_muted"
                 android:textSize="14sp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="8dp"/>
@@ -146,6 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:background="@drawable/bg_white_card"
+            android:elevation="6dp"
             android:padding="18dp"
             android:orientation="vertical">
 
@@ -153,7 +155,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MESS PASSWORD"
-                android:textColor="#777777"
+                android:textColor="@color/text_muted"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"/>
@@ -163,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:text="YOUR ACCOUNT PASSWORD"
                 android:textStyle="bold"
-                android:textColor="#555555"
+                android:textColor="@color/label_muted"
                 android:textSize="14sp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="8dp"/>
@@ -185,7 +187,7 @@
                 android:layout_height="wrap_content"
                 android:text="NEW MESS PASSWORD"
                 android:textStyle="bold"
-                android:textColor="#555555"
+                android:textColor="@color/label_muted"
                 android:textSize="14sp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="8dp"/>
@@ -207,7 +209,7 @@
                 android:layout_height="wrap_content"
                 android:text="CONFIRM NEW MESS PASSWORD"
                 android:textStyle="bold"
-                android:textColor="#555555"
+                android:textColor="@color/label_muted"
                 android:textSize="14sp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="8dp"/>
@@ -241,9 +243,9 @@
             android:id="@+id/btnLogOut"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:backgroundTint="#DADCE2"
+            android:backgroundTint="@color/border"
             android:text="Log out"
-            android:textColor="#B80000"
+            android:textColor="@color/error_dark"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginTop="30dp"

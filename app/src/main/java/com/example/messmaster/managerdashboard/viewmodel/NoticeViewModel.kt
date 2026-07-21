@@ -43,7 +43,7 @@ class NoticeViewModel(private val repository: ManagerRepository) : ViewModel() {
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                NoticeViewModel(ManagerRepository(RetrofitClient.managerService))
+                NoticeViewModel(ManagerRepository(RetrofitClient.apiService))
             }
         }
     }

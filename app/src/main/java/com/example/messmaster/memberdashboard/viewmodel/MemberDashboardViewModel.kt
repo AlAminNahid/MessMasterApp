@@ -119,7 +119,7 @@ class MemberDashboardViewModel(private val repository: MemberRepository) : ViewM
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                MemberDashboardViewModel(MemberRepository(RetrofitClient.memberService))
+                MemberDashboardViewModel(MemberRepository(RetrofitClient.apiService))
             }
         }
     }

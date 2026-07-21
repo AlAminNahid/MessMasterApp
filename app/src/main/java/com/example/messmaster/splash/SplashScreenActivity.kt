@@ -1,4 +1,4 @@
-package com.example.messmaster
+package com.example.messmaster.splash
 
 import android.content.Context
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.messmaster.R
 import com.example.messmaster.auth.LoginActivity
 import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.commondashboard.HomeActivity
@@ -35,7 +36,7 @@ class SplashScreenActivity : AppCompatActivity() {
             cookieJar.hasValidAccessToken() -> navigateToDashboard()
             cookieJar.hasValidRefreshToken() -> lifecycleScope.launch {
                 val refreshed = try {
-                    RetrofitClient.authService.refresh().isSuccessful
+                    RetrofitClient.apiService.refresh().isSuccessful
                 } catch (e: Exception) {
                     false
                 }

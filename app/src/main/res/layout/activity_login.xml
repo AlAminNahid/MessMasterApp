@@ -5,7 +5,7 @@
     android:id="@+id/login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:fitsSystemWindows="true"
     tools:context=".auth.LoginActivity">
 
@@ -32,7 +32,7 @@
             android:text="MessMaster"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="#000"
+            android:textColor="@color/text_strong"
             android:layout_gravity="center"
             android:layout_marginTop="2dp"/>
 
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:text="Manage your mess efficiently"
             android:textSize="14sp"
-            android:textColor="#777"
+            android:textColor="@color/text_muted"
             android:layout_gravity="center"
             android:layout_marginTop="4dp"/>
 
@@ -55,7 +55,7 @@
             android:text="Email"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#333333"
+            android:textColor="@color/text_strong"
             android:layout_marginBottom="8dp"
             android:layout_marginHorizontal="6dp"/>
 
@@ -82,8 +82,8 @@
                 android:layout_weight="1"
                 android:layout_marginStart="12dp"
                 android:hint="Enter your email"
-                android:textColorHint="#999999"
-                android:textColor="#000000"
+                android:textColorHint="@color/text_muted"
+                android:textColor="@color/text_strong"
                 android:textSize="15sp"
                 android:background="@null"
                 android:inputType="textEmailAddress"
@@ -114,7 +114,7 @@
             android:text="Password"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#333333"
+            android:textColor="@color/text_strong"
             android:layout_marginBottom="8dp"
             android:layout_marginHorizontal="6dp"/>
 
@@ -141,8 +141,8 @@
                 android:layout_weight="1"
                 android:layout_marginStart="12dp"
                 android:hint="Enter your password"
-                android:textColorHint="#999999"
-                android:textColor="#000000"
+                android:textColorHint="@color/text_muted"
+                android:textColor="@color/text_strong"
                 android:textSize="15sp"
                 android:background="@null"
                 android:inputType="textPassword"
@@ -200,9 +200,9 @@
                 android:layout_height="56dp"
                 android:text="Login"
                 android:textSize="16sp"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
                 android:textStyle="bold"
-                android:backgroundTint="#000000"
+                android:backgroundTint="@color/black"
                 android:stateListAnimator="@null"
                 style="@style/Widget.MaterialComponents.Button"
                 app:cornerRadius="12dp"/>
@@ -212,7 +212,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
-                android:indeterminateTint="#FFFFFF"
+                android:indeterminateTint="@color/white"
                 android:visibility="gone"/>
 
         </FrameLayout>
@@ -238,7 +238,7 @@
                 android:layout_height="wrap_content"
                 android:text="Register"
                 android:textSize="14sp"
-                android:textColor="#000000"
+                android:textColor="@color/text_strong"
                 android:textStyle="bold"
                 android:clickable="true"
                 android:focusable="true"

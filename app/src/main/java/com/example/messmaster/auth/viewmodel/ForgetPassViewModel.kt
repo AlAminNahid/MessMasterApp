@@ -32,7 +32,7 @@ class ForgetPassViewModel(private val repository: AuthRepository) : ViewModel() 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                ForgetPassViewModel(AuthRepository(RetrofitClient.authService))
+                ForgetPassViewModel(AuthRepository(RetrofitClient.apiService))
             }
         }
     }

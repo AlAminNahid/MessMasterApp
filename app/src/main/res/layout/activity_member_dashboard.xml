@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
@@ -21,14 +21,17 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/memberBottomNav"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:background="#FFFFFF"
-        app:elevation="8dp"
+        android:layout_height="86dp"
+        android:background="@drawable/bg_bottom_nav"
+        android:paddingTop="10dp"
+        app:elevation="16dp"
+        app:itemIconSize="25dp"
         app:itemActiveIndicatorStyle="@style/CustomIndicator"
-        app:itemIconTint="@color/nav_item_color_selector"
+        app:itemIconTint="@color/nav_icon_color_selector"
         app:itemTextAppearanceActive="@style/BottomNavTextStyle.Selected"
         app:itemTextAppearanceInactive="@style/BottomNavTextStyle"
-        app:itemTextColor="@color/nav_item_color_selector"
+        app:itemTextColor="@color/nav_text_color_selector"
+        app:itemRippleColor="@color/border"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_member_bottom_nav" />
 </LinearLayout>

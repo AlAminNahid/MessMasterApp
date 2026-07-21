@@ -29,7 +29,7 @@ class JoinMessViewModel(private val repository: MessRepository) : ViewModel() {
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                JoinMessViewModel(MessRepository(RetrofitClient.commMessService))
+                JoinMessViewModel(MessRepository(RetrofitClient.apiService))
             }
         }
     }

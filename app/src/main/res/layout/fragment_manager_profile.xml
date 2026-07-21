@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     tools:context=".managerdashboard.FragmentProfile">
@@ -40,7 +40,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="MANAGER"
-                        android:textColor="#8E8E8E"
+                        android:textColor="@color/label_on_dark"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.08" />
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:text="USER SUMMARY"
-            android:textColor="#777777"
+            android:textColor="@color/text_muted"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginTop="20dp"
@@ -75,6 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="18dp"
             android:background="@drawable/bg_white_card"
+            android:elevation="6dp"
             android:padding="18dp"
             android:orientation="vertical">
 
@@ -89,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Name"
-                    android:textColor="#8E8E8E"
+                    android:textColor="@color/label_on_dark"
                     android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
@@ -121,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Email"
-                    android:textColor="#8E8E8E"
+                    android:textColor="@color/label_on_dark"
                     android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
@@ -153,7 +154,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Phone"
-                    android:textColor="#8E8E8E"
+                    android:textColor="@color/label_on_dark"
                     android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
@@ -185,7 +186,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="NID"
-                    android:textColor="#8E8E8E"
+                    android:textColor="@color/label_on_dark"
                     android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
@@ -212,7 +213,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:text="MESS SUMMARY"
-            android:textColor="#777777"
+            android:textColor="@color/text_muted"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginTop="20dp"
@@ -223,6 +224,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="18dp"
             android:background="@drawable/bg_white_card"
+            android:elevation="6dp"
             android:padding="18dp"
             android:orientation="vertical">
 
@@ -237,7 +239,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Name"
-                    android:textColor="#8E8E8E"
+                    android:textColor="@color/label_on_dark"
                     android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
@@ -269,7 +271,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Address"
-                    android:textColor="#8E8E8E"
+                    android:textColor="@color/label_on_dark"
                     android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
@@ -301,7 +303,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Total members"
-                    android:textColor="#8E8E8E"
+                    android:textColor="@color/label_on_dark"
                     android:textSize="13sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08" />
@@ -326,9 +328,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="16dp"
-                android:backgroundTint="#DADCE2"
+                android:backgroundTint="@color/border"
                 android:text="View mess password"
-                android:textColor="#111111"
+                android:textColor="@color/text_strong"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -355,11 +357,11 @@
                 android:id="@+id/btnOpenSettings"
                 android:layout_width="wrap_content"
                 android:layout_height="56dp"
-                android:backgroundTint="#DADCE2"
+                android:backgroundTint="@color/border"
                 android:layout_weight="1"
                 android:text="Settings"
                 android:layout_marginStart="10dp"
-                android:textColor="#111111"
+                android:textColor="@color/text_strong"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
 

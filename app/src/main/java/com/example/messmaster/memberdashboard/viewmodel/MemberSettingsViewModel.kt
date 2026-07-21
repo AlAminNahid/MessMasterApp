@@ -44,7 +44,7 @@ class MemberSettingsViewModel(private val sharedRepository: SharedRepository) : 
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 MemberSettingsViewModel(
-                    SharedRepository(RetrofitClient.commMessService, RetrofitClient.authService)
+                    SharedRepository(RetrofitClient.apiService)
                 )
             }
         }

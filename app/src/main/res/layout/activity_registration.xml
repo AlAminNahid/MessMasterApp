@@ -6,14 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:fitsSystemWindows="true"
     tools:context=".auth.RegistrationActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="#000000"
+        android:background="@color/black"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingHorizontal="16dp">
@@ -23,7 +23,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/back_arrow"
-            app:tint="#FFFFFF"
+            app:tint="@color/white"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Back" />
 
@@ -33,7 +33,7 @@
             android:text="Create account"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:layout_marginStart="8dp" />
 
     </LinearLayout>
@@ -66,7 +66,7 @@
                 android:text="FULL NAME"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="@color/label_dark"
                 android:letterSpacing="0.08"
                 android:layout_marginBottom="6dp" />
 
@@ -75,8 +75,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:hint="Al Amin Hossain Nahid"
-                android:textColorHint="#999999"
-                android:textColor="#000000"
+                android:textColorHint="@color/hint_gray"
+                android:textColor="@color/black"
                 android:textSize="15sp"
                 android:background="@drawable/bg_input_field"
                 android:paddingHorizontal="16dp"
@@ -103,7 +103,7 @@
                 android:text="EMAIL"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="@color/label_dark"
                 android:letterSpacing="0.08"
                 android:layout_marginBottom="6dp" />
 
@@ -112,8 +112,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:hint="email@gmail.com"
-                android:textColorHint="#999999"
-                android:textColor="#000000"
+                android:textColorHint="@color/hint_gray"
+                android:textColor="@color/black"
                 android:textSize="15sp"
                 android:background="@drawable/bg_input_field"
                 android:paddingHorizontal="16dp"
@@ -140,7 +140,7 @@
                 android:text="PASSWORD"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="@color/label_dark"
                 android:letterSpacing="0.08"
                 android:layout_marginBottom="6dp" />
 
@@ -160,8 +160,8 @@
                     android:layout_weight="1"
                     android:layout_height="54dp"
                     android:hint="Enter password"
-                    android:textColorHint="#999999"
-                    android:textColor="#000000"
+                    android:textColorHint="@color/hint_gray"
+                    android:textColor="@color/black"
                     android:textSize="15sp"
                     android:background="@android:color/transparent"
                     android:inputType="textPassword"
@@ -194,7 +194,7 @@
                 android:text="NID NUMBER"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="@color/label_dark"
                 android:letterSpacing="0.08"
                 android:layout_marginBottom="6dp" />
 
@@ -203,8 +203,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:hint="e.g., 1234567890"
-                android:textColorHint="#999999"
-                android:textColor="#000000"
+                android:textColorHint="@color/hint_gray"
+                android:textColor="@color/black"
                 android:textSize="15sp"
                 android:background="@drawable/bg_input_field"
                 android:paddingHorizontal="16dp"
@@ -229,7 +229,7 @@
                 android:text="PHONE NUMBER"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="#333333"
+                android:textColor="@color/label_dark"
                 android:letterSpacing="0.08"
                 android:layout_marginBottom="6dp" />
 
@@ -238,8 +238,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:hint="01XXXXXXXXX"
-                android:textColorHint="#999999"
-                android:textColor="#000000"
+                android:textColorHint="@color/hint_gray"
+                android:textColor="@color/black"
                 android:textSize="15sp"
                 android:background="@drawable/bg_input_field"
                 android:paddingHorizontal="16dp"
@@ -271,9 +271,9 @@
                     android:layout_height="56dp"
                     android:text="Create account"
                     android:textSize="16sp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:backgroundTint="#000000"
+                    android:backgroundTint="@color/black"
                     android:stateListAnimator="@null"
                     style="@style/Widget.MaterialComponents.Button"
                     app:cornerRadius="12dp"/>
@@ -283,7 +283,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_gravity="center"
-                    android:indeterminateTint="#FFFFFF"
+                    android:indeterminateTint="@color/white"
                     android:visibility="gone"/>
 
             </FrameLayout>
@@ -308,7 +308,7 @@
                     android:layout_height="wrap_content"
                     android:text="Sign in"
                     android:textSize="14sp"
-                    android:textColor="#000000"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
                     android:clickable="true"
                     android:focusable="true"

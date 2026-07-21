@@ -97,7 +97,7 @@ class HomeViewModel(private val repository: ManagerRepository) : ViewModel() {
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                HomeViewModel(ManagerRepository(RetrofitClient.managerService))
+                HomeViewModel(ManagerRepository(RetrofitClient.apiService))
             }
         }
     }

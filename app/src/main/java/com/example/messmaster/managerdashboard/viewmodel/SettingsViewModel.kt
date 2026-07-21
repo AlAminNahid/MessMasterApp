@@ -59,8 +59,8 @@ class SettingsViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 SettingsViewModel(
-                    SharedRepository(RetrofitClient.commMessService, RetrofitClient.authService),
-                    ManagerRepository(RetrofitClient.managerService)
+                    SharedRepository(RetrofitClient.apiService),
+                    ManagerRepository(RetrofitClient.apiService)
                 )
             }
         }
