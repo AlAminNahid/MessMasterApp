@@ -111,7 +111,7 @@
             android:layout_marginHorizontal="24dp"
             android:text="MY SHARE"
             android:textColor="@color/text_muted"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:letterSpacing="0.08" />
 
@@ -141,7 +141,7 @@
                         android:layout_height="wrap_content"
                         android:text="Electricity"
                         android:textColor="@color/text_strong"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -182,7 +182,7 @@
                         android:layout_height="wrap_content"
                         android:text="Gas"
                         android:textColor="@color/text_strong"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -223,7 +223,7 @@
                         android:layout_height="wrap_content"
                         android:text="Internet"
                         android:textColor="@color/text_strong"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -264,7 +264,7 @@
                         android:layout_height="wrap_content"
                         android:text="Maid"
                         android:textColor="@color/text_strong"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView

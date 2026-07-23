@@ -41,7 +41,7 @@
                         android:layout_height="wrap_content"
                         android:text="MANAGER"
                         android:textColor="@color/label_on_dark"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.08" />
 
@@ -50,7 +50,7 @@
                         android:layout_height="wrap_content"
                         android:text="Meal records"
                         android:textColor="@color/white"
-                        android:textSize="25sp"
+                        android:textSize="22sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -140,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:text="INSERT MEAL ENTRY"
                 android:textColor="@color/text_muted"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"/>
 
@@ -274,7 +274,7 @@
                 android:backgroundTint="@color/black"
                 android:text="SAVE MEAL ENTRY"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -291,9 +291,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="INSERT MEAL EXPENSE"
+                android:text="BAZAR EXPENSE"
                 android:textColor="@color/text_muted"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"/>
 
@@ -363,7 +363,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="MEAL AMOUNT"
+                    android:text="BAZAR AMOUNT"
                     android:textStyle="bold"
                     android:textColor="@color/label_muted"
                     android:textSize="14sp"
@@ -418,9 +418,9 @@
                 android:layout_height="56dp"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/black"
-                android:text="ADD MEAL EXPENSE"
+                android:text="ADD BAZAR EXPENSE"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -432,7 +432,7 @@
             android:layout_marginTop="24dp"
             android:text="MONTHLY VIEW"
             android:textColor="@color/text_muted"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:letterSpacing="0.08"/>
 

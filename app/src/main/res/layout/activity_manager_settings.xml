@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:text="CHANGE PASSWORD"
                 android:textColor="@color/text_muted"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"/>
 
@@ -137,7 +137,7 @@
                 android:backgroundTint="@color/black"
                 android:text="Update Password"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -156,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:text="MESS PASSWORD"
                 android:textColor="@color/text_muted"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"/>
 
@@ -234,7 +234,7 @@
                 android:backgroundTint="@color/black"
                 android:text="Update Mess Password"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

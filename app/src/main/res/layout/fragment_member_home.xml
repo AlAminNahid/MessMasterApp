@@ -76,7 +76,7 @@
                     android:gravity="center"
                     android:text=".."
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -246,7 +246,7 @@
             android:layout_marginTop="10dp"
             android:text="LATEST NOTICE"
             android:textColor="@color/text_muted"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:letterSpacing="0.06" />
 
@@ -288,7 +288,7 @@
                         android:layout_height="wrap_content"
                         android:text="No notices yet"
                         android:textColor="@color/text_strong"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView

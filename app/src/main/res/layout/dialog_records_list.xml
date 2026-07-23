@@ -14,7 +14,7 @@
         android:id="@+id/txtDialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="21sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:gravity="center" />

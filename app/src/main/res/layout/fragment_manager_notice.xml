@@ -50,7 +50,7 @@
                         android:layout_height="wrap_content"
                         android:text="Member Notices"
                         android:textColor="@color/white"
-                        android:textSize="25sp"
+                        android:textSize="22sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:text="POST ANNOUCEMENTS"
                 android:textColor="@color/text_muted"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"/>
 
@@ -151,7 +151,7 @@
                 android:backgroundTint="@color/black"
                 android:text="POST NOTICE"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -162,7 +162,7 @@
             android:layout_marginHorizontal="24dp"
             android:text="RECENT NOTICES"
             android:textColor="@color/text_muted"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:letterSpacing="0.08"/>
 

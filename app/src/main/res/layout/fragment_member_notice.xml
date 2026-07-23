@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:text="SEND TO MANAGER"
                 android:textColor="@color/text_muted"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08" />
 
@@ -182,7 +182,7 @@
             android:layout_marginHorizontal="24dp"
             android:text="FROM MANAGER"
             android:textColor="@color/text_muted"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:letterSpacing="0.08" />
 
@@ -202,7 +202,7 @@
             android:layout_marginHorizontal="24dp"
             android:text="MY SENT NOTICES"
             android:textColor="@color/text_muted"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:letterSpacing="0.08" />
 
