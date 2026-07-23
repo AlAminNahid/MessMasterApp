@@ -26,9 +26,6 @@ class SettingsViewModel(
     private val _changePassState = MutableStateFlow<UiState<ChangePassResponse>>(UiState.Idle)
     val changePassState: StateFlow<UiState<ChangePassResponse>> = _changePassState.asStateFlow()
 
-    private val _logoutState = MutableStateFlow<UiState<Boolean>>(UiState.Idle)
-    val logoutState: StateFlow<UiState<Boolean>> = _logoutState.asStateFlow()
-
     private val _messPasswordState = MutableStateFlow<UiState<MessPasswordUpdateResponse>>(UiState.Idle)
     val messPasswordState: StateFlow<UiState<MessPasswordUpdateResponse>> = _messPasswordState.asStateFlow()
 
@@ -55,14 +52,6 @@ class SettingsViewModel(
         viewModelScope.launch {
             _deleteMessState.value = UiState.Loading
             _deleteMessState.value = managerRepository.deleteMess(accountPassword)
-        }
-    }
-
-    fun logout() {
-        viewModelScope.launch {
-            _logoutState.value = UiState.Loading
-            val success = sharedRepository.logout()
-            _logoutState.value = if (success) UiState.Success(true) else UiState.Error("Server error")
         }
     }
 
