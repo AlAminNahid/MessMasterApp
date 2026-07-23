@@ -61,7 +61,6 @@ class RegistrationActivity : AppCompatActivity() {
         tvEmailError = findViewById(R.id.tvEmailError)
         passwordFieldContainer = findViewById(R.id.passwordFieldContainer)
         tvPasswordError = findViewById(R.id.tvPasswordError)
-        tvNidError = findViewById(R.id.tvNidError)
         tvPhoneError = findViewById(R.id.tvPhoneError)
         btnCreateAccount = findViewById(R.id.btnCreateAccount)
         progressCreateAccount = findViewById(R.id.progressCreateAccount)

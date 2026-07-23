@@ -30,6 +30,7 @@ object RetrofitClient {
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(RemovedMemberInterceptor(sessionManager))
             .cookieJar(cookieJar)
             .authenticator(TokenAuthenticator(cookieJar, BuildConfig.BASE_URL, sessionManager))
             .build()
