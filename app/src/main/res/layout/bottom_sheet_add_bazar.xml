@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ADD BAZAR EXPENSE"
+            android:textColor="@color/text_muted"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BAZAR DONE BY"
+                android:textStyle="bold"
+                android:textColor="@color/label_muted"
+                android:textSize="14sp"
+                android:layout_marginBottom="6dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerMealExpenseMember"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_manager"
+                android:paddingStart="16dp"
+                android:paddingEnd="8dp"
+                android:spinnerMode="dropdown"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BAZAR DATE"
+                android:textStyle="bold"
+                android:textColor="@color/label_muted"
+                android:textSize="14sp"
+                android:layout_marginBottom="6dp"/>
+
+            <EditText
+                android:id="@+id/inputMealExpenseDate"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_manager"
+                android:clickable="true"
+                android:focusable="false"
+                android:paddingStart="16dp"
+                android:paddingEnd="8dp"
+                android:textColor="@color/black"
+                android:hint="yyyy-mm-dd"
+                android:textColorHint="@color/text_secondary"
+                android:inputType="date"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BAZAR AMOUNT"
+                android:textStyle="bold"
+                android:textColor="@color/label_muted"
+                android:textSize="14sp"
+                android:layout_marginBottom="6dp"/>
+
+            <EditText
+                android:id="@+id/inputMealExpenseAmount"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_manager"
+                android:paddingStart="16dp"
+                android:paddingEnd="8dp"
+                android:textColor="@color/black"
+                android:hint="Amount (৳)"
+                android:textColorHint="@color/text_secondary"
+                android:inputType="numberDecimal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DESCRIPTION"
+                android:textStyle="bold"
+                android:textColor="@color/label_muted"
+                android:textSize="14sp"
+                android:layout_marginBottom="6dp"/>
+
+            <EditText
+                android:id="@+id/mealExpenseDescription"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_manager"
+                android:paddingStart="16dp"
+                android:paddingEnd="8dp"
+                android:textColor="@color/black"
+                android:hint="Description, e.g., Rice, fish, vegetables"
+                android:textColorHint="@color/text_secondary"
+                android:inputType="text"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSubmitMealExpense"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/black"
+            android:text="ADD BAZAR EXPENSE"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>

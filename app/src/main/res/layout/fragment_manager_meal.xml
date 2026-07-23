@@ -1,510 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background"
-    android:fillViewport="true"
+    android:orientation="vertical"
     android:fitsSystemWindows="true"
     tools:context=".managerdashboard.FragmentMeal">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/black"
         android:orientation="vertical"
-        android:paddingBottom="18dp">
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="34dp"
+        android:paddingBottom="24dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/black"
-            android:orientation="vertical"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:paddingTop="34dp"
-            android:paddingBottom="24dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="MANAGER"
-                        android:textColor="@color/label_on_dark"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.08" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Meal records"
-                        android:textColor="@color/white"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginHorizontal="20dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <LinearLayout
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_height="72dp"
-                android:background="@drawable/bg_dark_card"
-                android:orientation="vertical"
-                android:gravity="center_vertical"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:layout_marginEnd="6dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TOTAL MEAL THIS MONTH"
+                    android:text="MANAGER"
                     android:textColor="@color/label_on_dark"
-                    android:textSize="12sp"
-                    android:textStyle="bold"/>
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08" />
 
                 <TextView
-                    android:id="@+id/txtMonthlyTotalMeals"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="..."
+                    android:text="Meal records"
                     android:textColor="@color/white"
-                    android:textSize="19sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="72dp"
-                android:background="@drawable/bg_dark_card"
-                android:orientation="vertical"
-                android:gravity="center_vertical"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:layout_marginEnd="6dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="MEAL RATE"
-                    android:textColor="@color/label_on_dark"
-                    android:textSize="12sp"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/txtMonthlyMealRate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="৳ ..."
-                    android:textColor="@color/white"
-                    android:textSize="19sp"
-                    android:textStyle="bold"/>
             </LinearLayout>
 
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="24dp"
-            android:background="@drawable/bg_white_card"
-            android:elevation="6dp"
-            android:padding="18dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="INSERT MEAL ENTRY"
-                android:textColor="@color/text_muted"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.08"/>
-
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:layout_marginTop="15dp"
-                android:useDefaultMargins="false">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_columnSpan="2"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="MEMBER"
-                        android:textStyle="bold"
-                        android:textColor="@color/label_muted"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="6dp"/>
-
-                    <Spinner
-                        android:id="@+id/spinnerMealMember"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:background="@drawable/bg_input_manager"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="8dp"
-                        android:spinnerMode="dropdown"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="6dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="DATE"
-                        android:textStyle="bold"
-                        android:textColor="@color/label_muted"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="6dp"/>
-
-                    <EditText
-                        android:id="@+id/inputMealDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:background="@drawable/bg_input_manager"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="8dp"
-                        android:textColor="@color/black"
-                        android:hint="yyyy-mm-dd"
-                        android:textColorHint="@color/text_secondary"
-                        android:inputType="date"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginStart="6dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="MEAL TYPE"
-                        android:textStyle="bold"
-                        android:textColor="@color/label_muted"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="6dp"/>
-
-                    <Spinner
-                        android:id="@+id/spinnerMealType"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:background="@drawable/bg_input_manager"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="8dp"
-                        android:spinnerMode="dropdown"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_columnSpan="2"
-                    android:layout_marginTop="12dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="COUNT"
-                        android:textStyle="bold"
-                        android:textColor="@color/label_muted"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="6dp"/>
-
-                    <EditText
-                        android:id="@+id/inputMealCount"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:background="@drawable/bg_input_manager"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="8dp"
-                        android:textColor="@color/black"
-                        android:hint="2"
-                        android:textColorHint="@color/text_secondary"
-                        android:inputType="numberDecimal"/>
-                </LinearLayout>
-
-            </GridLayout>
-
-            <Button
-                android:id="@+id/btnSubmitMeal"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="@color/black"
-                android:text="SAVE MEAL ENTRY"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:background="@drawable/bg_white_card"
-            android:elevation="6dp"
-            android:padding="18dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BAZAR EXPENSE"
-                android:textColor="@color/text_muted"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.08"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="BAZAR DONE BY"
-                    android:textStyle="bold"
-                    android:textColor="@color/label_muted"
-                    android:textSize="14sp"
-                    android:layout_marginBottom="6dp"/>
-
-                <Spinner
-                    android:id="@+id/spinnerMealExpenseMember"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/bg_input_manager"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="8dp"
-                    android:spinnerMode="dropdown"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="BAZAR DATE"
-                    android:textStyle="bold"
-                    android:textColor="@color/label_muted"
-                    android:textSize="14sp"
-                    android:layout_marginBottom="6dp"/>
-
-                <EditText
-                    android:id="@+id/inputMealExpenseDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/bg_input_manager"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="8dp"
-                    android:textColor="@color/black"
-                    android:hint="yyyy-mm-dd"
-                    android:textColorHint="@color/text_secondary"
-                    android:inputType="date"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="BAZAR AMOUNT"
-                    android:textStyle="bold"
-                    android:textColor="@color/label_muted"
-                    android:textSize="14sp"
-                    android:layout_marginBottom="6dp"/>
-
-                <EditText
-                    android:id="@+id/inputMealExpenseAmount"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/bg_input_manager"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="8dp"
-                    android:textColor="@color/black"
-                    android:hint="Amount (৳)"
-                    android:textColorHint="@color/text_secondary"
-                    android:inputType="numberDecimal"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="DESCRIPTION"
-                    android:textStyle="bold"
-                    android:textColor="@color/label_muted"
-                    android:textSize="14sp"
-                    android:layout_marginBottom="6dp"/>
-
-                <EditText
-                    android:id="@+id/mealExpenseDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/bg_input_manager"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="8dp"
-                    android:textColor="@color/black"
-                    android:hint="Description, e.g., Rice, fish, vegetables"
-                    android:textColorHint="@color/text_secondary"
-                    android:inputType="text"/>
-
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btnSubmitMealExpense"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="@color/black"
-                android:text="ADD BAZAR EXPENSE"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="24dp"
-            android:text="MONTHLY VIEW"
-            android:textColor="@color/text_muted"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.08"/>
-
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:padding="18dp"
-            android:rowCount="1">
-
-            <LinearLayout
-                android:id="@+id/btnViewCurrentMonthMeals"
-                android:layout_width="0dp"
-                android:layout_height="128dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="5dp"
-                android:background="@drawable/bg_white_card"
-            android:elevation="6dp"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/meal_icon"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:text="Meals Table"
-                    android:textColor="@color/text_strong"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/btnViewCurrentMonthExpenses"
-                android:layout_width="0dp"
-                android:layout_height="128dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="5dp"
-                android:background="@drawable/bg_white_card"
-            android:elevation="6dp"
-                android:gravity="center_vertical"
-                android:padding="16dp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/receipt_icon"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:text="Bazar Table"
-                    android:textColor="@color/text_strong"
-                    android:textSize="14sp"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
-
-        </GridLayout>
 
     </LinearLayout>
 
-</ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginHorizontal="20dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="72dp"
+            android:background="@drawable/bg_dark_card"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginEnd="6dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TOTAL MEAL THIS MONTH"
+                android:textColor="@color/label_on_dark"
+                android:textSize="12sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/txtMonthlyTotalMeals"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="..."
+                android:textColor="@color/white"
+                android:textSize="19sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="72dp"
+            android:background="@drawable/bg_dark_card"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginEnd="6dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MEAL RATE"
+                android:textColor="@color/label_on_dark"
+                android:textSize="12sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/txtMonthlyMealRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="৳ ..."
+                android:textColor="@color/white"
+                android:textSize="19sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabMealBazar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginHorizontal="20dp"
+        app:tabIndicatorColor="@color/black"
+        app:tabSelectedTextColor="@color/black"
+        app:tabTextColor="@color/text_secondary"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pagerMealBazar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>
