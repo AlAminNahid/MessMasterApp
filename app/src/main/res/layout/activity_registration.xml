@@ -191,41 +191,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="NID NUMBER"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="@color/label_dark"
-                android:letterSpacing="0.08"
-                android:layout_marginBottom="6dp" />
-
-            <EditText
-                android:id="@+id/etNid"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:hint="e.g., 1234567890"
-                android:textColorHint="@color/hint_gray"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:background="@drawable/bg_input_field"
-                android:paddingHorizontal="16dp"
-                android:inputType="number"
-                android:singleLine="true"
-                android:layout_marginBottom="4dp" />
-
-            <TextView
-                android:id="@+id/tvNidError"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="@color/error"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone"
-                tools:text="NID must contain 14 digits &amp; only numbers"
-                tools:visibility="visible"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:text="PHONE NUMBER"
                 android:textSize="12sp"
                 android:textStyle="bold"

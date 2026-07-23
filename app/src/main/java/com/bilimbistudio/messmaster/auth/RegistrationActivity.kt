@@ -30,13 +30,11 @@ class RegistrationActivity : AppCompatActivity() {
     private lateinit var etName: EditText
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
-    private lateinit var etNid: EditText
     private lateinit var etPhone: EditText
     private lateinit var tvNameError: TextView
     private lateinit var tvEmailError: TextView
     private lateinit var passwordFieldContainer: LinearLayout
     private lateinit var tvPasswordError: TextView
-    private lateinit var tvNidError: TextView
     private lateinit var tvPhoneError: TextView
     private lateinit var btnCreateAccount: Button
     private lateinit var progressCreateAccount: ProgressBar
@@ -58,7 +56,6 @@ class RegistrationActivity : AppCompatActivity() {
         etName = findViewById(R.id.etName)
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
-        etNid = findViewById(R.id.etNid)
         etPhone = findViewById(R.id.etPhone)
         tvNameError = findViewById(R.id.tvNameError)
         tvEmailError = findViewById(R.id.tvEmailError)
@@ -96,10 +93,9 @@ class RegistrationActivity : AppCompatActivity() {
             val name = etName.text.toString().trim()
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
-            val nid = etNid.text.toString().trim()
             val phone = etPhone.text.toString().trim()
-            if (validation(name, email, password, nid, phone)) {
-                viewModel.register(name, email, password, nid, phone)
+            if (validation(name, email, password, phone)) {
+                viewModel.register(name, email, password, phone)
             }
         }
 
@@ -137,17 +133,15 @@ class RegistrationActivity : AppCompatActivity() {
         }
     }
 
-    private fun validation(name: String, email: String, password: String, nid: String, phone: String): Boolean {
+    private fun validation(name: String, email: String, password: String, phone: String): Boolean {
         val namePattern = Regex("^[A-Za-z ]+$")
         val emailPattern = Regex("^[a-z0-9.]+@gmail\\.com$")
         val passwordPattern = Regex(""".*[@#${'$'}&].*""")
-        val nidPattern = Regex("^\\d{14}$")
         val phonePattern = Regex("^01[0-9]+$")
 
         clearFieldError(etName, tvNameError)
         clearFieldError(etEmail, tvEmailError)
         setPasswordHelper(isError = false)
-        clearFieldError(etNid, tvNidError)
         clearFieldError(etPhone, tvPhoneError)
 
         if (name.isEmpty()) { showFieldError(etName, tvNameError, "Name can't be empty"); return false }
@@ -158,7 +152,6 @@ class RegistrationActivity : AppCompatActivity() {
         if (password.isEmpty()) { setPasswordHelper(isError = true, message = "Password can't be empty"); return false }
         if (password.length < 6) { setPasswordHelper(isError = true, message = "Password must be at least 6 characters long"); return false }
         if (!password.matches(passwordPattern)) { setPasswordHelper(isError = true, message = "Password must contain any of these special characters (@ or # or \$ or &)"); return false }
-        if (!nid.matches(nidPattern)) { showFieldError(etNid, tvNidError, "NID must contain 14 digits & only numbers"); return false }
         if (!phone.matches(phonePattern)) { showFieldError(etPhone, tvPhoneError, "Phone number should only contain numbers & should start with 01"); return false }
         if (phone.length != 11) { showFieldError(etPhone, tvPhoneError, "Phone number should be only 11 digits"); return false }
         return true

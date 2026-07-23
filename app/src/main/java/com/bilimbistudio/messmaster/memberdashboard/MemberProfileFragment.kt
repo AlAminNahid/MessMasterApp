@@ -39,7 +39,6 @@ class MemberProfileFragment : Fragment() {
     private lateinit var txtProfileName: TextView
     private lateinit var txtProfileEmail: TextView
     private lateinit var txtProfilePhone: TextView
-    private lateinit var txtProfileNid: TextView
     private lateinit var txtProfileMessName: TextView
     private lateinit var txtProfileMessAddress: TextView
     private lateinit var txtProfileTotalMembers: TextView
@@ -57,7 +56,6 @@ class MemberProfileFragment : Fragment() {
         txtProfileName = view.findViewById(R.id.txtProfileName)
         txtProfileEmail = view.findViewById(R.id.txtProfileEmail)
         txtProfilePhone = view.findViewById(R.id.txtProfilePhone)
-        txtProfileNid = view.findViewById(R.id.txtProfileNid)
         txtProfileMessName = view.findViewById(R.id.txtProfileMessName)
         txtProfileMessAddress = view.findViewById(R.id.txtProfileMessAddress)
         txtProfileTotalMembers = view.findViewById(R.id.txtProfileTotalMembers)
@@ -147,7 +145,6 @@ class MemberProfileFragment : Fragment() {
         txtProfileName.text = profile.name
         txtProfileEmail.text = profile.email
         txtProfilePhone.text = profile.phone
-        txtProfileNid.text = profile.nid
     }
 
     private fun renderMembers(members: List<MessMember>) {

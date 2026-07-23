@@ -20,11 +20,11 @@ class RegistrationViewModel(private val repository: AuthRepository) : ViewModel(
     private val _registrationState = MutableStateFlow<UiState<RegistrationResponse>>(UiState.Idle)
     val registrationState: StateFlow<UiState<RegistrationResponse>> = _registrationState.asStateFlow()
 
-    fun register(name: String, email: String, password: String, nid: String, phone: String) {
+    fun register(name: String, email: String, password: String, phone: String) {
         viewModelScope.launch {
             _registrationState.value = UiState.Loading
             _registrationState.value = repository.register(
-                RegistrationRequest(name = name, email = email, password = password, nid = nid, phone = phone)
+                RegistrationRequest(name = name, email = email, password = password, phone = phone)
             )
         }
     }
