@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.messmaster.managerdashboard.model.NoticeItem
-import com.example.messmaster.managerdashboard.model.NoticeRequest
-import com.example.messmaster.managerdashboard.model.NoticeResponse
+import com.example.messmaster.managerdashboard.model.notice.NoticeItem
+import com.example.messmaster.managerdashboard.model.notice.NoticeRequest
+import com.example.messmaster.managerdashboard.model.notice.NoticeResponse
 import com.example.messmaster.managerdashboard.repository.ManagerRepository
 import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.util.UiState

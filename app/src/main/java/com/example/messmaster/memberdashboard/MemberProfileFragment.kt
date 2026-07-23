@@ -22,7 +22,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
-import com.example.messmaster.managerdashboard.model.MessMember
+import com.example.messmaster.managerdashboard.model.mess.MessMember
 import com.example.messmaster.memberdashboard.viewmodel.MemberDashboardViewModel
 import com.example.messmaster.memberdashboard.viewmodel.MemberProfileViewModel
 import com.example.messmaster.model.UserProfileResponse

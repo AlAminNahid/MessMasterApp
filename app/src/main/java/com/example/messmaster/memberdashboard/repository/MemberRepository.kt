@@ -1,16 +1,16 @@
 package com.example.messmaster.memberdashboard.repository
 
-import com.example.messmaster.managerdashboard.model.CurrentMessMembersResponse
-import com.example.messmaster.managerdashboard.model.CurrentMessResponse
-import com.example.messmaster.managerdashboard.model.CurrentMonthMeal
-import com.example.messmaster.managerdashboard.model.CurrentMonthMealExpense
-import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityBillsResponse
-import com.example.messmaster.managerdashboard.model.MealRateResponse
-import com.example.messmaster.managerdashboard.model.MessStatisticsResponse
-import com.example.messmaster.managerdashboard.model.NoticeItem
-import com.example.messmaster.managerdashboard.model.NoticeRequest
-import com.example.messmaster.managerdashboard.model.NoticeResponse
-import com.example.messmaster.managerdashboard.model.UpdateUserProfileRequest
+import com.example.messmaster.managerdashboard.model.mess.CurrentMessMembersResponse
+import com.example.messmaster.managerdashboard.model.mess.CurrentMessResponse
+import com.example.messmaster.managerdashboard.model.meal.CurrentMonthMeal
+import com.example.messmaster.managerdashboard.model.expense.CurrentMonthMealExpense
+import com.example.messmaster.managerdashboard.model.utility.CurrentMonthUtilityBillsResponse
+import com.example.messmaster.managerdashboard.model.meal.MealRateResponse
+import com.example.messmaster.managerdashboard.model.mess.MessStatisticsResponse
+import com.example.messmaster.managerdashboard.model.notice.NoticeItem
+import com.example.messmaster.managerdashboard.model.notice.NoticeRequest
+import com.example.messmaster.managerdashboard.model.notice.NoticeResponse
+import com.example.messmaster.managerdashboard.model.profile.UpdateUserProfileRequest
 import com.example.messmaster.model.UserProfileResponse
 import com.example.messmaster.network.ApiService
 import com.example.messmaster.util.UiState

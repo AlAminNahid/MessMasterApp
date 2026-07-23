@@ -1,16 +1,14 @@
 package com.example.messmaster.managerdashboard
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -18,8 +16,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
-import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityEntry
-import com.example.messmaster.managerdashboard.model.InsertUtilityCostRequest
+import com.example.messmaster.managerdashboard.model.utility.CurrentMonthUtilityEntry
+import com.example.messmaster.managerdashboard.model.utility.InsertUtilityCostRequest
 import com.example.messmaster.managerdashboard.viewmodel.ManagerSharedViewModel
 import com.example.messmaster.managerdashboard.viewmodel.UtilityViewModel
 import com.example.messmaster.util.UiState
@@ -237,36 +235,30 @@ class FragmentUtility : Fragment() {
     }
 
     private fun showEditUtilityDialog(entry: CurrentMonthUtilityEntry) {
-        val content = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
-        val electricityInput = dialogInput(entry.electricity.toString(), "Electricity")
-        val internetInput = dialogInput(entry.internet.toString(), "Internet")
-        val gasInput = dialogInput(entry.gas.toString(), "Gas")
-        val maidInput = dialogInput(entry.maid.toString(), "Maid")
+        val dialogView = layoutInflater.inflate(R.layout.dialog_edit_utility, null)
+        val inputElectricity = dialogView.findViewById<EditText>(R.id.inputEditElectricity)
+        val inputInternet = dialogView.findViewById<EditText>(R.id.inputEditInternet)
+        val inputGas = dialogView.findViewById<EditText>(R.id.inputEditGas)
+        val inputMaid = dialogView.findViewById<EditText>(R.id.inputEditMaid)
 
-        content.addView(dialogLabel("Electricity"))
-        content.addView(electricityInput)
-        content.addView(dialogLabel("Internet"))
-        content.addView(internetInput)
-        content.addView(dialogLabel("Gas"))
-        content.addView(gasInput)
-        content.addView(dialogLabel("Maid"))
-        content.addView(maidInput)
+        inputElectricity.setText(entry.electricity.toString())
+        inputInternet.setText(entry.internet.toString())
+        inputGas.setText(entry.gas.toString())
+        inputMaid.setText(entry.maid.toString())
 
-        editUtilityDialog = showFormDialog(
-            title = "Edit Utility",
-            subtitle = "Update the running month utility bill.",
-            content = content
-        ) {
-            val electricity = electricityInput.text.toString().trim().toDoubleOrNull()
-            val internet = internetInput.text.toString().trim().toDoubleOrNull()
-            val gas = gasInput.text.toString().trim().toDoubleOrNull()
-            val maid = maidInput.text.toString().trim().toDoubleOrNull()
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
+        dialogView.findViewById<Button>(R.id.btnEditUtilityCancel).setOnClickListener { dialog.dismiss() }
+        dialogView.findViewById<Button>(R.id.btnEditUtilitySave).setOnClickListener {
+            val electricity = inputElectricity.text.toString().trim().toDoubleOrNull()
+            val internet = inputInternet.text.toString().trim().toDoubleOrNull()
+            val gas = inputGas.text.toString().trim().toDoubleOrNull()
+            val maid = inputMaid.text.toString().trim().toDoubleOrNull()
 
             when {
-                electricity == null || electricity < 0.0 -> electricityInput.error = "Invalid amount"
-                internet == null || internet < 0.0 -> internetInput.error = "Invalid amount"
-                gas == null || gas < 0.0 -> gasInput.error = "Invalid amount"
-                maid == null || maid < 0.0 -> maidInput.error = "Invalid amount"
+                electricity == null || electricity < 0.0 -> inputElectricity.error = "Invalid amount"
+                internet == null || internet < 0.0 -> inputInternet.error = "Invalid amount"
+                gas == null || gas < 0.0 -> inputGas.error = "Invalid amount"
+                maid == null || maid < 0.0 -> inputMaid.error = "Invalid amount"
                 else -> utilityViewModel.updateUtilityCost(
                     entry.id,
                     InsertUtilityCostRequest(
@@ -280,101 +272,10 @@ class FragmentUtility : Fragment() {
             }
         }
 
-        editUtilityDialog?.show()
-        editUtilityDialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
-    }
-
-    private fun showFormDialog(
-        title: String,
-        subtitle: String,
-        content: View,
-        onSave: () -> Unit
-    ): AlertDialog {
-        val dialogView = LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(24), dp(22), dp(24), dp(20))
-            setBackgroundResource(R.drawable.bg_dialog_rounded)
-        }
-        dialogView.addView(TextView(requireContext()).apply {
-            text = title
-            gravity = Gravity.CENTER
-            textSize = 20f
-            setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setTextColor(requireContext().getColor(R.color.black))
-        })
-        dialogView.addView(TextView(requireContext()).apply {
-            text = subtitle
-            gravity = Gravity.CENTER
-            textSize = 14f
-            setTextColor(requireContext().getColor(R.color.text_secondary))
-            setPadding(0, dp(6), 0, dp(16))
-        })
-        dialogView.addView(content)
-
-        val actions = LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setPadding(0, dp(20), 0, 0)
-        }
-        val cancelButton = Button(requireContext()).apply {
-            text = "Cancel"
-            setTextColor(requireContext().getColor(R.color.black))
-            backgroundTintList = android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.white))
-            layoutParams = LinearLayout.LayoutParams(0, dp(52), 1f).apply { marginEnd = dp(8) }
-        }
-        val saveButton = Button(requireContext()).apply {
-            text = "Save"
-            setTextColor(requireContext().getColor(R.color.white))
-            setTypeface(typeface, android.graphics.Typeface.BOLD)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.black))
-            layoutParams = LinearLayout.LayoutParams(0, dp(52), 1f).apply { marginStart = dp(8) }
-        }
-        actions.addView(cancelButton)
-        actions.addView(saveButton)
-        dialogView.addView(actions)
-
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .create()
-
-        cancelButton.setOnClickListener { dialog.dismiss() }
-        saveButton.setOnClickListener { onSave() }
-        return dialog
-    }
-
-    private fun dialogInput(value: String, hintText: String): EditText {
-        return EditText(requireContext()).apply {
-            hint = hintText
-            setText(value)
-            setSingleLine(true)
-            setTextColor(requireContext().getColor(R.color.black))
-            setHintTextColor(requireContext().getColor(R.color.text_secondary))
-            inputType = android.text.InputType.TYPE_CLASS_NUMBER or
-                    android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
-            setBackgroundResource(R.drawable.bg_input_manager)
-            setPadding(dp(16), 0, dp(16), 0)
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52))
-        }
-    }
-
-    private fun dialogLabel(text: String): TextView {
-        return TextView(requireContext()).apply {
-            this.text = text
-            textSize = 13f
-            setPadding(0, dp(12), 0, dp(4))
-            setTextColor(requireContext().getColor(R.color.text_secondary))
-        }
-    }
-
-    private fun readAmount(input: EditText): Double? {
-        val value = input.text.toString().trim()
-        if (value.isEmpty()) return 0.0
-        val amount = value.toDoubleOrNull()
-        if (amount == null || amount < 0.0) {
-            input.error = "Invalid amount"
-            return null
-        }
-        input.error = null
-        return amount
+        editUtilityDialog = dialog
+        dialog.show()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.92).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     private fun showMonthPicker() {
@@ -397,12 +298,22 @@ class FragmentUtility : Fragment() {
 
     private fun currentMonthName(): String = SimpleDateFormat("MMMM", Locale.US).format(Date())
 
+    private fun readAmount(input: EditText): Double? {
+        val value = input.text.toString().trim()
+        if (value.isEmpty()) return 0.0
+        val amount = value.toDoubleOrNull()
+        if (amount == null || amount < 0.0) {
+            input.error = "Invalid amount"
+            return null
+        }
+        input.error = null
+        return amount
+    }
+
     private fun formatAmount(amount: Double): String {
         return NumberFormat.getNumberInstance(Locale.US).apply {
             maximumFractionDigits = 2
             minimumFractionDigits = 0
         }.format(amount)
     }
-
-    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 }

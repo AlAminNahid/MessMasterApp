@@ -1,20 +1,15 @@
 package com.example.messmaster.managerdashboard
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.Typeface
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -25,9 +20,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
-import com.example.messmaster.managerdashboard.model.MessMember
-import com.example.messmaster.managerdashboard.model.MonthlySheetMember
-import com.example.messmaster.managerdashboard.model.MonthlySheetResponse
+import com.example.messmaster.managerdashboard.model.mess.MessMember
+import com.example.messmaster.managerdashboard.model.expense.MonthlySheetResponse
 import com.example.messmaster.managerdashboard.viewmodel.HomeViewModel
 import com.example.messmaster.managerdashboard.viewmodel.ManagerSharedViewModel
 import com.example.messmaster.memberdashboard.MemberMainActivity
@@ -229,35 +223,50 @@ class FragmentHome : Fragment() {
     }
 
     private fun showMonthlySheetTable(sheet: MonthlySheetResponse, period: String) {
-        val dialogView = makeDialogShell()
-        val rowsContainer = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
-        val searchInput = makeSearchInput("Search member")
         val members = sheet.members
+        val dialogView = layoutInflater.inflate(R.layout.dialog_records_list, null)
+        val txtTitle = dialogView.findViewById<TextView>(R.id.txtDialogTitle)
+        val txtSubtitle = dialogView.findViewById<TextView>(R.id.txtDialogSubtitle)
+        val searchInput = dialogView.findViewById<EditText>(R.id.inputDialogSearch)
+        val rowsContainer = dialogView.findViewById<LinearLayout>(R.id.dialogRowsContainer)
+        val txtEmpty = dialogView.findViewById<TextView>(R.id.txtDialogEmpty)
+        val btnSecondary = dialogView.findViewById<Button>(R.id.btnDialogSecondary)
+        val btnClose = dialogView.findViewById<Button>(R.id.btnDialogClose)
 
-        dialogView.addView(makeDialogTitle(if (period == "last") "Monthly Sheet (Last Month)" else "Monthly Sheet"))
-        dialogView.addView(makeDialogSubtitle("${members.size} members • ${formatAmount(sheet.totalMeals)} meals • ৳${formatAmount(sheet.totalBazar)} bazar"))
-        dialogView.addView(searchInput)
-        dialogView.addView(makeScrollContainer(rowsContainer))
-        val togglePeriodButton = makeSecondaryButton(if (period == "last") "View Current Month" else "View Last Month")
-        dialogView.addView(togglePeriodButton)
-        val closeButton = makeCloseButton()
-        dialogView.addView(closeButton)
+        txtTitle.text = if (period == "last") "Monthly Sheet (Last Month)" else "Monthly Sheet"
+        txtSubtitle.text = "${members.size} members · ${formatAmount(sheet.totalMeals)} meals · ৳${formatAmount(sheet.totalBazar)} bazar"
+        searchInput.hint = "Search member"
+        btnSecondary.text = if (period == "last") "View Current Month" else "View Last Month"
+        btnSecondary.visibility = View.VISIBLE
+
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
 
         fun render(query: String) {
             rowsContainer.removeAllViews()
             val filtered = members.filter { it.member_name.contains(query, ignoreCase = true) }
-
-            if (members.isEmpty()) {
-                rowsContainer.addView(emptyMessage("No members are available in this mess yet."))
-                return
-            }
-            if (filtered.isEmpty()) {
-                rowsContainer.addView(emptyMessage("No matching members found."))
-                return
-            }
-
-            filtered.forEach { member ->
-                rowsContainer.addView(monthlySheetCard(member))
+            when {
+                members.isEmpty() -> {
+                    rowsContainer.visibility = View.GONE
+                    txtEmpty.text = "No members are available in this mess yet."
+                    txtEmpty.visibility = View.VISIBLE
+                }
+                filtered.isEmpty() -> {
+                    rowsContainer.visibility = View.GONE
+                    txtEmpty.text = "No matching members found."
+                    txtEmpty.visibility = View.VISIBLE
+                }
+                else -> {
+                    txtEmpty.visibility = View.GONE
+                    rowsContainer.visibility = View.VISIBLE
+                    filtered.forEach { member ->
+                        val item = layoutInflater.inflate(R.layout.item_monthly_sheet_member, rowsContainer, false)
+                        item.findViewById<TextView>(R.id.txtSheetMemberName).text = member.member_name
+                        item.findViewById<TextView>(R.id.txtSheetBazarChip).text = "৳${formatAmount(member.total_bazar)}"
+                        item.findViewById<TextView>(R.id.txtSheetTotalMeals).text = formatAmount(member.total_meals)
+                        item.findViewById<TextView>(R.id.txtSheetTotalBazar).text = "৳${formatAmount(member.total_bazar)}"
+                        rowsContainer.addView(item)
+                    }
+                }
             }
         }
 
@@ -268,50 +277,70 @@ class FragmentHome : Fragment() {
         })
 
         render("")
-
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .create()
-
-        closeButton.setOnClickListener { dialog.dismiss() }
-        togglePeriodButton.setOnClickListener {
+        btnClose.setOnClickListener { dialog.dismiss() }
+        btnSecondary.setOnClickListener {
             dialog.dismiss()
             homeViewModel.loadMonthlySheet(if (period == "last") "current" else "last")
         }
         dialog.show()
-        styleDialogWindow(dialog)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.92).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     private fun showMembersDialog(members: List<MessMember>) {
-        val dialogView = makeDialogShell()
-        val rowsContainer = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
-        val searchInput = makeSearchInput("Search name, email, phone, or role")
+        val dialogView = layoutInflater.inflate(R.layout.dialog_records_list, null)
+        val txtTitle = dialogView.findViewById<TextView>(R.id.txtDialogTitle)
+        val txtSubtitle = dialogView.findViewById<TextView>(R.id.txtDialogSubtitle)
+        val searchInput = dialogView.findViewById<EditText>(R.id.inputDialogSearch)
+        val rowsContainer = dialogView.findViewById<LinearLayout>(R.id.dialogRowsContainer)
+        val txtEmpty = dialogView.findViewById<TextView>(R.id.txtDialogEmpty)
+        val btnClose = dialogView.findViewById<Button>(R.id.btnDialogClose)
 
-        dialogView.addView(makeDialogTitle("Members"))
-        dialogView.addView(makeDialogSubtitle("${members.size} current members in this mess"))
-        dialogView.addView(searchInput)
-        dialogView.addView(makeScrollContainer(rowsContainer))
-        val closeButton = makeCloseButton()
-        dialogView.addView(closeButton)
+        txtTitle.text = "Members"
+        txtSubtitle.text = "${members.size} current members in this mess"
+        searchInput.hint = "Search name, email, phone, or role"
 
-        fun memberSearchText(member: MessMember): String =
-            "${member.name} ${member.email} ${member.phone} ${member.role}"
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
+
+        fun memberSearchText(member: MessMember) = "${member.name} ${member.email} ${member.phone} ${member.role}"
 
         fun render(query: String) {
             rowsContainer.removeAllViews()
             val filtered = members.filter { memberSearchText(it).contains(query, ignoreCase = true) }
-
-            if (members.isEmpty()) {
-                rowsContainer.addView(emptyMessage("No members are available in this mess yet."))
-                return
-            }
-            if (filtered.isEmpty()) {
-                rowsContainer.addView(emptyMessage("No matching members found."))
-                return
-            }
-
-            filtered.forEachIndexed { index, member ->
-                rowsContainer.addView(memberCard(member, index + 1))
+            when {
+                members.isEmpty() -> {
+                    rowsContainer.visibility = View.GONE
+                    txtEmpty.text = "No members are available in this mess yet."
+                    txtEmpty.visibility = View.VISIBLE
+                }
+                filtered.isEmpty() -> {
+                    rowsContainer.visibility = View.GONE
+                    txtEmpty.text = "No matching members found."
+                    txtEmpty.visibility = View.VISIBLE
+                }
+                else -> {
+                    txtEmpty.visibility = View.GONE
+                    rowsContainer.visibility = View.VISIBLE
+                    filtered.forEachIndexed { index, member ->
+                        val item = layoutInflater.inflate(R.layout.item_member_card, rowsContainer, false)
+                        item.findViewById<TextView>(R.id.tvMemberAvatar).text = getInitials(member.name)
+                        item.findViewById<TextView>(R.id.txtMemberName).text = "${index + 1}. ${member.name}"
+                        item.findViewById<TextView>(R.id.txtMemberRole).text = member.role.replaceFirstChar { it.uppercase() }
+                        item.findViewById<TextView>(R.id.txtMemberEmail).text = member.email.ifBlank { "No email available" }
+                        item.findViewById<TextView>(R.id.txtMemberPhone).text = member.phone.ifBlank { "No phone available" }
+                        val layoutActions = item.findViewById<LinearLayout>(R.id.layoutMemberActions)
+                        if (member.role != "manager") {
+                            layoutActions.visibility = View.VISIBLE
+                            item.findViewById<Button>(R.id.btnMakeManager).setOnClickListener {
+                                showTransferOwnershipDialog(member)
+                            }
+                            item.findViewById<Button>(R.id.btnRemoveMember).setOnClickListener {
+                                showRemoveMemberDialog(member)
+                            }
+                        }
+                        rowsContainer.addView(item)
+                    }
+                }
             }
         }
 
@@ -322,40 +351,12 @@ class FragmentHome : Fragment() {
         })
 
         render("")
-
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .create()
-
-        closeButton.setOnClickListener { dialog.dismiss() }
+        btnClose.setOnClickListener { dialog.dismiss() }
         dialog.setOnDismissListener { membersDialog = null }
         membersDialog = dialog
         dialog.show()
-        styleDialogWindow(dialog)
-    }
-
-    private fun monthlySheetCard(member: MonthlySheetMember): LinearLayout {
-        return makeCard().apply {
-            addView(LinearLayout(requireContext()).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER_VERTICAL
-                addView(TextView(requireContext()).apply {
-                    text = member.member_name
-                    textSize = 16f
-                    setTypeface(typeface, Typeface.BOLD)
-                    setTextColor(requireContext().getColor(R.color.black))
-                    layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                })
-                addView(makeChip("৳${formatAmount(member.total_bazar)}"))
-            })
-
-            addView(LinearLayout(requireContext()).apply {
-                orientation = LinearLayout.HORIZONTAL
-                setPadding(0, dp(12), 0, dp(2))
-                addView(metricView("Total Meals", formatAmount(member.total_meals)))
-                addView(metricView("Total Bazar", "৳${formatAmount(member.total_bazar)}"))
-            })
-        }
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.92).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     private fun showTransferOwnershipDialog(member: MessMember) {
@@ -390,231 +391,6 @@ class FragmentHome : Fragment() {
         dialog.show()
     }
 
-    private fun memberCard(member: MessMember, position: Int): LinearLayout {
-        return makeCard().apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-
-            addView(TextView(requireContext()).apply {
-                text = getInitials(member.name)
-                gravity = Gravity.CENTER
-                textSize = 14f
-                setTypeface(typeface, Typeface.BOLD)
-                setTextColor(requireContext().getColor(R.color.white))
-                background = roundedDrawable(requireContext().getColor(R.color.black), dp(18))
-                layoutParams = LinearLayout.LayoutParams(dp(46), dp(46)).apply {
-                    rightMargin = dp(14)
-                }
-            })
-
-            addView(LinearLayout(requireContext()).apply {
-                orientation = LinearLayout.VERTICAL
-                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-
-                addView(LinearLayout(requireContext()).apply {
-                    orientation = LinearLayout.HORIZONTAL
-                    gravity = Gravity.CENTER_VERTICAL
-                    addView(TextView(requireContext()).apply {
-                        text = "$position. ${member.name}"
-                        textSize = 16f
-                        setTypeface(typeface, Typeface.BOLD)
-                        setTextColor(requireContext().getColor(R.color.black))
-                        layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                    })
-                    addView(makeChip(member.role.replaceFirstChar { it.uppercase() }))
-                })
-
-                addView(detailText(member.email.ifBlank { "No email available" }))
-                addView(detailText(member.phone.ifBlank { "No phone available" }))
-
-                if (member.role != "manager") {
-                    addView(LinearLayout(requireContext()).apply {
-                        orientation = LinearLayout.HORIZONTAL
-                        setPadding(0, dp(12), 0, 0)
-
-                        addView(makeMemberActionButton("Make Manager", destructive = false).apply {
-                            layoutParams = LinearLayout.LayoutParams(0, dp(40), 1f).apply { rightMargin = dp(6) }
-                            setOnClickListener { showTransferOwnershipDialog(member) }
-                        })
-
-                        addView(makeMemberActionButton("Remove", destructive = true).apply {
-                            layoutParams = LinearLayout.LayoutParams(0, dp(40), 1f).apply { leftMargin = dp(6) }
-                            setOnClickListener { showRemoveMemberDialog(member) }
-                        })
-                    })
-                }
-            })
-        }
-    }
-
-    private fun makeDialogShell(): LinearLayout =
-        LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(22), dp(22), dp(22), dp(18))
-            background = roundedDrawable(Color.WHITE, dp(18))
-        }
-
-    private fun makeDialogTitle(title: String): TextView =
-        TextView(requireContext()).apply {
-            text = title
-            gravity = Gravity.CENTER
-            textSize = 21f
-            setTypeface(typeface, Typeface.BOLD)
-            setTextColor(requireContext().getColor(R.color.black))
-        }
-
-    private fun makeDialogSubtitle(subtitle: String): TextView =
-        TextView(requireContext()).apply {
-            text = subtitle
-            gravity = Gravity.CENTER
-            textSize = 14f
-            setTextColor(requireContext().getColor(R.color.text_secondary))
-            setPadding(0, dp(6), 0, dp(18))
-        }
-
-    private fun makeSearchInput(hintText: String): EditText =
-        EditText(requireContext()).apply {
-            hint = hintText
-            setSingleLine(true)
-            textSize = 14f
-            setTextColor(requireContext().getColor(R.color.black))
-            setHintTextColor(requireContext().getColor(R.color.text_secondary))
-            setPadding(dp(16), 0, dp(16), 0)
-            setBackgroundResource(R.drawable.bg_input_manager)
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52))
-        }
-
-    private fun makeScrollContainer(content: LinearLayout): ScrollView =
-        ScrollView(requireContext()).apply {
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(430)).apply {
-                topMargin = dp(16)
-            }
-            addView(content)
-        }
-
-    private fun makeMemberActionButton(text: String, destructive: Boolean): Button =
-        Button(requireContext()).apply {
-            this.text = text
-            isAllCaps = false
-            textSize = 13f
-            setTypeface(typeface, Typeface.BOLD)
-            setPadding(0, 0, 0, 0)
-            minWidth = 0
-            minimumWidth = 0
-            minHeight = 0
-            minimumHeight = 0
-            stateListAnimator = null
-            elevation = 0f
-            if (destructive) {
-                setTextColor(requireContext().getColor(R.color.error))
-                background = roundedDrawable(Color.parseColor("#FDECEA"), dp(8))
-            } else {
-                setTextColor(requireContext().getColor(R.color.black))
-                background = roundedDrawable(Color.WHITE, dp(8), requireContext().getColor(R.color.border))
-            }
-        }
-
-    private fun makeSecondaryButton(text: String): Button =
-        Button(requireContext()).apply {
-            this.text = text
-            setTextColor(requireContext().getColor(R.color.black))
-            setTypeface(typeface, Typeface.BOLD)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(Color.parseColor("#F2F2F2"))
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52)).apply {
-                topMargin = dp(12)
-            }
-        }
-
-    private fun makeCloseButton(): Button =
-        Button(requireContext()).apply {
-            text = "Close"
-            setTextColor(requireContext().getColor(R.color.white))
-            setTypeface(typeface, Typeface.BOLD)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(requireContext().getColor(R.color.black))
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52)).apply {
-                topMargin = dp(18)
-            }
-        }
-
-    private fun makeCard(): LinearLayout =
-        LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(16), dp(14), dp(16), dp(14))
-            background = roundedDrawable(Color.WHITE, dp(12), Color.parseColor("#E8E8E8"))
-            layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
-                bottomMargin = dp(10)
-            }
-        }
-
-    private fun metricView(label: String, value: String): LinearLayout =
-        LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.VERTICAL
-            background = roundedDrawable(Color.parseColor("#F6F6F6"), dp(10))
-            setPadding(dp(12), dp(10), dp(12), dp(10))
-            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
-                rightMargin = dp(8)
-            }
-            addView(TextView(requireContext()).apply {
-                text = label
-                textSize = 12f
-                setTextColor(requireContext().getColor(R.color.text_secondary))
-            })
-            addView(TextView(requireContext()).apply {
-                text = value
-                textSize = 16f
-                setTypeface(typeface, Typeface.BOLD)
-                setTextColor(requireContext().getColor(R.color.black))
-            })
-        }
-
-    private fun makeChip(textValue: String): TextView =
-        TextView(requireContext()).apply {
-            text = textValue
-            textSize = 12f
-            setTypeface(typeface, Typeface.BOLD)
-            setTextColor(requireContext().getColor(R.color.black))
-            setPadding(dp(10), dp(5), dp(10), dp(5))
-            background = roundedDrawable(Color.parseColor("#F2F2F2"), dp(14))
-        }
-
-    private fun sectionText(value: String): TextView =
-        TextView(requireContext()).apply {
-            text = value
-            textSize = 13f
-            setTypeface(typeface, Typeface.BOLD)
-            setTextColor(requireContext().getColor(R.color.black))
-            setPadding(0, dp(8), 0, dp(3))
-        }
-
-    private fun detailText(value: String): TextView =
-        TextView(requireContext()).apply {
-            text = value
-            textSize = 13f
-            setTextColor(requireContext().getColor(R.color.text_secondary))
-            setLineSpacing(2f, 1f)
-        }
-
-    private fun emptyMessage(message: String): TextView =
-        TextView(requireContext()).apply {
-            text = message
-            gravity = Gravity.CENTER
-            textSize = 15f
-            setTextColor(requireContext().getColor(R.color.text_secondary))
-            setPadding(dp(12), dp(36), dp(12), dp(36))
-        }
-
-    private fun roundedDrawable(color: Int, radius: Int, strokeColor: Int? = null): GradientDrawable =
-        GradientDrawable().apply {
-            setColor(color)
-            cornerRadius = radius.toFloat()
-            strokeColor?.let { setStroke(dp(1), it) }
-        }
-
-    private fun styleDialogWindow(dialog: AlertDialog) {
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.window?.setLayout((resources.displayMetrics.widthPixels * 0.92).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-    }
-
     private fun getInitials(name: String): String {
         val words = name.trim().split("\\s+".toRegex()).filter { it.isNotEmpty() }
         return when {
@@ -634,6 +410,4 @@ class FragmentHome : Fragment() {
             maximumFractionDigits = 2
             minimumFractionDigits = 0
         }.format(amount)
-
-    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).toInt()
 }

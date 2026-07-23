@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.messmaster.managerdashboard.model.CurrentMessResponse
-import com.example.messmaster.managerdashboard.model.MealRateResponse
-import com.example.messmaster.managerdashboard.model.MessStatisticsResponse
+import com.example.messmaster.managerdashboard.model.mess.CurrentMessResponse
+import com.example.messmaster.managerdashboard.model.meal.MealRateResponse
+import com.example.messmaster.managerdashboard.model.mess.MessStatisticsResponse
 import com.example.messmaster.managerdashboard.repository.ManagerRepository
 import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.util.UiState

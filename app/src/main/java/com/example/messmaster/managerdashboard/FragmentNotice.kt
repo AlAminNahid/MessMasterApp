@@ -21,8 +21,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
-import com.example.messmaster.managerdashboard.model.NoticeItem
-import com.example.messmaster.managerdashboard.model.NoticeRequest
+import com.example.messmaster.managerdashboard.model.notice.NoticeItem
+import com.example.messmaster.managerdashboard.model.notice.NoticeRequest
 import com.example.messmaster.managerdashboard.viewmodel.ManagerSharedViewModel
 import com.example.messmaster.managerdashboard.viewmodel.NoticeViewModel
 import com.example.messmaster.util.UiState

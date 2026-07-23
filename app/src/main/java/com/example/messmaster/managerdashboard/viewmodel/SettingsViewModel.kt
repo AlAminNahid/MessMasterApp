@@ -7,7 +7,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.messmaster.commondashboard.model.changePassword.ChangePassRequest
 import com.example.messmaster.commondashboard.model.changePassword.ChangePassResponse
-import com.example.messmaster.managerdashboard.model.MessPasswordUpdateResponse
+import com.example.messmaster.managerdashboard.model.mess.MessPasswordUpdateResponse
 import com.example.messmaster.managerdashboard.repository.ManagerRepository
 import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.shared.repository.SharedRepository

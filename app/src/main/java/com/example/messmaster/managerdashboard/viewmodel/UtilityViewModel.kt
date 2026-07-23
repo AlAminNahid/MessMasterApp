@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityBillsResponse
-import com.example.messmaster.managerdashboard.model.CurrentMonthUtilityEntry
-import com.example.messmaster.managerdashboard.model.InsertUtilityCostRequest
-import com.example.messmaster.managerdashboard.model.InsertUtilityCostResponse
+import com.example.messmaster.managerdashboard.model.utility.CurrentMonthUtilityBillsResponse
+import com.example.messmaster.managerdashboard.model.utility.CurrentMonthUtilityEntry
+import com.example.messmaster.managerdashboard.model.utility.InsertUtilityCostRequest
+import com.example.messmaster.managerdashboard.model.utility.InsertUtilityCostResponse
 import com.example.messmaster.managerdashboard.repository.ManagerRepository
 import com.example.messmaster.network.RetrofitClient
 import com.example.messmaster.util.UiState

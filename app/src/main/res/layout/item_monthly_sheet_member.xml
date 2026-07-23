@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="14dp"
+    android:paddingBottom="14dp"
+    android:background="@drawable/bg_record_card"
+    android:layout_marginBottom="10dp">
+
+    <!-- Header row: member name on left, bazar chip on right -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/txtSheetMemberName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/txtSheetBazarChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/bg_input_manager" />
+
+    </LinearLayout>
+
+    <!-- Metric row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="12dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:background="@drawable/bg_input_manager">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Meals"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/txtSheetTotalMeals"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:background="@drawable/bg_input_manager">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Bazar"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/txtSheetTotalBazar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -19,7 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.messmaster.R
-import com.example.messmaster.managerdashboard.model.NoticeItem
+import com.example.messmaster.managerdashboard.model.notice.NoticeItem
 import com.example.messmaster.memberdashboard.viewmodel.MemberDashboardViewModel
 import com.example.messmaster.util.UiState
 import kotlinx.coroutines.launch

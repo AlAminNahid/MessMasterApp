@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_dialog_rounded">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit Utility"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:gravity="center" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update the running month utility bill."
+        android:textSize="14sp"
+        android:textColor="@color/text_secondary"
+        android:gravity="center"
+        android:paddingTop="6dp"
+        android:paddingBottom="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Electricity"
+        android:textSize="13sp"
+        android:textColor="@color/text_secondary"
+        android:paddingTop="12dp"
+        android:paddingBottom="4dp" />
+
+    <EditText
+        android:id="@+id/inputEditElectricity"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:inputType="numberDecimal"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/text_secondary"
+        android:hint="Electricity"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@drawable/bg_input_manager" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Internet"
+        android:textSize="13sp"
+        android:textColor="@color/text_secondary"
+        android:paddingTop="12dp"
+        android:paddingBottom="4dp" />
+
+    <EditText
+        android:id="@+id/inputEditInternet"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:inputType="numberDecimal"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/text_secondary"
+        android:hint="Internet"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@drawable/bg_input_manager" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gas"
+        android:textSize="13sp"
+        android:textColor="@color/text_secondary"
+        android:paddingTop="12dp"
+        android:paddingBottom="4dp" />
+
+    <EditText
+        android:id="@+id/inputEditGas"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:inputType="numberDecimal"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/text_secondary"
+        android:hint="Gas"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@drawable/bg_input_manager" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Maid"
+        android:textSize="13sp"
+        android:textColor="@color/text_secondary"
+        android:paddingTop="12dp"
+        android:paddingBottom="4dp" />
+
+    <EditText
+        android:id="@+id/inputEditMaid"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:inputType="numberDecimal"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/text_secondary"
+        android:hint="Maid"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@drawable/bg_input_manager" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="20dp">
+
+        <Button
+            android:id="@+id/btnEditUtilityCancel"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Cancel"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:backgroundTint="@color/white"
+            app:cornerRadius="12dp" />
+
+        <Button
+            android:id="@+id/btnEditUtilitySave"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Save"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:backgroundTint="@color/black"
+            app:cornerRadius="12dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

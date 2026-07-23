@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.messmaster.managerdashboard.model.MessPasswordResponse
-import com.example.messmaster.managerdashboard.model.UpdateUserProfileRequest
+import com.example.messmaster.managerdashboard.model.mess.MessPasswordResponse
+import com.example.messmaster.managerdashboard.model.profile.UpdateUserProfileRequest
 import com.example.messmaster.managerdashboard.repository.ManagerRepository
 import com.example.messmaster.model.UserProfileResponse
 import com.example.messmaster.network.RetrofitClient
