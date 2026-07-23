@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.messmaster"
+    namespace = "com.bilimbistudio.messmaster"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -20,7 +20,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.messmaster"
+        applicationId = "com.bilimbistudio.messmaster"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

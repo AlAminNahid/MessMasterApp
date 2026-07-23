@@ -6,26 +6,26 @@
 
     <fragment
         android:id="@+id/memberHomeFragment"
-        android:name="com.example.messmaster.memberdashboard.MemberHomeFragment"
+        android:name="com.bilimbistudio.messmaster.memberdashboard.MemberHomeFragment"
         android:label="Home" />
 
     <fragment
         android:id="@+id/memberMealsFragment"
-        android:name="com.example.messmaster.memberdashboard.MemberMealsFragment"
+        android:name="com.bilimbistudio.messmaster.memberdashboard.MemberMealsFragment"
         android:label="Meals" />
 
     <fragment
         android:id="@+id/memberUtilityFragment"
-        android:name="com.example.messmaster.memberdashboard.MemberUtilityFragment"
+        android:name="com.bilimbistudio.messmaster.memberdashboard.MemberUtilityFragment"
         android:label="Utility" />
 
     <fragment
         android:id="@+id/memberNoticeFragment"
-        android:name="com.example.messmaster.memberdashboard.MemberNoticeFragment"
+        android:name="com.bilimbistudio.messmaster.memberdashboard.MemberNoticeFragment"
         android:label="Notice" />
 
     <fragment
         android:id="@+id/memberProfileFragment"
-        android:name="com.example.messmaster.memberdashboard.MemberProfileFragment"
+        android:name="com.bilimbistudio.messmaster.memberdashboard.MemberProfileFragment"
         android:label="Profile" />
 </navigation>

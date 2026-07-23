@@ -1,0 +1,8 @@
+package com.bilimbistudio.messmaster.managerdashboard.model.meal
+
+data class TodayTotalMealsResponse(
+    val messID: Int,
+    val messName: String,
+    val date: String,
+    val todayTotalMeals: Int
+)
