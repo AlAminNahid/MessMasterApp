@@ -27,6 +27,17 @@ class MemberProfileViewModel(
     private val _updateProfileState = MutableStateFlow<UiState<UserProfileResponse>>(UiState.Idle)
     val updateProfileState: StateFlow<UiState<UserProfileResponse>> = _updateProfileState.asStateFlow()
 
+    private val _logoutState = MutableStateFlow<UiState<Boolean>>(UiState.Idle)
+    val logoutState: StateFlow<UiState<Boolean>> = _logoutState.asStateFlow()
+
+    fun logout() {
+        viewModelScope.launch {
+            _logoutState.value = UiState.Loading
+            val success = sharedRepository.logout()
+            _logoutState.value = if (success) UiState.Success(true) else UiState.Error("Server error")
+        }
+    }
+
     fun fetchProfile() {
         viewModelScope.launch {
             _profileState.value = UiState.Loading

@@ -1,5 +1,6 @@
 package com.bilimbistudio.messmaster.memberdashboard
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
@@ -22,10 +23,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bilimbistudio.messmaster.R
+import com.bilimbistudio.messmaster.auth.LoginActivity
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.MessMember
 import com.bilimbistudio.messmaster.memberdashboard.viewmodel.MemberDashboardViewModel
 import com.bilimbistudio.messmaster.memberdashboard.viewmodel.MemberProfileViewModel
 import com.bilimbistudio.messmaster.model.UserProfileResponse
+import com.bilimbistudio.messmaster.network.RetrofitClient
 import com.bilimbistudio.messmaster.util.UiState
 import kotlinx.coroutines.launch
 
@@ -45,6 +48,7 @@ class MemberProfileFragment : Fragment() {
     private lateinit var layoutMessMembers: LinearLayout
     private lateinit var btnEditProfile: Button
     private lateinit var btnOpenSettings: Button
+    private lateinit var btnLogout: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,11 +66,13 @@ class MemberProfileFragment : Fragment() {
         layoutMessMembers = view.findViewById(R.id.layoutMessMembers)
         btnEditProfile = view.findViewById(R.id.btnEditProfile)
         btnOpenSettings = view.findViewById(R.id.btnOpenSettings)
+        btnLogout = view.findViewById(R.id.btnLogout)
 
         btnEditProfile.setOnClickListener { showEditProfileDialog() }
         btnOpenSettings.setOnClickListener {
             startActivity(Intent(requireContext(), MemberSettingsActivity::class.java))
         }
+        btnLogout.setOnClickListener { showLogoutDialog() }
 
         profileViewModel.fetchProfile()
         sharedViewModel.loadMembers()
@@ -137,8 +143,39 @@ class MemberProfileFragment : Fragment() {
                         }
                     }
                 }
+
+                launch {
+                    profileViewModel.logoutState.collect { state ->
+                        when (state) {
+                            is UiState.Success, is UiState.Error -> navigateToLogin()
+                            else -> Unit
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private fun showLogoutDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_logout, null)
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialogView.findViewById<Button>(R.id.btnCancelLogout).setOnClickListener { dialog.dismiss() }
+        dialogView.findViewById<Button>(R.id.btnConfirmLogout).setOnClickListener {
+            dialog.dismiss()
+            profileViewModel.logout()
+        }
+        dialog.show()
+    }
+
+    private fun navigateToLogin() {
+        RetrofitClient.cookieJar.clear()
+        requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE).edit().clear().apply()
+        Toast.makeText(requireContext(), "Logged out successfully.", Toast.LENGTH_SHORT).show()
+        val intent = Intent(requireContext(), LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
     }
 
     private fun bindUserProfile(profile: UserProfileResponse) {

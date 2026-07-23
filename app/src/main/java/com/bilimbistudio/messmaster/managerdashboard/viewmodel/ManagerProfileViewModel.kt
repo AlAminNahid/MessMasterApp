@@ -31,6 +31,17 @@ class ManagerProfileViewModel(
     private val _viewMessPasswordState = MutableStateFlow<UiState<MessPasswordResponse>>(UiState.Idle)
     val viewMessPasswordState: StateFlow<UiState<MessPasswordResponse>> = _viewMessPasswordState.asStateFlow()
 
+    private val _logoutState = MutableStateFlow<UiState<Boolean>>(UiState.Idle)
+    val logoutState: StateFlow<UiState<Boolean>> = _logoutState.asStateFlow()
+
+    fun logout() {
+        viewModelScope.launch {
+            _logoutState.value = UiState.Loading
+            val success = sharedRepository.logout()
+            _logoutState.value = if (success) UiState.Success(true) else UiState.Error("Server error")
+        }
+    }
+
     fun viewMessPassword(accountPassword: String) {
         viewModelScope.launch {
             _viewMessPasswordState.value = UiState.Loading

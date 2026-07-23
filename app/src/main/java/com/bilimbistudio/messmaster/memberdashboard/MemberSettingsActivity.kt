@@ -1,7 +1,6 @@
 package com.bilimbistudio.messmaster.memberdashboard
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -9,15 +8,12 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bilimbistudio.messmaster.R
-import com.bilimbistudio.messmaster.auth.LoginActivity
 import com.bilimbistudio.messmaster.memberdashboard.viewmodel.MemberSettingsViewModel
-import com.bilimbistudio.messmaster.network.RetrofitClient
 import com.bilimbistudio.messmaster.util.UiState
 import kotlinx.coroutines.launch
 
@@ -26,7 +22,6 @@ class MemberSettingsActivity : AppCompatActivity() {
     private val viewModel: MemberSettingsViewModel by viewModels { MemberSettingsViewModel.Factory }
 
     private lateinit var btnBack: ImageButton
-    private lateinit var btnLogOut: Button
     private lateinit var btnUpdatePassword: Button
     private lateinit var etCurrentPassword: EditText
     private lateinit var etNewPassword: EditText
@@ -38,14 +33,12 @@ class MemberSettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_member_settings)
 
         btnBack = findViewById(R.id.btnBack)
-        btnLogOut = findViewById(R.id.btnLogOut)
         btnUpdatePassword = findViewById(R.id.btnUpdatePassword)
         etCurrentPassword = findViewById(R.id.etCurrentPassword)
         etNewPassword = findViewById(R.id.etNewPassword)
         etConfirmPassword = findViewById(R.id.etConfirmPassword)
 
         btnBack.setOnClickListener { finish() }
-        btnLogOut.setOnClickListener { showLogoutDialog() }
         btnUpdatePassword.setOnClickListener { changePassword() }
 
         observeStates()
@@ -74,14 +67,6 @@ class MemberSettingsActivity : AppCompatActivity() {
                     }
                 }
 
-                launch {
-                    viewModel.logoutState.collect { state ->
-                        when (state) {
-                            is UiState.Success, is UiState.Error -> navigateToLogin()
-                            else -> Unit
-                        }
-                    }
-                }
             }
         }
     }
@@ -111,28 +96,4 @@ class MemberSettingsActivity : AppCompatActivity() {
         viewModel.changePassword(email, currentPassword, newPassword)
     }
 
-    private fun showLogoutDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_logout, null)
-        val dialog = AlertDialog.Builder(this).setView(dialogView).create()
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
-        dialogView.findViewById<Button>(R.id.btnCancelLogout).setOnClickListener { dialog.dismiss() }
-        dialogView.findViewById<Button>(R.id.btnConfirmLogout).setOnClickListener {
-            dialog.dismiss()
-            viewModel.logout()
-        }
-
-        dialog.show()
-    }
-
-    private fun navigateToLogin() {
-        RetrofitClient.cookieJar.clear()
-        getSharedPreferences("user_prefs", Context.MODE_PRIVATE).edit().clear().apply()
-        Toast.makeText(this, "Logged out successfully.", Toast.LENGTH_SHORT).show()
-        val intent = Intent(this, LoginActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        startActivity(intent)
-        finish()
-    }
 }
