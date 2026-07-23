@@ -15,6 +15,8 @@ import com.bilimbistudio.messmaster.commondashboard.model.joinMess.JoinMessRespo
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.ChangeMessPasswordRequest
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.CurrentMessMembersResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.CurrentMessResponse
+import com.bilimbistudio.messmaster.managerdashboard.model.mess.DeleteMessRequest
+import com.bilimbistudio.messmaster.managerdashboard.model.mess.DeleteMessResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.expense.CurrentMonthMealExpensesResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.meal.CurrentMonthMealsResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.utility.CurrentMonthUtilityBillsResponse
@@ -46,6 +48,7 @@ import com.bilimbistudio.messmaster.model.UserProfileResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -169,6 +172,9 @@ interface ApiService {
 
     @PATCH("mess/removeMember")
     suspend fun removeMember(@Body request: RemoveMemberRequest): Response<RemoveMemberResponse>
+
+    @HTTP(method = "DELETE", path = "mess/deleteMess", hasBody = true)
+    suspend fun deleteMess(@Body request: DeleteMessRequest): Response<DeleteMessResponse>
 
     // -- Member only --
 

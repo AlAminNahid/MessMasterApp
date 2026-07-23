@@ -11,15 +11,18 @@ import retrofit2.create
 object RetrofitClient {
 
     private lateinit var _cookieJar: PersistentCookieJar
-    private lateinit var sessionManager: SessionManager
+    private lateinit var _sessionManager: SessionManager
 
     val cookieJar: PersistentCookieJar
         get() = if (::_cookieJar.isInitialized) _cookieJar else throw UninitializedPropertyAccessException("RetrofitClient must be initialized with context first")
 
+    val sessionManager: SessionManager
+        get() = if (::_sessionManager.isInitialized) _sessionManager else throw UninitializedPropertyAccessException("RetrofitClient must be initialized with context first")
+
     fun init(context: Context) {
         if (!::_cookieJar.isInitialized) {
             _cookieJar = PersistentCookieJar(context)
-            sessionManager = SessionManager(context.applicationContext)
+            _sessionManager = SessionManager(context.applicationContext)
         }
     }
 
@@ -30,9 +33,9 @@ object RetrofitClient {
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(RemovedMemberInterceptor(sessionManager))
+            .addInterceptor(RemovedMemberInterceptor(_sessionManager))
             .cookieJar(cookieJar)
-            .authenticator(TokenAuthenticator(cookieJar, BuildConfig.BASE_URL, sessionManager))
+            .authenticator(TokenAuthenticator(cookieJar, BuildConfig.BASE_URL, _sessionManager))
             .build()
     }
 

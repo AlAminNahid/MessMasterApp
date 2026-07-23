@@ -15,6 +15,7 @@ import com.bilimbistudio.messmaster.commondashboard.HomeActivity
 import com.bilimbistudio.messmaster.managerdashboard.ManagerMainActivity
 import com.bilimbistudio.messmaster.memberdashboard.MemberMainActivity
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class SplashScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,15 +49,34 @@ class SplashScreenActivity : AppCompatActivity() {
 
     private fun navigateToDashboard() {
         val prefs = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val role = prefs.getString("user_role", "none")
 
-        val intent = when (role) {
-            "manager" -> Intent(this, ManagerMainActivity::class.java)
-            "member" -> Intent(this, MemberMainActivity::class.java)
-            else -> Intent(this, HomeActivity::class.java)
+        lifecycleScope.launch {
+            val role = try {
+                val response = RetrofitClient.apiService.getCurrentMess()
+                when {
+                    response.isSuccessful -> response.body()?.messInfo?.role ?: "none"
+                    response.code() == 404 -> "none"
+                    // Ambiguous server error - don't strand the user on a stale "no mess" screen,
+                    // fall back to the last known role instead of forcing them out of their mess.
+                    else -> prefs.getString("user_role", "none")
+                }
+            } catch (e: IOException) {
+                // No network - trust the cached role rather than assuming the mess is gone.
+                prefs.getString("user_role", "none")
+            } catch (e: Exception) {
+                "none"
+            }
+
+            prefs.edit().putString("user_role", role).apply()
+
+            val intent = when (role) {
+                "manager" -> Intent(this@SplashScreenActivity, ManagerMainActivity::class.java)
+                "member" -> Intent(this@SplashScreenActivity, MemberMainActivity::class.java)
+                else -> Intent(this@SplashScreenActivity, HomeActivity::class.java)
+            }
+            startActivity(intent)
+            finish()
         }
-        startActivity(intent)
-        finish()
     }
 
     private fun navigateToLogin() {

@@ -1,10 +1,13 @@
 package com.bilimbistudio.messmaster.managerdashboard
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -13,7 +16,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bilimbistudio.messmaster.R
+import com.bilimbistudio.messmaster.auth.LoginActivity
 import com.bilimbistudio.messmaster.managerdashboard.viewmodel.SettingsViewModel
+import com.bilimbistudio.messmaster.network.RetrofitClient
 import com.bilimbistudio.messmaster.util.UiState
 import kotlinx.coroutines.launch
 
@@ -30,6 +35,8 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var etMessAccountPassword: EditText
     private lateinit var etNewMessPassword: EditText
     private lateinit var etConfirmNewMessPassword: EditText
+    private lateinit var btnDeleteMess: Button
+    private lateinit var etDeleteMessPassword: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,10 +52,13 @@ class SettingsActivity : AppCompatActivity() {
         etMessAccountPassword = findViewById(R.id.etMessAccountPassword)
         etNewMessPassword = findViewById(R.id.etNewMessPassword)
         etConfirmNewMessPassword = findViewById(R.id.etConfirmNewMessPassword)
+        btnDeleteMess = findViewById(R.id.btnDeleteMess)
+        etDeleteMessPassword = findViewById(R.id.etDeleteMessPassword)
 
         btnBack.setOnClickListener { finish() }
         btnUpdatePassword.setOnClickListener { changePassword() }
         btnUpdateMessPassword.setOnClickListener { changeMessPassword() }
+        btnDeleteMess.setOnClickListener { confirmDeleteMess() }
 
         observeStates()
     }
@@ -90,6 +100,29 @@ class SettingsActivity : AppCompatActivity() {
                             }
                             is UiState.Error -> {
                                 btnUpdateMessPassword.isEnabled = true
+                                Toast.makeText(this@SettingsActivity, state.message, Toast.LENGTH_LONG).show()
+                            }
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.deleteMessState.collect { state ->
+                        when (state) {
+                            is UiState.Loading -> btnDeleteMess.isEnabled = false
+                            is UiState.Success -> {
+                                Toast.makeText(this@SettingsActivity, state.data.message, Toast.LENGTH_LONG).show()
+                                RetrofitClient.cookieJar.clear()
+                                getSharedPreferences("user_prefs", Context.MODE_PRIVATE).edit().clear().apply()
+                                startActivity(
+                                    Intent(this@SettingsActivity, LoginActivity::class.java)
+                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                )
+                                finish()
+                            }
+                            is UiState.Error -> {
+                                btnDeleteMess.isEnabled = true
                                 Toast.makeText(this@SettingsActivity, state.message, Toast.LENGTH_LONG).show()
                             }
                             else -> Unit
@@ -142,6 +175,28 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         viewModel.changeMessPassword(accountPassword, newMessPassword)
+    }
+
+    private fun confirmDeleteMess() {
+        val accountPassword = etDeleteMessPassword.text.toString().trim()
+        if (accountPassword.isEmpty()) {
+            etDeleteMessPassword.error = "Your account password is required"
+            return
+        }
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_delete_mess, null)
+        val dialog = AlertDialog.Builder(this).setView(dialogView).create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialogView.findViewById<TextView>(R.id.txtDeleteMessMessage).text =
+            "This will permanently delete your mess. This cannot be undone. Continue?"
+        dialogView.findViewById<Button>(R.id.btnCancelDeleteMess).setOnClickListener { dialog.dismiss() }
+        dialogView.findViewById<Button>(R.id.btnConfirmDeleteMess).setOnClickListener {
+            dialog.dismiss()
+            viewModel.deleteMess(accountPassword)
+        }
+
+        dialog.show()
     }
 
 }

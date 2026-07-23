@@ -2,6 +2,8 @@ package com.bilimbistudio.messmaster.managerdashboard.repository
 
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.CurrentMessMembersResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.CurrentMessResponse
+import com.bilimbistudio.messmaster.managerdashboard.model.mess.DeleteMessRequest
+import com.bilimbistudio.messmaster.managerdashboard.model.mess.DeleteMessResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.expense.CurrentMonthMealExpense
 import com.bilimbistudio.messmaster.managerdashboard.model.meal.CurrentMonthMeal
 import com.bilimbistudio.messmaster.managerdashboard.model.utility.CurrentMonthUtilityBillsResponse
@@ -113,6 +115,9 @@ class ManagerRepository(private val apiService: ApiService) {
 
     suspend fun removeMember(memberId: Int): UiState<RemoveMemberResponse> =
         safeApiCall("ManagerRepository") { apiService.removeMember(RemoveMemberRequest(memberId)) }
+
+    suspend fun deleteMess(accountPassword: String): UiState<DeleteMessResponse> =
+        safeApiCall("ManagerRepository") { apiService.deleteMess(DeleteMessRequest(accountPassword)) }
 
     private inline fun <T, R> mapListState(state: UiState<T>, extract: (T) -> List<R>): UiState<List<R>> =
         when (state) {

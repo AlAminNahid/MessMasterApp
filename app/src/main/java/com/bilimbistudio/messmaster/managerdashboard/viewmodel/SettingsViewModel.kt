@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.bilimbistudio.messmaster.commondashboard.model.changePassword.ChangePassRequest
 import com.bilimbistudio.messmaster.commondashboard.model.changePassword.ChangePassResponse
+import com.bilimbistudio.messmaster.managerdashboard.model.mess.DeleteMessResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.MessPasswordUpdateResponse
 import com.bilimbistudio.messmaster.managerdashboard.repository.ManagerRepository
 import com.bilimbistudio.messmaster.network.RetrofitClient
@@ -31,6 +32,9 @@ class SettingsViewModel(
     private val _messPasswordState = MutableStateFlow<UiState<MessPasswordUpdateResponse>>(UiState.Idle)
     val messPasswordState: StateFlow<UiState<MessPasswordUpdateResponse>> = _messPasswordState.asStateFlow()
 
+    private val _deleteMessState = MutableStateFlow<UiState<DeleteMessResponse>>(UiState.Idle)
+    val deleteMessState: StateFlow<UiState<DeleteMessResponse>> = _deleteMessState.asStateFlow()
+
     fun changePassword(email: String, oldPassword: String, newPassword: String) {
         viewModelScope.launch {
             _changePassState.value = UiState.Loading
@@ -44,6 +48,13 @@ class SettingsViewModel(
         viewModelScope.launch {
             _messPasswordState.value = UiState.Loading
             _messPasswordState.value = managerRepository.changeMessPassword(accountPassword, newMessPassword)
+        }
+    }
+
+    fun deleteMess(accountPassword: String) {
+        viewModelScope.launch {
+            _deleteMessState.value = UiState.Loading
+            _deleteMessState.value = managerRepository.deleteMess(accountPassword)
         }
     }
 
