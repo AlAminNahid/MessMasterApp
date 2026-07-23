@@ -27,6 +27,9 @@ import com.bilimbistudio.messmaster.managerdashboard.model.notice.NoticeRequest
 import com.bilimbistudio.messmaster.managerdashboard.model.notice.NoticeResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.RemoveMemberRequest
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.RemoveMemberResponse
+import com.bilimbistudio.messmaster.managerdashboard.model.invite.SearchUserResponse
+import com.bilimbistudio.messmaster.managerdashboard.model.invite.InviteMemberRequest
+import com.bilimbistudio.messmaster.managerdashboard.model.invite.InviteMemberResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.TransferOwnershipRequest
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.TransferOwnershipResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.meal.TodayTotalMealsResponse
@@ -118,6 +121,12 @@ class ManagerRepository(private val apiService: ApiService) {
 
     suspend fun deleteMess(accountPassword: String): UiState<DeleteMessResponse> =
         safeApiCall("ManagerRepository") { apiService.deleteMess(DeleteMessRequest(accountPassword)) }
+
+    suspend fun searchUserByEmail(email: String): UiState<SearchUserResponse> =
+        safeApiCall("ManagerRepository") { apiService.searchUserByEmail(email) }
+
+    suspend fun inviteMember(email: String): UiState<InviteMemberResponse> =
+        safeApiCall("ManagerRepository") { apiService.inviteMember(InviteMemberRequest(email)) }
 
     private inline fun <T, R> mapListState(state: UiState<T>, extract: (T) -> List<R>): UiState<List<R>> =
         when (state) {

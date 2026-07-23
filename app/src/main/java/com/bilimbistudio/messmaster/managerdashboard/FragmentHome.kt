@@ -48,10 +48,17 @@ class FragmentHome : Fragment() {
     private lateinit var btnNotifcation: MaterialCardView
     private lateinit var btnMembers: MaterialCardView
     private lateinit var btnMonthlySheet: MaterialCardView
+    private lateinit var btnInviteMember: MaterialCardView
     private lateinit var txtTotalMealExpense: TextView
     private lateinit var txtMealRate: TextView
     private lateinit var txtTotalUtility: TextView
     private var membersDialog: AlertDialog? = null
+    private var inviteSearchDialog: AlertDialog? = null
+    private var foundUserEmail: String? = null
+    private var layoutInviteResult: LinearLayout? = null
+    private var txtInviteResultName: TextView? = null
+    private var txtInviteResultEmail: TextView? = null
+    private var layoutInviteActions: LinearLayout? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,6 +81,7 @@ class FragmentHome : Fragment() {
         btnNotifcation = view.findViewById(R.id.btnNotifcation)
         btnMembers = view.findViewById(R.id.btnMembers)
         btnMonthlySheet = view.findViewById(R.id.btnMonthlySheet)
+        btnInviteMember = view.findViewById(R.id.btnInviteMember)
 
         btnAddMeal.setOnClickListener {
             requireActivity().findViewById<BottomNavigationView>(R.id.managerBottomNav)
@@ -92,6 +100,7 @@ class FragmentHome : Fragment() {
         }
         btnMembers.setOnClickListener { homeViewModel.loadMembers() }
         btnMonthlySheet.setOnClickListener { homeViewModel.loadMonthlySheet("current") }
+        btnInviteMember.setOnClickListener { showInviteSearchDialog() }
 
         observeStates()
         return view
@@ -199,6 +208,43 @@ class FragmentHome : Fragment() {
                                 requireActivity().finish()
                             }
                             is UiState.Error -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    homeViewModel.searchUserState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                homeViewModel.consumeSearchUser()
+                                foundUserEmail = state.data.email
+                                showInviteResult(state.data.name, state.data.email)
+                            }
+                            is UiState.Error -> {
+                                homeViewModel.consumeSearchUser()
+                                foundUserEmail = null
+                                hideInviteResult()
+                                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            }
+                            else -> Unit
+                        }
+                    }
+                }
+
+                launch {
+                    homeViewModel.inviteMemberState.collect { state ->
+                        when (state) {
+                            is UiState.Success -> {
+                                homeViewModel.consumeInviteMember()
+                                Toast.makeText(requireContext(), state.data.message, Toast.LENGTH_LONG).show()
+                                inviteSearchDialog?.dismiss()
+                                inviteSearchDialog = null
+                            }
+                            is UiState.Error -> {
+                                homeViewModel.consumeInviteMember()
+                                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            }
                             else -> Unit
                         }
                     }
@@ -389,6 +435,65 @@ class FragmentHome : Fragment() {
         }
 
         dialog.show()
+    }
+
+    private fun showInviteSearchDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_invite_search, null)
+        val inputEmail = dialogView.findViewById<EditText>(R.id.inputInviteEmail)
+        val btnFind = dialogView.findViewById<Button>(R.id.btnFindUser)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelInvite)
+        val btnAdd = dialogView.findViewById<Button>(R.id.btnAddInvite)
+        val layoutResult = dialogView.findViewById<LinearLayout>(R.id.layoutInviteResult)
+        val txtResultName = dialogView.findViewById<TextView>(R.id.txtInviteResultName)
+        val txtResultEmail = dialogView.findViewById<TextView>(R.id.txtInviteResultEmail)
+        val layoutActions = dialogView.findViewById<LinearLayout>(R.id.layoutInviteActions)
+
+        layoutInviteResult = layoutResult
+        txtInviteResultName = txtResultName
+        txtInviteResultEmail = txtResultEmail
+        layoutInviteActions = layoutActions
+        foundUserEmail = null
+
+        val dialog = AlertDialog.Builder(requireContext()).setView(dialogView).create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        btnFind.setOnClickListener {
+            val email = inputEmail.text.toString().trim()
+            if (email.isEmpty()) {
+                inputEmail.error = "Email is required"
+            } else {
+                hideInviteResult()
+                homeViewModel.searchUserByEmail(email)
+            }
+        }
+        btnAdd.setOnClickListener {
+            foundUserEmail?.let { email -> homeViewModel.inviteMember(email) }
+        }
+        btnCancel.setOnClickListener { dialog.dismiss() }
+
+        dialog.setOnDismissListener {
+            inviteSearchDialog = null
+            layoutInviteResult = null
+            txtInviteResultName = null
+            txtInviteResultEmail = null
+            layoutInviteActions = null
+            foundUserEmail = null
+        }
+
+        inviteSearchDialog = dialog
+        dialog.show()
+    }
+
+    private fun showInviteResult(name: String, email: String) {
+        txtInviteResultName?.text = name
+        txtInviteResultEmail?.text = email
+        layoutInviteResult?.visibility = View.VISIBLE
+        layoutInviteActions?.visibility = View.VISIBLE
+    }
+
+    private fun hideInviteResult() {
+        layoutInviteResult?.visibility = View.GONE
+        layoutInviteActions?.visibility = View.GONE
     }
 
     private fun getInitials(name: String): String {

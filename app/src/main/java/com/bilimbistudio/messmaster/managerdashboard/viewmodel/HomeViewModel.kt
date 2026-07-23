@@ -9,6 +9,8 @@ import com.bilimbistudio.messmaster.managerdashboard.model.utility.CurrentMonthU
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.MessMember
 import com.bilimbistudio.messmaster.managerdashboard.model.expense.MonthlySheetResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.RemoveMemberResponse
+import com.bilimbistudio.messmaster.managerdashboard.model.invite.SearchUserResponse
+import com.bilimbistudio.messmaster.managerdashboard.model.invite.InviteMemberResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.expense.TotalMealExpenseResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.TransferOwnershipResponse
 import com.bilimbistudio.messmaster.managerdashboard.repository.ManagerRepository
@@ -41,6 +43,12 @@ class HomeViewModel(private val repository: ManagerRepository) : ViewModel() {
 
     private val _removeMemberState = MutableStateFlow<UiState<RemoveMemberResponse>>(UiState.Idle)
     val removeMemberState: StateFlow<UiState<RemoveMemberResponse>> = _removeMemberState.asStateFlow()
+
+    private val _searchUserState = MutableStateFlow<UiState<SearchUserResponse>>(UiState.Idle)
+    val searchUserState: StateFlow<UiState<SearchUserResponse>> = _searchUserState.asStateFlow()
+
+    private val _inviteMemberState = MutableStateFlow<UiState<InviteMemberResponse>>(UiState.Idle)
+    val inviteMemberState: StateFlow<UiState<InviteMemberResponse>> = _inviteMemberState.asStateFlow()
 
     init {
         loadTotalMealExpense()
@@ -89,10 +97,26 @@ class HomeViewModel(private val repository: ManagerRepository) : ViewModel() {
         }
     }
 
+    fun searchUserByEmail(email: String) {
+        viewModelScope.launch {
+            _searchUserState.value = UiState.Loading
+            _searchUserState.value = repository.searchUserByEmail(email)
+        }
+    }
+
+    fun inviteMember(email: String) {
+        viewModelScope.launch {
+            _inviteMemberState.value = UiState.Loading
+            _inviteMemberState.value = repository.inviteMember(email)
+        }
+    }
+
     fun consumeMonthlySheet() { _monthlySheetState.value = UiState.Idle }
     fun consumeMembers() { _membersState.value = UiState.Idle }
     fun consumeTransferOwnership() { _transferOwnershipState.value = UiState.Idle }
     fun consumeRemoveMember() { _removeMemberState.value = UiState.Idle }
+    fun consumeSearchUser() { _searchUserState.value = UiState.Idle }
+    fun consumeInviteMember() { _inviteMemberState.value = UiState.Idle }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

@@ -43,6 +43,12 @@ import com.bilimbistudio.messmaster.managerdashboard.model.mess.TransferOwnershi
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.TransferOwnershipResponse
 import com.bilimbistudio.messmaster.managerdashboard.model.profile.UpdateUserProfileRequest
 import com.bilimbistudio.messmaster.managerdashboard.model.mess.ViewMessPasswordRequest
+import com.bilimbistudio.messmaster.managerdashboard.model.invite.SearchUserResponse
+import com.bilimbistudio.messmaster.managerdashboard.model.invite.InviteMemberRequest
+import com.bilimbistudio.messmaster.managerdashboard.model.invite.InviteMemberResponse
+import com.bilimbistudio.messmaster.shared.model.invite.PendingInviteResponse
+import com.bilimbistudio.messmaster.shared.model.invite.RespondInviteRequest
+import com.bilimbistudio.messmaster.shared.model.invite.RespondInviteResponse
 import com.bilimbistudio.messmaster.model.LogoutResponse
 import com.bilimbistudio.messmaster.model.UserProfileResponse
 import retrofit2.Response
@@ -175,6 +181,23 @@ interface ApiService {
 
     @HTTP(method = "DELETE", path = "mess/deleteMess", hasBody = true)
     suspend fun deleteMess(@Body request: DeleteMessRequest): Response<DeleteMessResponse>
+
+    @GET("mess/searchUserByEmail")
+    suspend fun searchUserByEmail(@Query("email") email: String): Response<SearchUserResponse>
+
+    @POST("mess/inviteMember")
+    suspend fun inviteMember(@Body request: InviteMemberRequest): Response<InviteMemberResponse>
+
+    // -- Shared invite (any authenticated user) --
+
+    @GET("mess/pendingInvite")
+    suspend fun getPendingInvite(): Response<PendingInviteResponse>
+
+    @PATCH("mess/acceptInvite")
+    suspend fun acceptInvite(@Body request: RespondInviteRequest): Response<RespondInviteResponse>
+
+    @PATCH("mess/declineInvite")
+    suspend fun declineInvite(@Body request: RespondInviteRequest): Response<RespondInviteResponse>
 
     // -- Member only --
 
