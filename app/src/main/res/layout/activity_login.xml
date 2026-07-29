@@ -161,6 +161,16 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tvPasswordError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Must be 6+ characters and include a special character (@ # $ &amp;)"
+            android:textSize="12sp"
+            android:textColor="@color/text_primary"
+            android:layout_marginTop="6dp"
+            android:layout_marginHorizontal="6dp"/>
+
+        <TextView
             android:id="@+id/btnForgotPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

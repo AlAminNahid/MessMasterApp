@@ -9,6 +9,7 @@ plugins {
 
 android {
     namespace = "com.bilimbistudio.messmaster"
+
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -35,15 +36,39 @@ android {
         )
     }
 
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+
+        create("release") {
+            storeFile = file(localProperties.getProperty("MYAPP_UPLOAD_STORE_FILE"))
+            storePassword = localProperties.getProperty("MYAPP_UPLOAD_STORE_PASSWORD")
+            keyAlias = localProperties.getProperty("MYAPP_UPLOAD_KEY_ALIAS")
+            keyPassword = localProperties.getProperty("MYAPP_UPLOAD_KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
+
             isMinifyEnabled = false
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -58,6 +83,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.material)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
@@ -66,6 +92,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.squareup.okhttp3:okhttp-urlconnection:4.12.0")
+
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
 
